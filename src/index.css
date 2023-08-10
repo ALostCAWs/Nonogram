@@ -11,3 +11,113 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.boardContainer {
+  display: grid;
+  grid-template-columns: 64.5px 305px;
+  grid-template-rows: 62px 305px;
+
+  margin: auto;
+  width: 366px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  grid-template-rows: repeat(5, auto);
+
+  justify-items: stretch;
+  justify-content: space-evenly;
+
+  gap: 1px;
+
+  width: 305px;
+  height: 305px;
+  /*background-color: #ddd;*/
+}
+
+/* .rowHintContainer & .colHintContainers' grid-row/column rule enforces top-left portion of grid to be blank */
+.rowHintContainer {
+  display: grid;
+  grid-template-columns: repeat(1, 61px);
+  grid-template-rows: repeat(5, 61px);
+  grid-row: 2 / -1;
+
+  gap: 1px;
+
+  width: 61px;
+  height: 305px;
+  /*background-color: #ddd;*/
+}
+
+.colHintContainer {
+  display: grid;
+  grid-template-columns: repeat(5, 61px);
+  grid-template-rows: repeat(1, 61px);
+  grid-column: 2 / -1;
+
+  justify-content: space-evenly;
+
+  gap: 1px;
+
+  width: 305px;
+  height: 61px;
+  /*background-color: #ddd;*/
+}
+
+.rowHints {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: flex-end;
+  align-items: center;
+
+  width: 61px;
+  height: 61px;
+  /* add gradient light left, dark right*/
+  background-color: #efefef;
+}
+
+.colHints {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+
+  width: 61px;
+  height: 61px;
+  /* add gradient light top, dark bottom */
+  background-color: #efefef;
+}
+
+.rowHints>div {
+  width: 33%;
+}
+
+.colHints>div {
+  height: 33%;
+}
+
+.tile {
+  width: 61px;
+  height: 61px;
+  background-color: #efefef;
+}
+
+.hovered {
+  width: 60px;
+  height: 60px;
+  border: thin solid aquamarine;
+}
+
+.filled {
+  background-color: black;
+}
+
+.error {
+  background-color: darksalmon;
+}
+
+.marked {
+  background-color: darkgray;
+}
