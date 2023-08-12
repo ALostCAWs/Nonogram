@@ -114,7 +114,7 @@ export const PicrossProvider = ({ solutionArr }) => {
       }
     }
     setGameArr(updatedGameArr);
-  }, []);
+  }, [solutionArr]);
 
   const fillTile = (e, row, col) => {
     let updatedGameArr = CopyGameArray(gameArr);
