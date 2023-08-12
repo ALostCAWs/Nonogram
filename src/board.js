@@ -102,7 +102,8 @@ export const PicrossProvider = ({ solutionArr }) => {
   }
 
   useEffect(() => {
-    let updatedGameArr = CopyGameArray(gameArr);
+    let updatedGameArr = CreateGameArray(solutionArr, fillState);
+
     for (let i = 0; i < hintObj.colHintArr.length; i++) {
       if (hintObj.colHintArr[i].length === 0) {
         setTileColZero(i, updatedGameArr);
@@ -185,8 +186,8 @@ const CreateHintObj = (solutionArr) => {
     rowHintArr.push(innerRHintArr);
     colHintArr.push(innerCHintArr);
   }
-  console.log(rowHintArr);
-  console.log(colHintArr);
+  //console.log(rowHintArr);
+  //console.log(colHintArr);
 
   return {
     rowHintArr: rowHintArr,
