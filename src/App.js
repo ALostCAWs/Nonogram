@@ -6,7 +6,7 @@ import logo from './logo.svg';
 import './App.css';
 
 
-let solutionArr1 = [[true, true, true, true, false],
+let solutionArr1 = [[true, true, true, true, true],
 [true, true, true, false, false],
 [true, true, false, true, false],
 [true, true, true, false, false],

@@ -75,7 +75,7 @@ code {
   width: 61px;
   height: 61px;
   /* add gradient light left, dark right*/
-  background-color: #efefef;
+  background-color: #e5e5e5;
 }
 
 .colHints {
@@ -87,7 +87,7 @@ code {
   width: 61px;
   height: 61px;
   /* add gradient light top, dark bottom */
-  background-color: #efefef;
+  background-color: #e5e5e5;
 }
 
 .rowHints>div {
@@ -104,10 +104,14 @@ code {
   background-color: #efefef;
 }
 
-.hovered {
-  width: 60px;
-  height: 60px;
-  border: thin solid aquamarine;
+.fullHint {
+  color: #589333;
+  font-weight: bold;
+}
+
+.zeroHint {
+  color: darksalmon;
+  font-weight: bold;
 }
 
 .filled {
