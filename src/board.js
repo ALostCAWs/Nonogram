@@ -19,11 +19,11 @@ const ColHints = ({ hintObj }) => {
   let colHintArr = hintObj.colHintArr;
   return (
     <div className='colHintContainer' key='colHintContainer'>
-      {colHintArr.map((row, i) =>
+      {colHintArr.map((col, i) =>
         <div className='colHints' key={`colHintCollection${i}`} >
-          {row && row.length
-            ? [...row].map((col, j) => <div key={`colHint${i} - ${j}`}>{colHintArr[i][j]}</div>)
-            : <div key={`colHint${i} - ${0}`}>0</div>
+          {col && col.length
+            ? [...col].map((row, j) => <div key={`colHint${i} - ${j}`}>{colHintArr[i][j]}</div>)
+            : <div key={`colHint${i} - ${0}`} className='zeroHint'>0</div>
           }
         </div>
       )}
@@ -40,7 +40,7 @@ const RowHints = ({ hintObj }) => {
         <div className='rowHints' key={`rowHintCollection${i}`} >
           {row && row.length
             ? [...row].map((col, j) => <div key={`rowHint${i} - ${j}`}>{rowHintArr[i][j]}</div>)
-            : <div key={`rowHint${i} - ${0}`}>0</div>
+            : <div key={`rowHint${i} - ${0}`} className='zeroHint'>0</div>
           }
         </div>
       )}
@@ -52,8 +52,8 @@ const Board = ({ gameArr, hintObj, fillTile, markTile }) => {
   // Decouple tiles from board by mapping within return rather than for looping in useEffect
   return (
     <div className='boardContainer'>
-      <ColHints hintObj={hintObj} />
-      <RowHints hintObj={hintObj} />
+      <ColHints hintObj={hintObj} gameArr={gameArr} />
+      <RowHints hintObj={hintObj} gameArr={gameArr} />
 
       <div className='board'>
         {gameArr.map((row, i) =>
@@ -63,6 +63,87 @@ const Board = ({ gameArr, hintObj, fillTile, markTile }) => {
         )}
       </div>
     </div>
+  );
+}
+
+//todo:
+// grey hint if hint complete; when tile onclick -> filled, check for hint completion
+// highlight tile onhover
+// highlight faintly row / col of tile onhover
+
+// get hints
+// Knows the solutionArr (can be passed to board, maybe not needed though)
+// Secondary gameArr, same size as solutionArr, manages the users' progress
+// Tiles use callbacks to functions within when onClick / onContextMenu
+// gameArr passed to Board, making Board purely for displaying
+
+// not rerendering when props change because of reference to solutionArr being the same, doesn't do a deep check for equality ?
+export const PicrossProvider = ({ solutionArr }) => {
+  console.clear();
+
+  const fillState = {
+    empty: '',
+    filled: 'filled',
+    error: 'error',
+    marked: 'marked'
+  };
+  const [gameArr, setGameArr] = useState(CreateGameArray(solutionArr, fillState));
+
+  let hintObj = CreateHintObj(solutionArr);
+  const setTileColZero = (col, gameArr) => {
+    for (let i = 0; i < gameArr.length; i++) {
+      gameArr[i][col] = fillState.error;
+    }
+  }
+  const setTileRowZero = (row, gameArr) => {
+    for (let i = 0; i < gameArr.length; i++) {
+      gameArr[row][i] = fillState.error;
+    }
+  }
+
+  useEffect(() => {
+    let updatedGameArr = CreateGameArray(solutionArr, fillState);
+
+    for (let i = 0; i < hintObj.colHintArr.length; i++) {
+      if (hintObj.colHintArr[i].length === 0) {
+        setTileColZero(i, updatedGameArr);
+      }
+    }
+    for (let i = 0; i < hintObj.rowHintArr.length; i++) {
+      if (hintObj.rowHintArr[i].length === 0) {
+        setTileRowZero(i, updatedGameArr);
+      }
+    }
+    setGameArr(updatedGameArr);
+  }, [solutionArr]);
+
+  const fillTile = (e, row, col) => {
+    let updatedGameArr = CopyGameArray(gameArr);
+    if (gameArr[row][col] !== fillState.empty) {
+      return;
+    }
+    if (solutionArr[row][col]) {
+      updatedGameArr[row][col] = fillState.filled;
+    } else {
+      updatedGameArr[row][col] = fillState.error;
+    }
+    setGameArr(updatedGameArr);
+  }
+  const markTile = (e, row, col) => {
+    e.preventDefault();
+    let updatedGameArr = CopyGameArray(gameArr);
+    if (gameArr[row][col] === fillState.empty) {
+      updatedGameArr[row][col] = fillState.marked;
+    } else if (gameArr[row][col] === fillState.marked) {
+      updatedGameArr[row][col] = fillState.empty;
+    }
+    setGameArr(updatedGameArr);
+  }
+
+  return (
+    <>
+      <Board gameArr={gameArr} hintObj={hintObj} fillTile={fillTile} markTile={markTile} />
+    </>
   );
 }
 
@@ -105,8 +186,8 @@ const CreateHintObj = (solutionArr) => {
     rowHintArr.push(innerRHintArr);
     colHintArr.push(innerCHintArr);
   }
-  console.log(rowHintArr);
-  console.log(colHintArr);
+  //console.log(rowHintArr);
+  //console.log(colHintArr);
 
   return {
     rowHintArr: rowHintArr,
@@ -136,59 +217,4 @@ const CopyGameArray = (gameArr) => {
     }
   }
   return copyArr;
-}
-
-//todo:
-// grey hint if hint complete; when tile onclick -> filled, check for hint completion
-// highlight tile onhover
-// highlight faintly row / col of tile onhover
-
-// Find out if provider is the right word
-// get hints
-// Knows the solutionArr (can be passed to board, maybe not needed though)
-// Secondary gameArr, same size as solutionArr, manages the users' progress
-// Tiles use callbacks to functions within when onClick / onContextMenu
-// gameArr passed to Board, making Board purely for displaying
-export const PicrossProvider = ({ solutionArr }) => {
-  console.clear();
-
-  const fillState = {
-    empty: '',
-    filled: 'filled',
-    error: 'error',
-    marked: 'marked'
-  };
-  const [gameArr, setGameArr] = useState(CreateGameArray(solutionArr, fillState));
-
-  let hintObj = CreateHintObj(solutionArr);
-
-  const fillTile = (e, row, col) => {
-    let updatedGameArr = CopyGameArray(gameArr);
-    if (gameArr[row][col] !== fillState.empty) {
-      return;
-    }
-    if (solutionArr[row][col]) {
-      updatedGameArr[row][col] = fillState.filled;
-    } else {
-      updatedGameArr[row][col] = fillState.error;
-    }
-    setGameArr(updatedGameArr);
-  }
-
-  const markTile = (e, row, col) => {
-    e.preventDefault();
-    let updatedGameArr = CopyGameArray(gameArr);
-    if (gameArr[row][col] === fillState.empty) {
-      updatedGameArr[row][col] = fillState.marked;
-    } else if (gameArr[row][col] === fillState.marked) {
-      updatedGameArr[row][col] = fillState.empty;
-    }
-    setGameArr(updatedGameArr);
-  }
-
-  return (
-    <>
-      <Board gameArr={gameArr} hintObj={hintObj} fillTile={fillTile} markTile={markTile} />
-    </>
-  );
 }
