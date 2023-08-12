@@ -2,19 +2,16 @@
 import React, { useEffect, useState } from 'react';
 /* End ---- */
 
-// tiles should only know what their fillSate is & their coords.
-// when they're clicked, they tell the picross provider their coords. & the game array is updated
+// Tiles are only aware of their fillState & coords.
+// When they're clicked, they tell the picross provider their coords. & the game array is updated
 const Tile = ({ fill, row, col, fillTile, markTile }) => {
   return (
     <div className={`tile ${fill}`} onClick={e => fillTile(e, row, col)} onContextMenu={e => markTile(e, row, col)}></div>
   );
 }
 
-// todo:
-// if colhints / rowhints to display 0, take row index i & colour as error
-// if colhint / rowhint to display hint equal to whole line add class, bold hint text / colour vibrantly
-
-const ColHints = ({ hintObj }) => {
+/* ---- Hint Text Display */
+const ColHints = ({ hintObj, boardHeight }) => {
   // Loop matrix of column hints to display them above the board
   let colHintArr = hintObj.colHintArr;
   return (
@@ -22,7 +19,9 @@ const ColHints = ({ hintObj }) => {
       {colHintArr.map((col, i) =>
         <div className='colHints' key={`colHintCollection${i}`} >
           {col && col.length
-            ? [...col].map((row, j) => <div key={`colHint${i} - ${j}`}>{colHintArr[i][j]}</div>)
+            ? col[0] === boardHeight
+              ? [...col].map((row, j) => <div key={`colHint${i} - ${j}`} className='fullHint'>{colHintArr[i][j]}</div>)
+              : [...col].map((row, j) => <div key={`colHint${i} - ${j}`}>{colHintArr[i][j]}</div>)
             : <div key={`colHint${i} - ${0}`} className='zeroHint'>0</div>
           }
         </div>
@@ -31,7 +30,7 @@ const ColHints = ({ hintObj }) => {
   );
 }
 
-const RowHints = ({ hintObj }) => {
+const RowHints = ({ hintObj, boardWidth }) => {
   // Loop matrix of column hints to display them beside the board
   let rowHintArr = hintObj.rowHintArr;
   return (
@@ -39,7 +38,9 @@ const RowHints = ({ hintObj }) => {
       {rowHintArr.map((row, i) =>
         <div className='rowHints' key={`rowHintCollection${i}`} >
           {row && row.length
-            ? [...row].map((col, j) => <div key={`rowHint${i} - ${j}`}>{rowHintArr[i][j]}</div>)
+            ? row[0] === boardWidth
+              ? [...row].map((col, j) => <div key={`rowHint${i} - ${j}`} className='fullHint'>{rowHintArr[i][j]}</div>)
+              : [...row].map((col, j) => <div key={`rowHint${i} - ${j}`}>{rowHintArr[i][j]}</div>)
             : <div key={`rowHint${i} - ${0}`} className='zeroHint'>0</div>
           }
         </div>
@@ -52,8 +53,8 @@ const Board = ({ gameArr, hintObj, fillTile, markTile }) => {
   // Decouple tiles from board by mapping within return rather than for looping in useEffect
   return (
     <div className='boardContainer'>
-      <ColHints hintObj={hintObj} gameArr={gameArr} />
-      <RowHints hintObj={hintObj} gameArr={gameArr} />
+      <ColHints hintObj={hintObj} boardHeight={gameArr.length} />
+      <RowHints hintObj={hintObj} boardWidth={gameArr[0].length} />
 
       <div className='board'>
         {gameArr.map((row, i) =>
@@ -66,21 +67,17 @@ const Board = ({ gameArr, hintObj, fillTile, markTile }) => {
   );
 }
 
-//todo:
+// TODO:
 // grey hint if hint complete; when tile onclick -> filled, check for hint completion
 // highlight tile onhover
 // highlight faintly row / col of tile onhover
 
-// get hints
-// Knows the solutionArr (can be passed to board, maybe not needed though)
+// Get hints
+// Knows the solutionArr ( can be passed to board, maybe not needed though )
 // Secondary gameArr, same size as solutionArr, manages the users' progress
 // Tiles use callbacks to functions within when onClick / onContextMenu
 // gameArr passed to Board, making Board purely for displaying
-
-// not rerendering when props change because of reference to solutionArr being the same, doesn't do a deep check for equality ?
 export const PicrossProvider = ({ solutionArr }) => {
-  console.clear();
-
   const fillState = {
     empty: '',
     filled: 'filled',
@@ -88,8 +85,29 @@ export const PicrossProvider = ({ solutionArr }) => {
     marked: 'marked'
   };
   const [gameArr, setGameArr] = useState(CreateGameArray(solutionArr, fillState));
-
   let hintObj = CreateHintObj(solutionArr);
+
+  useEffect(() => {
+    // Reset gameArr when useEffect triggered ( don't keep prev. zero hint error lines )
+    let updatedGameArr = CreateGameArray(solutionArr, fillState);
+
+    // Find zero hint lines ( rows and/or columns ) & pass to functions to set fillState.error
+    for (let i = 0; i < hintObj.colHintArr.length; i++) {
+      if (hintObj.colHintArr[i].length === 0) {
+        setTileColZero(i, updatedGameArr);
+      }
+    }
+    for (let i = 0; i < hintObj.rowHintArr.length; i++) {
+      if (hintObj.rowHintArr[i].length === 0) {
+        setTileRowZero(i, updatedGameArr);
+      }
+    }
+    // Call setGameArr once to avoid issues
+    setGameArr(updatedGameArr);
+  }, [solutionArr]);
+
+  /* ---- Initial Game Setup Functions */
+  // Functions to set all tiles in zero hint lines ( rows and/or columns ) to fillState.error
   const setTileColZero = (col, gameArr) => {
     for (let i = 0; i < gameArr.length; i++) {
       gameArr[i][col] = fillState.error;
@@ -101,22 +119,8 @@ export const PicrossProvider = ({ solutionArr }) => {
     }
   }
 
-  useEffect(() => {
-    let updatedGameArr = CreateGameArray(solutionArr, fillState);
-
-    for (let i = 0; i < hintObj.colHintArr.length; i++) {
-      if (hintObj.colHintArr[i].length === 0) {
-        setTileColZero(i, updatedGameArr);
-      }
-    }
-    for (let i = 0; i < hintObj.rowHintArr.length; i++) {
-      if (hintObj.rowHintArr[i].length === 0) {
-        setTileRowZero(i, updatedGameArr);
-      }
-    }
-    setGameArr(updatedGameArr);
-  }, [solutionArr]);
-
+  /* ---- Tile Interaction Functions */
+  // R-click to attempt fill
   const fillTile = (e, row, col) => {
     let updatedGameArr = CopyGameArray(gameArr);
     if (gameArr[row][col] !== fillState.empty) {
@@ -129,6 +133,7 @@ export const PicrossProvider = ({ solutionArr }) => {
     }
     setGameArr(updatedGameArr);
   }
+  // L-click to mark ( used as penalty-free reference )
   const markTile = (e, row, col) => {
     e.preventDefault();
     let updatedGameArr = CopyGameArray(gameArr);
@@ -139,7 +144,7 @@ export const PicrossProvider = ({ solutionArr }) => {
     }
     setGameArr(updatedGameArr);
   }
-
+  console.log(gameArr);
   return (
     <>
       <Board gameArr={gameArr} hintObj={hintObj} fillTile={fillTile} markTile={markTile} />
@@ -147,6 +152,7 @@ export const PicrossProvider = ({ solutionArr }) => {
   );
 }
 
+/* ---- Create / Copy Functions */
 const CreateHintObj = (solutionArr) => {
   let rowHintArr = [];
   let colHintArr = [];
@@ -186,8 +192,8 @@ const CreateHintObj = (solutionArr) => {
     rowHintArr.push(innerRHintArr);
     colHintArr.push(innerCHintArr);
   }
-  //console.log(rowHintArr);
   //console.log(colHintArr);
+  //console.log(rowHintArr);
 
   return {
     rowHintArr: rowHintArr,
