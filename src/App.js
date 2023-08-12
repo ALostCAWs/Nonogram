@@ -6,7 +6,7 @@ import logo from './logo.svg';
 import './App.css';
 
 
-let solutionArr1 = [[true, true, true, true, true],
+let gameSolution1 = [[true, true, true, true, true],
 [true, true, true, false, false],
 [true, true, false, true, false],
 [true, true, true, false, false],
@@ -16,7 +16,7 @@ let solutionArr1 = [[true, true, true, true, true],
 function App() {
   return (
     <div className="App">
-      <PicrossProvider solutionArr={solutionArr1} />
+      <PicrossProvider gameSolution={gameSolution1} />
     </div>
   );
 }
