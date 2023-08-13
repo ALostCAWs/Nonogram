@@ -1,7 +1,7 @@
 /* ---- Imports Section */
 import React, { useState, useEffect } from 'react';
 import { object, array, bool } from 'prop-types';
-import { Board, PicrossProvider } from './board.js';
+import { PicrossProvider } from './picrossGame/picrossProvider';
 import logo from './logo.svg';
 import './App.css';
 
