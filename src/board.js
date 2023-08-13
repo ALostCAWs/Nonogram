@@ -176,42 +176,23 @@ const CreateHints = (gameSolution, currentGame) => {
       // Count col-adjacent trues, add current amount when false or when row end
       if (colSolution) {
         colHintCount++;
-        // If last item in col & still counting, add to innerCHints
-        if (j === boardHeight - 1) {
-          let colHint = CreateHint(colHintCount, boardHeight, hintState);
-          innerCHints.push(colHint);
-          colHintCount = 0;
-        }
-      } else if (!colSolution && colHintCount !== 0) {
-        if (colHintCount !== 0) {
-          let colHint = CreateHint(colHintCount, boardHeight, hintState);
-          innerCHints.push(colHint);
-          colHintCount = 0;
-        }
+      }
+      // If at end of column or an unfillable tile is found & there is a hint counted, populate hint object
+      if ((j === boardHeight - 1 || !colSolution) && colHintCount !== 0) {
+        let colHint = CreateHint(colHintCount, boardHeight, hintState);
+        innerCHints.push(colHint);
+        colHintCount = 0;
       }
 
       // Count row-adjacent trues, add current amount when false or when row end
       if (rowSolution) {
         rowHintCount++;
-        // If last item in row & still counting, add to innerRHints
-        if (j === boardWidth - 1) {
-          let state = rowHintCount === boardWidth ? hintState.full : hintState.incomplete
-          let rowHint = {
-            value: rowHintCount,
-            state: state
-          };
-          innerRHints.push(rowHint);
-          rowHintCount = 0;
-        }
-      } else if (!rowSolution && rowHintCount !== 0) {
-        if (rowHintCount !== 0) {
-          let rowHint = {
-            value: rowHintCount,
-            state: hintState.incomplete
-          }
-          innerRHints.push(rowHint);
-          rowHintCount = 0;
-        }
+      }
+      // If at end of row or an unfillable tile is found & there is a hint counted, populate hint object
+      if ((j === boardWidth - 1 || !rowSolution) && rowHintCount !== 0) {
+        let rowHint = CreateHint(rowHintCount, boardWidth, hintState);
+        innerRHints.push(rowHint);
+        rowHintCount = 0;
       }
     }
     // Add 0 to innerColHints if last in col is 0 & innerCHints is empty
@@ -236,7 +217,7 @@ const CreateHints = (gameSolution, currentGame) => {
   console.log(colHints);
   console.log(rowHints);
 
-  // Return an object containing two 2D arrays allows for a single function to handle the creation of both column & row hintd
+  // Return object containing two 2-D arrays of objects
   return {
     colHints: colHints,
     rowHints: rowHints
