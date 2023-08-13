@@ -114,6 +114,10 @@ code {
   font-weight: bold;
 }
 
+.completeHint {
+  color: darkgray;
+}
+
 .filled {
   background-color: black;
 }
