@@ -151,7 +151,13 @@ export const PicrossProvider = ({ gameSolution }) => {
 // Check if . . .
 // Individual hint = gameHeight (col) gameWidth (row) & set to fullHint
 // Hint array for a given col / row empty & set to zeroHint
-const CreateHints = (gameSolution, currentGame, fillState) => {
+const CreateHints = (gameSolution, currentGame) => {
+  const hintState = {
+    incomplete: '',
+    full: 'fullHint',
+    zero: 'zeroHint',
+    complete: 'completeHint'
+  };
   let colHints = [];
   let rowHints = [];
   let boardHeight = currentGame.length;
@@ -160,9 +166,8 @@ const CreateHints = (gameSolution, currentGame, fillState) => {
   for (let i = 0; i < gameSolution.length; i++) {
     let innerCHints = [];
     let innerRHints = [];
-    let colHint = 0;
-    let rowHint = 0;
-    let state = fillState.empty;
+    let colHintCount = 0;
+    let rowHintCount = 0;
 
     for (let j = 0; j < gameSolution[i].length; j++) {
       let colSolution = gameSolution[j][i];
@@ -170,39 +175,81 @@ const CreateHints = (gameSolution, currentGame, fillState) => {
 
       // Count col-adjacent trues, add current amount when false or when row end
       if (colSolution) {
-        colHint++;
-      } else if (!colSolution && colHint !== 0) {
-        innerCHints.push(colHint);
-        colHint = 0;
+        colHintCount++;
+        // If last item in col & still counting, add to innerCHints
+        if (j === boardHeight - 1) {
+          let colHint = CreateHint(colHintCount, boardHeight, hintState);
+          innerCHints.push(colHint);
+          colHintCount = 0;
+        }
+      } else if (!colSolution && colHintCount !== 0) {
+        if (colHintCount !== 0) {
+          let colHint = CreateHint(colHintCount, boardHeight, hintState);
+          innerCHints.push(colHint);
+          colHintCount = 0;
+        }
       }
+
       // Count row-adjacent trues, add current amount when false or when row end
       if (rowSolution) {
-        rowHint++;
-      } else if (!rowSolution && rowHint !== 0) {
-        innerRHints.push(rowHint);
-        rowHint = 0;
+        rowHintCount++;
+        // If last item in row & still counting, add to innerRHints
+        if (j === boardWidth - 1) {
+          let state = rowHintCount === boardWidth ? hintState.full : hintState.incomplete
+          let rowHint = {
+            value: rowHintCount,
+            state: state
+          };
+          innerRHints.push(rowHint);
+          rowHintCount = 0;
+        }
+      } else if (!rowSolution && rowHintCount !== 0) {
+        if (rowHintCount !== 0) {
+          let rowHint = {
+            value: rowHintCount,
+            state: hintState.incomplete
+          }
+          innerRHints.push(rowHint);
+          rowHintCount = 0;
+        }
       }
     }
-    if (colHint !== 0) {
+    // Add 0 to innerColHints if last in col is 0 & innerCHints is empty
+    if (innerCHints.length === 0) {
+      let colHint = {
+        value: 0,
+        state: hintState.zero
+      }
       innerCHints.push(colHint);
     }
-    if (rowHint !== 0) {
+    // Add 0 to innerRowHints if last in row is 0 & innerRHints is empty
+    if (innerRHints.length === 0) {
+      let rowHint = {
+        value: 0,
+        state: hintState.zero
+      }
       innerRHints.push(rowHint);
     }
-
     colHints.push(innerCHints);
     rowHints.push(innerRHints);
   }
-  let colHintsWithState = UpdateHintState(colHints, boardHeight);
-  let rowHintsWithState = UpdateHintState(rowHints, boardWidth);
-  console.log(colHintsWithState);
-  console.log(rowHintsWithState);
+  console.log(colHints);
+  console.log(rowHints);
 
   // Return an object containing two 2D arrays allows for a single function to handle the creation of both column & row hintd
   return {
-    colHints: colHintsWithState,
-    rowHints: rowHintsWithState
+    colHints: colHints,
+    rowHints: rowHints
   };
+}
+
+const CreateHint = (hintCount, maxHint, hintState) => {
+  let state = hintCount === maxHint ? hintState.full : hintState.incomplete;
+  let hint = {
+    value: hintCount,
+    state: state
+  }
+  return hint;
 }
 
 const UpdateHintState = (hints, boardHeightWidth) => {
