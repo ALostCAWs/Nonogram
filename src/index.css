@@ -104,7 +104,7 @@ code {
   background-color: #efefef;
 }
 
-.fullHint {
+.fullLineIncomplete {
   color: #589333;
   font-weight: bold;
 }
@@ -112,6 +112,10 @@ code {
 .zeroHint {
   color: darksalmon;
   font-weight: bold;
+}
+
+.completeHint {
+  color: darkgray;
 }
 
 .filled {

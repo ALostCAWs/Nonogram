@@ -1,6 +1,18 @@
 /* ---- Imports Section */
 import React, { useEffect, useState } from 'react';
 /* End ---- */
+const fillState = {
+  empty: '',
+  filled: 'filled',
+  error: 'error',
+  marked: 'marked'
+};
+const hintState = {
+  incomplete: '',
+  fullLineIncomplete: 'fullLineIncomplete',
+  zero: 'zeroHint',
+  complete: 'completeHint'
+};
 
 // Tiles are only aware of their fillState & coords.
 // When they're clicked, they tell the picross provider their coords. & the game array is updated
@@ -11,50 +23,88 @@ const Tile = ({ fill, row, col, fillTile, markTile }) => {
 }
 
 /* ---- Hint Text Display */
-const ColHints = ({ hints, boardHeight }) => {
-  // Loop matrix of column hints to display them above the board
-  let colHints = hints.colHints;
+// Check if . . .
+// Individual hint = gameHeight (col) gameWidth (row) & set to fullHint
+// Hint array for a given col / row empty & set to zeroHint
+const Hints = ({ lineGameSolution, currentLineGame, index }) => {
+  let hints = [];
+  let hintCount = 0;
+  let currentTilesInHintGameState = [];
+
+  for (let j = 0; j < lineGameSolution.length; j++) {
+    let solution = lineGameSolution[j];
+
+    // Count col-adjacent trues, add current amount when false or when row end
+    if (solution) {
+      hintCount++;
+      currentTilesInHintGameState.push(currentLineGame[j]);
+    }
+
+    // If at end of column/row or an unfillable tile is found & there is a hint counted, populate hint object
+    if ((j === lineGameSolution.length - 1 || !solution) && hintCount !== 0) {
+      // Default hintState setup for fullLineIncomplete & incomplete
+      let state = hintCount === lineGameSolution.length ? hintState.fullLineIncomplete : hintState.incomplete;
+
+      // Check if currentTilesInHintGameState ( now a Set => currentTilesInHintGameStateReduced ) contains one fillState.filled item
+      let currentTilesInHintGameStateReduced = new Set(currentTilesInHintGameState);
+      if (currentTilesInHintGameStateReduced.size === 1 && currentTilesInHintGameStateReduced.has(fillState.filled)) {
+        state = hintState.complete;
+      }
+
+      // Push hint & reset to continue checking for potential hints
+      let hint = {
+        value: hintCount,
+        state: state
+      }
+      hints.push(hint);
+      hintCount = 0;
+      currentTilesInHintGameState = [];
+    }
+  }
+  // If hints for a line is empty, that entire line is empty
+  if (hints.length === 0) {
+    // Set hint zero value & state
+    let hint = {
+      value: 0,
+      state: hintState.zero
+    }
+    hints.push(hint);
+  }
   return (
-    <div className='colHintContainer' key='colHintContainer'>
-      {colHints.map((col, i) =>
-        <div className='colHints' key={`colHintCollection${i}`} >
-          {col && col.length
-            ? col[0] === boardHeight
-              ? [...col].map((row, j) => <div key={`colHint${i} - ${j}`} className='fullHint'>{colHints[i][j]}</div>)
-              : [...col].map((row, j) => <div key={`colHint${i} - ${j}`}>{colHints[i][j]}</div>)
-            : <div key={`colHint${i} - ${0}`} className='zeroHint'>0</div>
-          }
-        </div>
-      )}
-    </div>
+    <>
+      {hints.map((hint, i) => <div key={`hint${index} - ${i}`} className={`${hint.state}`}>{hint.value}</div>)}
+    </>
   );
 }
 
-const RowHints = ({ hints, boardWidth }) => {
-  // Loop matrix of column hints to display them beside the board
-  let rowHints = hints.rowHints;
-  return (
-    <div className='rowHintContainer' key='rowHintContainer'>
-      {rowHints.map((row, i) =>
-        <div className='rowHints' key={`rowHintCollection${i}`} >
-          {row && row.length
-            ? row[0] === boardWidth
-              ? [...row].map((col, j) => <div key={`rowHint${i} - ${j}`} className='fullHint'>{rowHints[i][j]}</div>)
-              : [...row].map((col, j) => <div key={`rowHint${i} - ${j}`}>{rowHints[i][j]}</div>)
-            : <div key={`rowHint${i} - ${0}`} className='zeroHint'>0</div>
-          }
-        </div>
-      )}
-    </div>
-  );
+const GetColumn = (inputGame, colIndex) => {
+  let column = [];
+  for (let i = 0; i < inputGame.length; i++) {
+    column.push(inputGame[i][colIndex]);
+  }
+  return column;
 }
 
-const Board = ({ currentGame, hints, fillTile, markTile }) => {
+
+const Board = ({ currentGame, gameSolution, fillTile, markTile }) => {
   // Decouple tiles from board by mapping within return rather than for looping in useEffect
   return (
     <div className='boardContainer'>
-      <ColHints hints={hints} boardHeight={currentGame.length} />
-      <RowHints hints={hints} boardWidth={currentGame[0].length} />
+      <div className='colHintContainer' key='colHintContainer'>
+        {gameSolution.map((row, i) =>
+          <div key={`colHintCollection${i}`} className='colHints'>
+            <Hints lineGameSolution={GetColumn(gameSolution, i)} currentLineGame={GetColumn(currentGame, i)} index={i} />
+          </div>
+        )}
+      </div>
+
+      <div className='rowHintContainer' key='rowHintContainer'>
+        {gameSolution.map((row, i) =>
+          <div key={`rowHintCollection${i}`} className='rowHints'>
+            <Hints lineGameSolution={row} currentLineGame={currentGame[i]} index={i} />
+          </div>
+        )}
+      </div>
 
       <div className='board'>
         {currentGame.map((row, i) =>
@@ -78,27 +128,23 @@ const Board = ({ currentGame, hints, fillTile, markTile }) => {
 // Tiles use callbacks to functions within when onClick / onContextMenu
 // currentGame passed to Board, making Board purely for displaying
 export const PicrossProvider = ({ gameSolution }) => {
-  const fillState = {
-    empty: '',
-    filled: 'filled',
-    error: 'error',
-    marked: 'marked'
-  };
-  const [currentGame, setCurrentGame] = useState(CreateCurrentGameay(gameSolution, fillState));
-  let hints = CreateHints(gameSolution);
+  console.log('---');
+  const [currentGame, setCurrentGame] = useState(CreateCurrentGame(gameSolution));
 
   useEffect(() => {
     // Reset currentGame when useEffect triggered ( don't keep prev. zero hint error lines )
-    let updatedGame = CreateCurrentGameay(gameSolution, fillState);
+    let updatedGame = CreateCurrentGame(gameSolution);
 
     // Find zero hint lines ( rows and/or columns ) & pass to functions to set fillState.error
-    for (let i = 0; i < hints.colHints.length; i++) {
-      if (hints.colHints[i].length === 0) {
+    for (let i = 0; i < gameSolution.length; i++) {
+      let col = new Set(GetColumn(gameSolution, i));
+      if (col.size === 1 && col.has(false)) {
         setTileColZero(i, updatedGame);
       }
     }
-    for (let i = 0; i < hints.rowHints.length; i++) {
-      if (hints.rowHints[i].length === 0) {
+    for (let i = 0; i < gameSolution[0].length; i++) {
+      let row = new Set(gameSolution[i]);
+      if (row.size === 1 && row.has(false)) {
         setTileRowZero(i, updatedGame);
       }
     }
@@ -108,21 +154,21 @@ export const PicrossProvider = ({ gameSolution }) => {
 
   /* ---- Initial Game Setup Functions */
   // Functions to set all tiles in zero hint lines ( rows and/or columns ) to fillState.error
-  const setTileColZero = (col, currentGame) => {
+  const setTileColZero = (index, currentGame) => {
     for (let i = 0; i < currentGame.length; i++) {
-      currentGame[i][col] = fillState.error;
+      currentGame[i][index] = fillState.error;
     }
   }
-  const setTileRowZero = (row, currentGame) => {
+  const setTileRowZero = (index, currentGame) => {
     for (let i = 0; i < currentGame.length; i++) {
-      currentGame[row][i] = fillState.error;
+      currentGame[index][i] = fillState.error;
     }
   }
 
   /* ---- Tile Interaction Functions */
   // R-click to attempt fill
   const fillTile = (e, row, col) => {
-    let updatedGame = CopycurrentGameay(currentGame);
+    let updatedGame = CopyCurrentGame(currentGame);
     if (currentGame[row][col] !== fillState.empty) {
       return;
     }
@@ -136,7 +182,7 @@ export const PicrossProvider = ({ gameSolution }) => {
   // L-click to mark ( used as penalty-free reference )
   const markTile = (e, row, col) => {
     e.preventDefault();
-    let updatedGame = CopycurrentGameay(currentGame);
+    let updatedGame = CopyCurrentGame(currentGame);
     if (currentGame[row][col] === fillState.empty) {
       updatedGame[row][col] = fillState.marked;
     } else if (currentGame[row][col] === fillState.marked) {
@@ -147,62 +193,13 @@ export const PicrossProvider = ({ gameSolution }) => {
   console.log(currentGame);
   return (
     <>
-      <Board currentGame={currentGame} hints={hints} fillTile={fillTile} markTile={markTile} />
+      <Board currentGame={currentGame} gameSolution={gameSolution} fillTile={fillTile} markTile={markTile} />
     </>
   );
 }
 
-/* ---- Create / Copy Functions */
-const CreateHints = (gameSolution) => {
-  let colHints = [];
-  let rowHints = [];
-
-  for (let i = 0; i < gameSolution.length; i++) {
-    let innerCHints = [];
-    let innerRHints = [];
-    let colHint = 0;
-    let rowHint = 0;
-
-    for (let j = 0; j < gameSolution[i].length; j++) {
-      let colSolution = gameSolution[j][i];
-      let rowSolution = gameSolution[i][j];
-
-      // Count col-adjacent trues, add current amount when false or when row end
-      if (colSolution) {
-        colHint++;
-      } else if (!colSolution && colHint !== 0) {
-        innerCHints.push(colHint);
-        colHint = 0;
-      }
-      // Count row-adjacent trues, add current amount when false or when row end
-      if (rowSolution) {
-        rowHint++;
-      } else if (!rowSolution && rowHint !== 0) {
-        innerRHints.push(rowHint);
-        rowHint = 0;
-      }
-    }
-    if (colHint !== 0) {
-      innerCHints.push(colHint);
-    }
-    if (rowHint !== 0) {
-      innerRHints.push(rowHint);
-    }
-
-    colHints.push(innerCHints);
-    rowHints.push(innerRHints);
-  }
-  //console.log(colHints);
-  //console.log(rowHints);
-
-  // Return an object containing two 2D arrays allows for a single function to handle the creation of both column & row hintd
-  return {
-    colHints: colHints,
-    rowHints: rowHints
-  };
-}
-
-const CreateCurrentGameay = (gameSolution, fillState) => {
+/* ---- Create / Copy currentGame  */
+const CreateCurrentGame = (gameSolution) => {
   let currentGame = [];
   for (let i = 0; i < gameSolution.length; i++) {
     currentGame[i] = [];
@@ -215,7 +212,7 @@ const CreateCurrentGameay = (gameSolution, fillState) => {
 }
 
 // A simple assignment failed to trigger a re-render due to the arrays referencing the same point in memory
-const CopycurrentGameay = (currentGame) => {
+const CopyCurrentGame = (currentGame) => {
   let gameCopy = [];
   for (let i = 0; i < currentGame.length; i++) {
     gameCopy[i] = [];
