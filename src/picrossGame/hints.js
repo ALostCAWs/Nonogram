@@ -7,7 +7,7 @@ import { fillState, hintState } from './picrossProvider';
 // Check if . . .
 // Individual hint = gameHeight (col) gameWidth (row) & set to fullHint
 // Hint array for a given col / row empty & set to zeroHint
-export const Hints = ({ lineGameSolution, currentLineGame, index }) => {
+export const Hints = ({ lineGameSolution, currentLineGame, lineIndex }) => {
   let hints = [];
   let hintCount = 0;
   let currentTilesInHintGameState = [];
@@ -53,7 +53,7 @@ export const Hints = ({ lineGameSolution, currentLineGame, index }) => {
   }
   return (
     <>
-      {hints.map((hint, i) => <div key={`hint${index} - ${i}`} className={`${hint.state}`}>{hint.value}</div>)}
+      {hints.map((hint, i) => <div key={`hint${lineIndex} - ${i}`} className={`${hint.state}`}>{hint.value}</div>)}
     </>
   );
 }

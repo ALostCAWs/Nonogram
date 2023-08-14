@@ -32,6 +32,8 @@ export const PicrossProvider = ({ gameSolution }) => {
   console.log('---');
   const [currentGame, setCurrentGame] = useState(CreateCurrentGame(gameSolution));
 
+  // useEffect triggers on first render to set any columns / rows with no fillable tiles to fillState.error
+  // Keeps in line with existing picross games
   useEffect(() => {
     // Reset currentGame when useEffect triggered ( don't keep prev. zero hint error lines )
     let updatedGame = CreateCurrentGame(gameSolution);
@@ -55,42 +57,91 @@ export const PicrossProvider = ({ gameSolution }) => {
 
   /* ---- Initial Game Setup Functions */
   // Functions to set all tiles in zero hint lines ( rows and/or columns ) to fillState.error
-  const setTileColZero = (index, currentGame) => {
+  const setTileColZero = (colIndex, currentGame) => {
     for (let i = 0; i < currentGame.length; i++) {
-      currentGame[i][index] = fillState.error;
+      currentGame[i][colIndex] = fillState.error;
     }
   }
-  const setTileRowZero = (index, currentGame) => {
-    for (let i = 0; i < currentGame.length; i++) {
-      currentGame[index][i] = fillState.error;
+  const setTileRowZero = (rowIndex, currentGame) => {
+    for (let i = 0; i < currentGame[0].length; i++) {
+      currentGame[rowIndex][i] = fillState.error;
     }
   }
 
   /* ---- Tile Interaction Functions */
-  // R-click to attempt fill
-  const fillTile = (e, row, col) => {
+  // R-click to attempt fill, fillState.filled & fillState.error are not removable
+  const fillTile = (e, rowIndex, colIndex) => {
     let updatedGame = CopyCurrentGame(currentGame);
-    if (currentGame[row][col] !== fillState.empty) {
+    if (currentGame[rowIndex][colIndex] !== fillState.empty) {
       return;
     }
-    if (gameSolution[row][col]) {
-      updatedGame[row][col] = fillState.filled;
+    if (gameSolution[rowIndex][colIndex]) {
+      updatedGame[rowIndex][colIndex] = fillState.filled;
+
+      // Check if filling the tile completed the column and / or row it's in
+      const colLineComplete = checkLineComplete(GetColumn(gameSolution, colIndex), GetColumn(updatedGame, colIndex), colIndex);
+      const rowLineComplete = checkLineComplete(gameSolution[rowIndex], updatedGame[rowIndex], rowIndex);
+
+      // If line is complete, set all empty or marked tiles to complete
+      if (colLineComplete) {
+        updatedGame = setColComplete(updatedGame, colIndex);
+      }
+      if (rowLineComplete) {
+        updatedGame = setRowComplete(updatedGame, rowIndex);
+      }
     } else {
-      updatedGame[row][col] = fillState.error;
+      updatedGame[rowIndex][colIndex] = fillState.error;
     }
     setCurrentGame(updatedGame);
   }
-  // L-click to mark ( used as penalty-free reference )
-  const markTile = (e, row, col) => {
+  // L-click to mark ( used as a removable penalty-free reference )
+  const markTile = (e, rowIndex, colIndex) => {
     e.preventDefault();
     let updatedGame = CopyCurrentGame(currentGame);
-    if (currentGame[row][col] === fillState.empty) {
-      updatedGame[row][col] = fillState.marked;
-    } else if (currentGame[row][col] === fillState.marked) {
-      updatedGame[row][col] = fillState.empty;
+    if (currentGame[rowIndex][colIndex] === fillState.empty) {
+      updatedGame[rowIndex][colIndex] = fillState.marked;
+    } else if (currentGame[rowIndex][colIndex] === fillState.marked) {
+      updatedGame[rowIndex][colIndex] = fillState.empty;
     }
     setCurrentGame(updatedGame);
   }
+
+  /* ---- Tile Interaction Trigger Hint Change Functions */
+  // Check if a given column / row is complete & returns bool
+  // If TRUE, set remaining tiles in column / row to complete
+  // This is only set for lines in which every fillable tile has been filled, specifically NOT for lines with 0 fillable tiles or incomplete lines
+  // Lines with 0 fillable tiles are all marked error on game initialization
+  // Lines with some completed hints do not trigger this, even in obvious cases such as first / last hint completion
+  // This keeps in line with existing picross games; avoids holding users' hand too much
+  // In this game, fillState.complete is set up to specifically disallow removal unlike many other picross games as that feels unfair for a user to be able to accidentally undo their own progress ( in a sense ) & trigger errors on lines they have already solved
+  const checkLineComplete = (gameSolutionLine, updatedGameLine) => {
+    let lineComplete = true;
+    gameSolutionLine.forEach((tile, i) => {
+      if (tile && updatedGameLine[i] !== fillState.filled) {
+        lineComplete = false;
+      }
+    });
+    return lineComplete;
+  }
+  const setColComplete = (updatedGame, colIndex) => {
+    for (let i = 0; i < currentGame.length; i++) {
+      if (updatedGame[i][colIndex] === fillState.empty || updatedGame[i][colIndex] === fillState.marked) {
+        // fillState.complete matches fillState.marked visually, but cannot be removed
+        updatedGame[i][colIndex] = fillState.complete;
+      }
+    }
+    return updatedGame;
+  }
+  const setRowComplete = (updatedGame, rowIndex) => {
+    for (let i = 0; i < updatedGame[0].length; i++) {
+      if (updatedGame[rowIndex][i] === fillState.empty || updatedGame[rowIndex][i] === fillState.marked) {
+        // fillState.complete matches fillState.marked visually, but cannot be removed
+        updatedGame[rowIndex][i] = fillState.complete;
+      }
+    }
+    return updatedGame;
+  }
+
   console.log(currentGame);
   return (
     <>
