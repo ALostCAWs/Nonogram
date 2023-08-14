@@ -22,11 +22,13 @@ export const hintState = {
 // TODO:
 // highlight tile onhover
 // highlight faintly row / col of tile onhover
+// when column / row complete, check for overall game completion
+// add lives, lose life when error is made, game end when complete or all lives lost
 
-// Get hints
 // Knows the gameSolution ( can be passed to board, maybe not needed though )
 // Secondary currentGame, same size as gameSolution, manages the users' progress
 // Tiles use callbacks to functions within when onClick / onContextMenu
+// When tile filled, PicrossProvider checks for column / row completion
 // currentGame passed to Board, making Board purely for displaying
 export const PicrossProvider = ({ gameSolution }) => {
   console.log('---');
