@@ -20,8 +20,6 @@ export const hintState = {
 };
 
 // TODO:
-// highlight tile onhover
-// highlight faintly row / col of tile onhover
 // when column / row complete, check for overall game completion
 // add lives, lose life when error is made, game end when complete or all lives lost
 
@@ -107,6 +105,18 @@ export const PicrossProvider = ({ gameSolution }) => {
     }
     setCurrentGame(updatedGame);
   }
+  const hoverTile = (e, rowIndex, colIndex) => {
+    const hoverRow = document.querySelector(`.rowHint${rowIndex}`);
+    const hoverCol = document.querySelector(`.colHint${colIndex}`);
+    if (e.type === 'mouseenter') {
+      hoverRow.classList.add('hoverHint');
+      hoverCol.classList.add('hoverHint');
+    }
+    if (e.type === 'mouseleave') {
+      hoverRow.classList.remove('hoverHint');
+      hoverCol.classList.remove('hoverHint');
+    }
+  }
 
   /* ---- Tile Interaction Trigger Hint Change Functions */
   // Check if a given column / row is complete & returns bool
@@ -147,7 +157,7 @@ export const PicrossProvider = ({ gameSolution }) => {
   console.log(currentGame);
   return (
     <>
-      <Board currentGame={currentGame} gameSolution={gameSolution} fillTile={fillTile} markTile={markTile} />
+      <Board currentGame={currentGame} gameSolution={gameSolution} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
     </>
   );
 }

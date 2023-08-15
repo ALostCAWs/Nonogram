@@ -104,6 +104,14 @@ code {
   background-color: #efefef;
 }
 
+.tile:hover {
+  outline: 1px solid #589333;
+}
+
+.hoverHint {
+  background-color: #d1d1d1;
+}
+
 .fullLineIncomplete {
   color: #589333;
   font-weight: bold;
