@@ -1,6 +1,7 @@
 /* ---- Imports Section */
 import React, { useEffect, useState } from 'react';
 import { Board } from './board';
+import { checkLineComplete, checkGameComplete } from './checkComplete';
 import { GetColumn } from './getBoardInfo';
 /* End ---- */
 
@@ -20,7 +21,6 @@ export const hintState = {
 };
 
 // TODO:
-// when column / row complete, check for overall game completion
 // add lives, lose life when error is made, game end when complete or all lives lost
 
 // Knows the gameSolution ( can be passed to board, maybe not needed though )
@@ -29,8 +29,14 @@ export const hintState = {
 // When tile filled, PicrossProvider checks for column / row completion
 // currentGame passed to Board, making Board purely for displaying
 export const PicrossProvider = ({ gameSolution }) => {
-  console.log('---');
+  const [lifeCount, setLifeCount] = useState(CreateLifeCount(gameSolution));
   const [currentGame, setCurrentGame] = useState(CreateCurrentGame(gameSolution));
+
+  // useEffect triggers on first render & upon any changes to the lifeCount state
+  // Tracks lives without accidental resets every time PicrossProvider rerenders
+  useEffect(() => {
+    console.log(lifeCount);
+  }, [lifeCount]);
 
   // useEffect triggers on first render to set any columns / rows with no fillable tiles to fillState.error
   // Keeps in line with existing picross games
@@ -89,8 +95,14 @@ export const PicrossProvider = ({ gameSolution }) => {
       if (rowLineComplete) {
         updatedGame = setRowComplete(updatedGame, rowIndex);
       }
+      // Only need to check for game completion if both a column & row were completed by this tile being filled
+      if (colLineComplete && rowLineComplete) {
+        checkGameComplete(gameSolution, updatedGame);
+      }
     } else {
+      // Upon error, reduce lives
       updatedGame[rowIndex][colIndex] = fillState.error;
+      setLifeCount(lifeCount - 1);
     }
     setCurrentGame(updatedGame);
   }
@@ -105,6 +117,7 @@ export const PicrossProvider = ({ gameSolution }) => {
     }
     setCurrentGame(updatedGame);
   }
+  // Hovering over a tile highlights it & its' corresponding column / row hints
   const hoverTile = (e, rowIndex, colIndex) => {
     const hoverRow = document.querySelector(`.rowHint${rowIndex}`);
     const hoverCol = document.querySelector(`.colHint${colIndex}`);
@@ -119,22 +132,12 @@ export const PicrossProvider = ({ gameSolution }) => {
   }
 
   /* ---- Tile Interaction Trigger Hint Change Functions */
-  // Check if a given column / row is complete & returns bool
-  // If TRUE, set remaining tiles in column / row to complete
+  // If line complete, set remaining tiles in column / row to complete
   // This is only set for lines in which every fillable tile has been filled, specifically NOT for lines with 0 fillable tiles or incomplete lines
   // Lines with 0 fillable tiles are all marked error on game initialization
   // Lines with some completed hints do not trigger this, even in obvious cases such as first / last hint completion
   // This keeps in line with existing picross games; avoids holding users' hand too much
   // In this game, fillState.complete is set up to specifically disallow removal unlike many other picross games as that feels unfair for a user to be able to accidentally undo their own progress ( in a sense ) & trigger errors on lines they have already solved
-  const checkLineComplete = (gameSolutionLine, updatedGameLine) => {
-    let lineComplete = true;
-    gameSolutionLine.forEach((tile, i) => {
-      if (tile && updatedGameLine[i] !== fillState.filled) {
-        lineComplete = false;
-      }
-    });
-    return lineComplete;
-  }
   const setColComplete = (updatedGame, colIndex) => {
     for (let i = 0; i < currentGame.length; i++) {
       if (updatedGame[i][colIndex] === fillState.empty || updatedGame[i][colIndex] === fillState.marked) {
@@ -154,7 +157,6 @@ export const PicrossProvider = ({ gameSolution }) => {
     return updatedGame;
   }
 
-  console.log(currentGame);
   return (
     <>
       <Board currentGame={currentGame} gameSolution={gameSolution} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
@@ -164,6 +166,13 @@ export const PicrossProvider = ({ gameSolution }) => {
 
 /* ---- Create / Copy currentGame  */
 /* Used only by PicrossProvider */
+const CreateLifeCount = (gameSolution) => {
+  // Set starting  based on the longest dimension of the board
+  let longestDimension = gameSolution.length <= gameSolution[0].length ? gameSolution.length : gameSolution[0].length;
+  let lifeCount = Math.ceil(longestDimension / 2);
+  return lifeCount;
+}
+
 const CreateCurrentGame = (gameSolution) => {
   let currentGame = [];
   for (let i = 0; i < gameSolution.length; i++) {

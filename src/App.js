@@ -12,6 +12,8 @@ let gameSolution1 = [[true, true, true, true, true],
 [false, true, true, false, false],
 [false, true, false, false, false]];
 
+let longestDimension = gameSolution1.length <= gameSolution1[0].length ? gameSolution1.length : gameSolution1[0].length;
+let lifeCount = Math.ceil(longestDimension / 2);
 
 function App() {
   return (
