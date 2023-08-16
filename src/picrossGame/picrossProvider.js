@@ -21,7 +21,12 @@ export const hintState = {
 };
 
 // TODO:
-// add lives, lose life when error is made, game end when complete or all lives lost
+// add visuals for life count
+// add visuals for game complete
+
+// play game & create game mode
+// create allows user to fill in an empty picross board & save it as a puzzle to be played
+// requires a back end or hash of some kind to load the created game solution as a puzzle
 
 // Knows the gameSolution ( can be passed to board, maybe not needed though )
 // Secondary currentGame, same size as gameSolution, manages the users' progress

@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { fillState, hintState } from './picrossProvider';
 /* End ---- */
 
