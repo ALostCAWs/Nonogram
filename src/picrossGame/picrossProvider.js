@@ -34,14 +34,8 @@ export const hintState = {
 // When tile filled, PicrossProvider checks for column / row completion
 // currentGame passed to Board, making Board purely for displaying
 export const PicrossProvider = ({ gameSolution }) => {
-  const [lifeCount, setLifeCount] = useState(CreateLifeCount(gameSolution));
+  const [lives, setLives] = useState(CreateLifeCount(gameSolution));
   const [currentGame, setCurrentGame] = useState(CreateCurrentGame(gameSolution));
-
-  // useEffect triggers on first render & upon any changes to the lifeCount state
-  // Tracks lives without accidental resets every time PicrossProvider rerenders
-  useEffect(() => {
-    console.log(lifeCount);
-  }, [lifeCount]);
 
   // useEffect triggers on first render to set any columns / rows with no fillable tiles to fillState.error
   // Keeps in line with existing picross games
@@ -107,7 +101,7 @@ export const PicrossProvider = ({ gameSolution }) => {
     } else {
       // Upon error, reduce lives
       updatedGame[rowIndex][colIndex] = fillState.error;
-      setLifeCount(lifeCount - 1);
+      setLives(lives - 1);
     }
     setCurrentGame(updatedGame);
   }
@@ -164,7 +158,7 @@ export const PicrossProvider = ({ gameSolution }) => {
 
   return (
     <>
-      <Board currentGame={currentGame} gameSolution={gameSolution} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
+      <Board currentGame={currentGame} gameSolution={gameSolution} lives={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
     </>
   );
 }
