@@ -21,8 +21,18 @@ export const hintState = {
 };
 
 // TODO:
-// add visuals for life count
 // add visuals for game complete
+// add visuals for game over
+// update look of the site; color scheme, life imgs, tile 'x' img
+
+// add ability to import game via hash / 'password'
+// add create game mode
+// add ability to export game made in create mode via hash / 'password'
+// incorporate backend for saving games created with create mode
+// incorporate backend for saving game progress
+
+// add other board sizes
+// update grid col / row count & tile sizes in react ?  or need classes for size differences ?
 
 // play game & create game mode
 // create allows user to fill in an empty picross board & save it as a puzzle to be played
