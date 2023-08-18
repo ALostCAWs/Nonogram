@@ -117,8 +117,8 @@ body {
 }
 
 .tile {
-  width: var(--tile-width);
   height: var(--tile-width);
+  width: var(--tile-width);
   background-color: var(--tile-color);
 }
 .tile:hover {
@@ -146,8 +146,8 @@ body {
 
   gap: 1px;
 
-  width: var(--board-width);
   height: var(--tile-width);
+  width: var(--board-width);
 }
 .rowHintContainer {
   display: grid;
@@ -161,6 +161,17 @@ body {
   width: var(--tile-width);
 }
 
+.colHints {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+
+  height: var(--tile-width);
+  width: var(--tile-width);
+  /* add gradient light top, dark bottom */
+  background-color: var(--hint-tile-color);
+}
 .rowHints {
   display: flex;
   flex-direction: row;
@@ -168,28 +179,17 @@ body {
   justify-content: flex-end;
   align-items: center;
 
-  width: var(--tile-width);
   height: var(--tile-width);
+  width: var(--tile-width);
   /* add gradient light left, dark right*/
   background-color: var(--hint-tile-color);
 }
-.colHints {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
 
-  width: var(--tile-width);
-  height: var(--tile-width);
-  /* add gradient light top, dark bottom */
-  background-color: var(--hint-tile-color);
-}
-
-.rowHints>div {
-  width: 33%;
-}
 .colHints>div {
   height: 33%;
+}
+.rowHints>div {
+  width: 33%;
 }
 
 .hoverHint {
@@ -197,12 +197,12 @@ body {
 }
 
 .fullLineIncomplete {
-  color: var(--hint-fullLine-txt-color);
   font-weight: bold;
+  color: var(--hint-fullLine-txt-color);
 }
 .zeroHint {
-  color: var(--error-color);
   font-weight: bold;
+  color: var(--error-color);
 }
 .completeHint {
   color: var(--mark-color);
@@ -211,13 +211,13 @@ body {
 /* ---- Lives ---- */
 .livesContainer {
   grid-column: 2 / -1;
+
   display: flex;
   justify-content: flex-end;
 
   margin-top: 10px;
-
-  width: var(--board-width);
   height: var(--life-height);
+  width: var(--board-width);
 }
 
 .life {
