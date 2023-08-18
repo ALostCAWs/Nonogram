@@ -1,26 +1,107 @@
+/* ---- Imports ---- */
+@import url("normalize.css");
+
+/* ---- Variables ---- */
+:root {
+  /* <- Color Scheme -> */
+  /*--main-color: #232931;*/
+  --main-color: #fdfdfd;
+  --shade-color: rgb(23, 27, 30);
+  --accent-color: #4ecca3;
+  --overlay-color: rgba(34, 41, 49, 0.822);
+  --font-color: #232931;
+  --font-color-warning: #FCAB10;
+
+  --hint-tile-color: #e5e5e5;
+  --hint-hover-color: #d1d1d1;
+  --hint-fullLine-txt-color: #589333;
+
+  --tile-hover-border: 1px solid #4ecca3;
+  --tile-color: #efefef;
+  --fill-color: black;
+  --error-color: darksalmon;
+  --mark-color: darkgray;
+
+  --life-color: crimson;
+
+  /* <- Typography -> */
+  --main-font: "Montserrat", sans-serif;
+  /* --accent-font: */
+  --main-font-wght: 500;
+  --base-size: 0.79rem;
+  --type-scale: 1.125;
+  /* Screen Sizes | L - Major 3rd - 1.25 | M - 1.2 Minor 3rd | S - 1.125 Major 2nd */
+  --h5: calc(var(--base-size) * var(--type-scale));
+  --h4: calc(var(--h5) * var(--type-scale));
+  --h3: calc(var(--h4) * var(--type-scale));
+  --h2: calc(var(--h3) * var(--type-scale));
+  --h1: calc(var(--h2) * var(--type-scale));
+
+  /* <- Grid & Tiles -> */
+  --tile-height: 75px;
+  --tile-width: 75px;
+
+  --boardContainer-height: calc(var(--tile-height) * 6);
+  --boardContainer-width: calc(var(--tile-width) * 6);
+
+  --board-height: calc(var(--tile-height) * 5);
+  --board-width: calc(var(--tile-width) * 5);
+
+  --life-height: calc(var(--tile-height) * .8);
+  --life-width: calc(var(--tile-height) * .8);
+}
+
+/* <- Reset, Border-Box, & Font-Var-Set -> */
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-variation-settings: "wght" var(--main-font-wght);
+}
+
+html,
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* <- Typescale --> */
+h1 {
+  font-size: var(--h1);
+}
+h2 {
+  font-size: var(--h2);
+}
+h3 {
+  font-size: var(--h3);
+}
+h4 {
+  font-size: var(--h4);
+}
+h5 {
+  font-size: var(--h5);
+}
+p {
+  font-size: var(--base-size);
 }
 
+body {
+  background-color: var(--main-color);
+  font-family: var(--main-font);
+  color: var(--font-color);
+}
+
+/* ---- BOARD CONTAINER ---- */
 .boardContainer {
   display: grid;
-  grid-template-columns: 64px 305px;
-  grid-template-rows: 62px 305px;
+  grid-template-columns: calc(var(--tile-height) + 3px) var(--board-width);
+  grid-template-rows: calc(var(--tile-height) + 1px) var(--board-height) calc(var(--tile-height) + 1px);
 
   margin: auto;
-  width: 366px;
+  width: var(--boardContainer-width);
 }
 
+/* ---- Board & Tile ---- */
 .board {
   display: grid;
   grid-template-columns: repeat(5, auto);
@@ -31,38 +112,53 @@ code {
 
   gap: 1px;
 
-  width: 305px;
-  height: 305px;
-  /*background-color: #ddd;*/
+  height: var(--board-height);
+  width: var(--board-width);
 }
 
-/* .rowHintContainer & .colHintContainers' grid-row/column rule enforces top-left portion of grid to be blank */
-.rowHintContainer {
-  display: grid;
-  grid-template-columns: repeat(1, 61px);
-  grid-template-rows: repeat(5, 61px);
-  grid-row: 2 / -1;
-
-  gap: 1px;
-
-  width: 61px;
-  height: 305px;
-  /*background-color: #ddd;*/
+.tile {
+  width: var(--tile-width);
+  height: var(--tile-width);
+  background-color: var(--tile-color);
+}
+.tile:hover {
+  outline: var(--tile-hover-border);
+}
+.filled {
+  background-color: var(--fill-color);
+}
+.error {
+  background-color: var(--error-color);
+}
+.marked {
+  background-color: var(--mark-color);
 }
 
+/* ---- Hints ---- */
+/* .colHintContainer & rowHintContainers' grid-row/column rule enforces top-left portion of grid to be blank */
 .colHintContainer {
   display: grid;
-  grid-template-columns: repeat(5, 61px);
-  grid-template-rows: repeat(1, 61px);
+  grid-template-columns: repeat(5, var(--tile-width));
+  grid-template-rows: repeat(1, var(--tile-width));
   grid-column: 2 / -1;
 
   justify-content: space-evenly;
 
   gap: 1px;
 
-  width: 305px;
-  height: 61px;
-  /*background-color: #ddd;*/
+  width: var(--board-width);
+  height: var(--tile-width);
+}
+.rowHintContainer {
+  display: grid;
+  grid-template-columns: repeat(1, var(--tile-width));
+  grid-template-rows: repeat(5, var(--tile-height));
+  grid-row: 2 / -1;
+
+  gap: 1px;
+
+  height: var(--board-height);
+  width: var(--tile-width);
 }
 
 .rowHints {
@@ -72,73 +168,47 @@ code {
   justify-content: flex-end;
   align-items: center;
 
-  width: 61px;
-  height: 61px;
+  width: var(--tile-width);
+  height: var(--tile-width);
   /* add gradient light left, dark right*/
-  background-color: #e5e5e5;
+  background-color: var(--hint-tile-color);
 }
-
 .colHints {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
 
-  width: 61px;
-  height: 61px;
+  width: var(--tile-width);
+  height: var(--tile-width);
   /* add gradient light top, dark bottom */
-  background-color: #e5e5e5;
+  background-color: var(--hint-tile-color);
 }
 
 .rowHints>div {
   width: 33%;
 }
-
 .colHints>div {
   height: 33%;
 }
 
-.tile {
-  width: 61px;
-  height: 61px;
-  background-color: #efefef;
-}
-
-.tile:hover {
-  outline: 1px solid #589333;
-}
-
 .hoverHint {
-  background-color: #d1d1d1;
+  background-color: var(--hint-hover-color);
 }
 
 .fullLineIncomplete {
-  color: #589333;
+  color: var(--hint-fullLine-txt-color);
   font-weight: bold;
 }
-
 .zeroHint {
-  color: darksalmon;
+  color: var(--error-color);
   font-weight: bold;
 }
-
 .completeHint {
-  color: darkgray;
+  color: var(--mark-color);
 }
 
-.filled {
-  background-color: black;
-}
-
-.error {
-  background-color: darksalmon;
-}
-
-.marked {
-  background-color: darkgray;
-}
-
-
+/* ---- Lives ---- */
 .livesContainer {
   grid-column: 2 / -1;
   display: flex;
@@ -146,13 +216,13 @@ code {
 
   margin-top: 10px;
 
-  width: 100%;
-  height: 50px;
+  width: var(--board-width);
+  height: var(--life-height);
 }
 
 .life {
-  margin-left: 10px;
-  height: 50px;
-  width: 50px;
-  background-color: crimson;
+  margin-left: 15px;
+  height: var(--life-height);
+  width: var(--life-width);
+  background-color: var(--life-color);
 }
