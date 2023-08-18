@@ -1,11 +1,12 @@
 /* ---- Imports Section */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { GetColumn } from './getBoardInfo';
 import { Hints } from './hints';
 /* End ---- */
 
-export const Board = ({ currentGame, gameSolution, fillTile, markTile, hoverTile }) => {
+export const Board = ({ currentGame, gameSolution, lives, fillTile, markTile, hoverTile }) => {
   // Decouple tiles from board by mapping within return rather than for looping in useEffect
+  lives = [...Array(lives).keys()];
   return (
     <div className='boardContainer'>
       <div className='colHintContainer' key='colHintContainer'>
@@ -31,6 +32,12 @@ export const Board = ({ currentGame, gameSolution, fillTile, markTile, hoverTile
           )
         )}
       </div>
+
+      <div className='livesContainer'>
+        {lives.map((life, i) =>
+          <Life key={`Life ${i + 1}`} />
+        )}
+      </div>
     </div>
   );
 }
@@ -40,5 +47,12 @@ export const Board = ({ currentGame, gameSolution, fillTile, markTile, hoverTile
 const Tile = ({ fill, rowIndex, colIndex, fillTile, markTile, hoverTile }) => {
   return (
     <div className={`tile ${fill}`} onClick={e => fillTile(e, rowIndex, colIndex)} onContextMenu={e => markTile(e, rowIndex, colIndex)} onMouseEnter={e => hoverTile(e, rowIndex, colIndex)} onMouseLeave={e => hoverTile(e, rowIndex, colIndex)}></div>
+  );
+}
+
+// Displays one life counter element per life remaining
+const Life = () => {
+  return (
+    <div className='life'></div>
   );
 }
