@@ -14,7 +14,7 @@ code {
 
 .boardContainer {
   display: grid;
-  grid-template-columns: 64.5px 305px;
+  grid-template-columns: 64px 305px;
   grid-template-rows: 62px 305px;
 
   margin: auto;
@@ -150,15 +150,8 @@ code {
   height: 50px;
 }
 
-.lives {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-}
-
 .life {
-  margin: 5px;
+  margin-left: 10px;
   height: 50px;
   width: 50px;
   background-color: crimson;

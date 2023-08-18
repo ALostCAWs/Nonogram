@@ -35,9 +35,7 @@ export const Board = ({ currentGame, gameSolution, lives, fillTile, markTile, ho
 
       <div className='livesContainer'>
         {lives.map((life, i) =>
-          <div className='lives'>
-            <Life key={`Life ${i + 1}`} />
-          </div>
+          <Life key={`Life ${i + 1}`} />
         )}
       </div>
     </div>
