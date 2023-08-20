@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Board } from './board';
 import { checkLineComplete, checkGameComplete } from './checkComplete';
 import { GetColumn } from './getBoardInfo';
+import { GameOver } from './gameOver';
 /* End ---- */
 
 /* ---- Enums for state */
@@ -44,7 +45,7 @@ export const hintState = {
 // When tile filled, PicrossProvider checks for column / row completion
 // currentGame passed to Board, making Board purely for displaying
 export const PicrossProvider = ({ gameSolution }) => {
-  const [lives, setLives] = useState(CreateLifeCount(gameSolution));
+  const [lives, setLives] = useState(CreateLives(gameSolution));
   const [currentGame, setCurrentGame] = useState(CreateCurrentGame(gameSolution));
 
   // useEffect triggers on first render to set any columns / rows with no fillable tiles to fillState.error
@@ -168,6 +169,10 @@ export const PicrossProvider = ({ gameSolution }) => {
 
   return (
     <>
+      {lives === 0 && (
+        <GameOver />
+      )}
+
       <Board currentGame={currentGame} gameSolution={gameSolution} lives={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
     </>
   );
@@ -175,11 +180,11 @@ export const PicrossProvider = ({ gameSolution }) => {
 
 /* ---- Create / Copy currentGame  */
 /* Used only by PicrossProvider */
-const CreateLifeCount = (gameSolution) => {
+const CreateLives = (gameSolution) => {
   // Set starting  based on the longest dimension of the board
   let longestDimension = gameSolution.length <= gameSolution[0].length ? gameSolution.length : gameSolution[0].length;
-  let lifeCount = Math.ceil(longestDimension / 2);
-  return lifeCount;
+  let lives = Math.ceil(longestDimension / 2);
+  return lives;
 }
 
 const CreateCurrentGame = (gameSolution) => {
