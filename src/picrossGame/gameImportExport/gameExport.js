@@ -1,4 +1,4 @@
 export const gameExport = (gameSolution) => {
-  let JSONString = JSON.stringify(gameSolution);
-  return JSONString;
+  let gameHash = btoa(JSON.stringify(gameSolution));
+  return gameHash;
 }

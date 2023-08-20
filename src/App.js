@@ -25,8 +25,6 @@ let gameSolution3 = [[false, true, true, false, true],
 [false, true, true, false, false],
 [false, true, false, false, false]];
 
-let game3Str = '[[false,true,true,false,true],[false,true,true,false,false],[false,true,false,true,false],[false,true,true,false,false],[false,true,false,false,false]]';
-
 function App() {
   const gameSolution = gameImport(gameExport(gameSolution1));
   return (
