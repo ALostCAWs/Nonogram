@@ -227,6 +227,14 @@ body {
   background-color: var(--life-color);
 }
 
+/* ---- Game Complete ---- */
+.gameComplete, .gameOver>div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 /* ---- Game Over ---- */
 .gameOver {
   z-index: 10;
@@ -239,11 +247,6 @@ body {
 }
 
 .gameOver>div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
   height: 100%;
   width: 100%;
 }

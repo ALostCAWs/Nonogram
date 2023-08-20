@@ -29,8 +29,5 @@ export const checkGameComplete = (gameSolution, updatedGame) => {
       break;
     }
   }
-  if (gameComplete) {
-    console.log('Game Complete');
-  }
-  return;
+  return gameComplete;
 }

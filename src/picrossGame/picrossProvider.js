@@ -4,6 +4,7 @@ import { Board } from './board';
 import { checkLineComplete, checkGameComplete } from './checkComplete';
 import { GetColumn } from './getBoardInfo';
 import { GameOver } from './gameOver';
+import { GameComplete } from './gameComplete';
 /* End ---- */
 
 /* ---- Enums for state */
@@ -22,8 +23,8 @@ export const hintState = {
 };
 
 // TODO:
+// add visuals for game over => current goal: add restart functionality
 // add visuals for game complete
-// add visuals for game over
 // update look of the site; color scheme, life imgs, tile 'x' img
 
 // add ability to import game via hash / 'password'
@@ -45,8 +46,9 @@ export const hintState = {
 // When tile filled, PicrossProvider checks for column / row completion
 // currentGame passed to Board, making Board purely for displaying
 export const PicrossProvider = ({ gameSolution }) => {
-  const [lives, setLives] = useState(CreateLives(gameSolution));
   const [currentGame, setCurrentGame] = useState(CreateCurrentGame(gameSolution));
+  const [lives, setLives] = useState(CreateLives(gameSolution));
+  const [gameComplete, setGameComplete] = useState(checkGameComplete(gameSolution, currentGame));
 
   // useEffect triggers on first render to set any columns / rows with no fillable tiles to fillState.error
   // Keeps in line with existing picross games
@@ -69,6 +71,13 @@ export const PicrossProvider = ({ gameSolution }) => {
     }
     // Call setCurrentGame once to avoid issues
     setCurrentGame(updatedGame);
+
+    // Continue gamesetup for completion & lives
+    // Using updatedGame in place of currentGame to avoid initialization issues
+    // Pre-updatedGame currentGame was being used still) after switching gameSolution values, preventing lives & gameComplete values from updating on new game start
+    setLives(CreateLives(gameSolution));
+    console.log(gameSolution);
+    setGameComplete(checkGameComplete(gameSolution, updatedGame));
   }, [gameSolution]);
 
   /* ---- Initial Game Setup Functions */
@@ -107,7 +116,8 @@ export const PicrossProvider = ({ gameSolution }) => {
       }
       // Only need to check for game completion if both a column & row were completed by this tile being filled
       if (colLineComplete && rowLineComplete) {
-        checkGameComplete(gameSolution, updatedGame);
+        setGameComplete(checkGameComplete(gameSolution, updatedGame));
+        console.log(gameComplete);
       }
     } else {
       // Upon error, reduce lives
@@ -167,13 +177,36 @@ export const PicrossProvider = ({ gameSolution }) => {
     return updatedGame;
   }
 
+  // Succeeding:
+  // Lives reset to game start value
+  // Board reset to blank
+
+  // Failing:
+  // Zero lines failing to be redrawn
+  // GameComplete messgae still displaying
+  const restartGame = () => {
+    // currentGame as-is when game ended
+    setCurrentGame(CreateCurrentGame(gameSolution));
+    // currentGame STILL as-is when game ended, even after setCurrentGame
+
+    // Dependent on currentGame, not resetting as currentGame isn't resetting
+    setGameComplete(checkGameComplete(gameSolution, currentGame));
+
+    // Non-dependent on currentGame, so resets correctly
+    setLives(CreateLives(gameSolution));
+  }
+
   return (
     <>
       {lives === 0 && (
-        <GameOver />
+        <GameOver restartGame={restartGame} />
       )}
 
       <Board currentGame={currentGame} gameSolution={gameSolution} lives={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
+
+      {gameComplete && (
+        <GameComplete lives={lives} restartGame={restartGame} />
+      )}
     </>
   );
 }
