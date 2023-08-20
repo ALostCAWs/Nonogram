@@ -29,7 +29,7 @@
   /* --accent-font: */
   --main-font-wght: 500;
   --base-size: 0.79rem;
-  --type-scale: 1.125;
+  --type-scale: 1.25;
   /* Screen Sizes | L - Major 3rd - 1.25 | M - 1.2 Minor 3rd | S - 1.125 Major 2nd */
   --h5: calc(var(--base-size) * var(--type-scale));
   --h4: calc(var(--h5) * var(--type-scale));
@@ -225,4 +225,38 @@ body {
   height: var(--life-height);
   width: var(--life-width);
   background-color: var(--life-color);
+}
+
+/* ---- Game Complete ---- */
+.gameComplete, .gameOver>div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ---- Game Over ---- */
+.gameOver {
+  z-index: 10;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+
+  background: rgb(28, 28, 28);
+  background: linear-gradient(180deg, rgba(28, 28, 28, 0.436) 0%, rgba(255,255,255,1) 100%);
+}
+
+.gameOver>div {
+  height: 100%;
+  width: 100%;
+}
+
+.gameOver>div>h2 {
+  color: var(--life-color);
+}
+
+.button {
+  margin-top: 4em;
+  height: 2.5em;
+  width: 8em;
 }

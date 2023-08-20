@@ -1,7 +1,7 @@
 
 /* ---- Imports Section */
 import { fillState } from './picrossProvider';
-import { GetColumn } from './getBoardInfo';
+import { getColumn } from './getBoardInfo';
 /* End ---- */
 
 /* ---- Completion Check Functions  */
@@ -20,7 +20,7 @@ export const checkLineComplete = (gameSolutionLine, updatedGameLine) => {
 export const checkGameComplete = (gameSolution, updatedGame) => {
   let gameComplete = true;
   for (let i = 0; i < gameSolution.length; i++) {
-    gameComplete = checkLineComplete(GetColumn(gameSolution, i), GetColumn(updatedGame, i));
+    gameComplete = checkLineComplete(getColumn(gameSolution, i), getColumn(updatedGame, i));
     if (!gameComplete) {
       break;
     }
@@ -29,8 +29,5 @@ export const checkGameComplete = (gameSolution, updatedGame) => {
       break;
     }
   }
-  if (gameComplete) {
-    console.log('Game Complete');
-  }
-  return;
+  return gameComplete;
 }

@@ -1,6 +1,6 @@
 /* ---- Imports Section */
 import React from 'react';
-import { GetColumn } from './getBoardInfo';
+import { getColumn } from './getBoardInfo';
 import { Hints } from './hints';
 /* End ---- */
 
@@ -12,7 +12,7 @@ export const Board = ({ currentGame, gameSolution, lives, fillTile, markTile, ho
       <div className='colHintContainer' key='colHintContainer'>
         {gameSolution.map((row, i) =>
           <div key={`colHintCollection${i}`} className={`colHints colHint${i}`}>
-            <Hints lineGameSolution={GetColumn(gameSolution, i)} currentLineGame={GetColumn(currentGame, i)} lineIndex={i} />
+            <Hints lineGameSolution={getColumn(gameSolution, i)} currentLineGame={getColumn(currentGame, i)} lineIndex={i} />
           </div>
         )}
       </div>
