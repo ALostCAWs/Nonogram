@@ -1,10 +1,11 @@
 /* ---- Imports Section */
 import React, { useEffect, useState } from 'react';
+import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup';
 import { Board } from './board';
 import { checkLineComplete, checkGameComplete } from './checkComplete';
-import { GetColumn } from './getBoardInfo';
-import { GameOver } from './gameOver';
-import { GameComplete } from './gameComplete';
+import { getColumn } from './getBoardInfo';
+import { GameOver } from './gameEndScreens/gameOver';
+import { GameComplete } from './gameEndScreens/gameComplete';
 /* End ---- */
 
 /* ---- Enums for state */
@@ -23,8 +24,6 @@ export const hintState = {
 };
 
 // TODO:
-// add visuals for game over => current goal: add restart functionality
-// add visuals for game complete
 // update look of the site; color scheme, life imgs, tile 'x' img
 
 // add ability to import game via hash / 'password'
@@ -46,57 +45,36 @@ export const hintState = {
 // When tile filled, PicrossProvider checks for column / row completion
 // currentGame passed to Board, making Board purely for displaying
 export const PicrossProvider = ({ gameSolution }) => {
-  const [currentGame, setCurrentGame] = useState(CreateCurrentGame(gameSolution));
-  const [lives, setLives] = useState(CreateLives(gameSolution));
+  const [currentGame, setCurrentGame] = useState(createCurrentGame(gameSolution));
+  const [lives, setLives] = useState(createLives(gameSolution));
   const [gameComplete, setGameComplete] = useState(checkGameComplete(gameSolution, currentGame));
 
-  // useEffect triggers on first render to set any columns / rows with no fillable tiles to fillState.error
-  // Keeps in line with existing picross games
+  // useEffect triggers on gameComplete change to call set any zero lines to fillState.error
+  // Ensures zero lines are filled correctly when puzzle reset
   useEffect(() => {
-    // Reset currentGame when useEffect triggered ( don't keep prev. zero hint error lines )
-    let updatedGame = CreateCurrentGame(gameSolution);
-
-    // Find zero hint lines ( rows and/or columns ) & pass to functions to set fillState.error
-    for (let i = 0; i < gameSolution.length; i++) {
-      let col = new Set(GetColumn(gameSolution, i));
-      if (col.size === 1 && col.has(false)) {
-        setTileColZero(i, updatedGame);
-      }
-    }
-    for (let i = 0; i < gameSolution[0].length; i++) {
-      let row = new Set(gameSolution[i]);
-      if (row.size === 1 && row.has(false)) {
-        setTileRowZero(i, updatedGame);
-      }
-    }
-    // Call setCurrentGame once to avoid issues
+    let updatedGame = checkZeroLines(copyCurrentGame(currentGame), gameSolution);
     setCurrentGame(updatedGame);
+  }, [gameComplete]);
 
-    // Continue gamesetup for completion & lives
-    // Using updatedGame in place of currentGame to avoid initialization issues
-    // Pre-updatedGame currentGame was being used still) after switching gameSolution values, preventing lives & gameComplete values from updating on new game start
-    setLives(CreateLives(gameSolution));
-    console.log(gameSolution);
-    setGameComplete(checkGameComplete(gameSolution, updatedGame));
+  // useEffect triggers on gameSolution change to call resetGame
+  useEffect(() => {
+    resetGame();
   }, [gameSolution]);
 
-  /* ---- Initial Game Setup Functions */
-  // Functions to set all tiles in zero hint lines ( rows and/or columns ) to fillState.error
-  const setTileColZero = (colIndex, currentGame) => {
-    for (let i = 0; i < currentGame.length; i++) {
-      currentGame[i][colIndex] = fillState.error;
-    }
-  }
-  const setTileRowZero = (rowIndex, currentGame) => {
-    for (let i = 0; i < currentGame[0].length; i++) {
-      currentGame[rowIndex][i] = fillState.error;
-    }
+  // Reset currentGame, lives, & gameComplete
+  const resetGame = () => {
+    // Using resetGame in place of currentGame to avoid initialization issues
+    // Pre-resetGame currentGame was being used still after creating a fresh currentGame, preventing gameComplete value from updating on retry game start
+    let resetGame = checkZeroLines(createCurrentGame(gameSolution), gameSolution);
+    setCurrentGame(resetGame);
+    setLives(createLives(gameSolution));
+    setGameComplete(checkGameComplete(gameSolution, resetGame));
   }
 
   /* ---- Tile Interaction Functions */
   // R-click to attempt fill, fillState.filled & fillState.error are not removable
   const fillTile = (e, rowIndex, colIndex) => {
-    let updatedGame = CopyCurrentGame(currentGame);
+    let updatedGame = copyCurrentGame(currentGame);
     if (currentGame[rowIndex][colIndex] !== fillState.empty) {
       return;
     }
@@ -104,7 +82,7 @@ export const PicrossProvider = ({ gameSolution }) => {
       updatedGame[rowIndex][colIndex] = fillState.filled;
 
       // Check if filling the tile completed the column and / or row it's in
-      const colLineComplete = checkLineComplete(GetColumn(gameSolution, colIndex), GetColumn(updatedGame, colIndex), colIndex);
+      const colLineComplete = checkLineComplete(getColumn(gameSolution, colIndex), getColumn(updatedGame, colIndex), colIndex);
       const rowLineComplete = checkLineComplete(gameSolution[rowIndex], updatedGame[rowIndex], rowIndex);
 
       // If line is complete, set all empty or marked tiles to complete
@@ -117,7 +95,6 @@ export const PicrossProvider = ({ gameSolution }) => {
       // Only need to check for game completion if both a column & row were completed by this tile being filled
       if (colLineComplete && rowLineComplete) {
         setGameComplete(checkGameComplete(gameSolution, updatedGame));
-        console.log(gameComplete);
       }
     } else {
       // Upon error, reduce lives
@@ -129,7 +106,7 @@ export const PicrossProvider = ({ gameSolution }) => {
   // L-click to mark ( used as a removable penalty-free reference )
   const markTile = (e, rowIndex, colIndex) => {
     e.preventDefault();
-    let updatedGame = CopyCurrentGame(currentGame);
+    let updatedGame = copyCurrentGame(currentGame);
     if (currentGame[rowIndex][colIndex] === fillState.empty) {
       updatedGame[rowIndex][colIndex] = fillState.marked;
     } else if (currentGame[rowIndex][colIndex] === fillState.marked) {
@@ -177,68 +154,17 @@ export const PicrossProvider = ({ gameSolution }) => {
     return updatedGame;
   }
 
-  // Succeeding:
-  // Lives reset to game start value
-  // Board reset to blank
-
-  // Failing:
-  // Zero lines failing to be redrawn
-  // GameComplete messgae still displaying
-  const restartGame = () => {
-    // currentGame as-is when game ended
-    setCurrentGame(CreateCurrentGame(gameSolution));
-    // currentGame STILL as-is when game ended, even after setCurrentGame
-
-    // Dependent on currentGame, not resetting as currentGame isn't resetting
-    setGameComplete(checkGameComplete(gameSolution, currentGame));
-
-    // Non-dependent on currentGame, so resets correctly
-    setLives(CreateLives(gameSolution));
-  }
-
   return (
     <>
       {lives === 0 && (
-        <GameOver restartGame={restartGame} />
+        <GameOver resetGame={resetGame} />
       )}
 
       <Board currentGame={currentGame} gameSolution={gameSolution} lives={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
 
       {gameComplete && (
-        <GameComplete lives={lives} restartGame={restartGame} />
+        <GameComplete lives={lives} resetGame={resetGame} />
       )}
     </>
   );
-}
-
-/* ---- Create / Copy currentGame  */
-/* Used only by PicrossProvider */
-const CreateLives = (gameSolution) => {
-  // Set starting  based on the longest dimension of the board
-  let longestDimension = gameSolution.length <= gameSolution[0].length ? gameSolution.length : gameSolution[0].length;
-  let lives = Math.ceil(longestDimension / 2);
-  return lives;
-}
-
-const CreateCurrentGame = (gameSolution) => {
-  let currentGame = [];
-  for (let i = 0; i < gameSolution.length; i++) {
-    currentGame[i] = [];
-    for (let j = 0; j < gameSolution[i].length; j++) {
-      currentGame[i][j] = fillState.empty;
-    }
-  }
-  return currentGame;
-}
-
-// A simple assignment failed to trigger a re-render due to the arrays referencing the same point in memory
-const CopyCurrentGame = (currentGame) => {
-  let gameCopy = [];
-  for (let i = 0; i < currentGame.length; i++) {
-    gameCopy[i] = [];
-    for (let j = 0; j < currentGame[i].length; j++) {
-      gameCopy[i][j] = currentGame[i][j];
-    }
-  }
-  return gameCopy;
 }
