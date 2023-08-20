@@ -1,9 +1,8 @@
 /* ---- Imports Section */
 import React, { useEffect, useState } from 'react';
 import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup';
-import { Board } from './board';
-import { checkLineComplete, checkGameComplete } from './checkComplete';
-import { getColumn } from './getBoardInfo';
+import { Board } from './boardDisplay/board';
+import { checkLineComplete, checkGameComplete, getColumn } from './getBoardInfo';
 import { GameOver } from './gameEndScreens/gameOver';
 import { GameComplete } from './gameEndScreens/gameComplete';
 /* End ---- */

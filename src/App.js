@@ -26,7 +26,7 @@ let gameSolution3 = [[false, true, true, false, true],
 function App() {
   return (
     <div className="App">
-      <PicrossProvider gameSolution={gameSolution3} />
+      <PicrossProvider gameSolution={gameSolution1} />
     </div>
   );
 }

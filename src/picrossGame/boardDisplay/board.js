@@ -1,6 +1,6 @@
 /* ---- Imports Section */
 import React from 'react';
-import { getColumn } from './getBoardInfo';
+import { getColumn } from '../getBoardInfo';
 import { Hints } from './hints';
 /* End ---- */
 
