@@ -25,11 +25,18 @@ export const hintState = {
 // TODO:
 // update look of the site; color scheme, life imgs, tile 'x' img
 
-// add ability to import game via hash / 'password'
 // add create game mode
 // add ability to export game made in create mode via hash / 'password'
+
+// add ability to import game via hash / 'password'
+// algorithim for stringifying puzzle solution
+// json stringify
+// own version to make hash smaller ?
+// give a single board dimension  & 0s / 1s
+// use width to read in sets of the hash as lines (# of lines read this way = the other dimension)
+
 // incorporate backend for saving games created with create mode
-// incorporate backend for saving game progress
+// incorporate backend for saving game progress, track completed puzzles
 
 // add other board sizes
 // update grid col / row count & tile sizes in react ?  or need classes for size differences ?
