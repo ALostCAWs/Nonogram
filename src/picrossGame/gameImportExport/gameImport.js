@@ -37,7 +37,7 @@ export const decodeGameHash = (gameHash) => {
 
   // Obtain the boards' width from the gameHash & remove it & the separater char from the string
   const spaceIndex = gameHash.indexOf('|');
-  const boardWidth = gameHash.charAt(spaceIndex - 1);
+  const boardWidth = gameHash.slice(0, spaceIndex);
   gameHash = gameHash.slice(spaceIndex + 1);
 
   // Use the boards' width to separate the remainder of the hash into strings of that length
