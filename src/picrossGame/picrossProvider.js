@@ -26,14 +26,12 @@ export const hintState = {
 // update look of the site; color scheme, life imgs, tile 'x' img
 
 // add create game mode
+// only needs to display empty board, no hints / lives
+// update a single array (gameSolution)
+// export button for when complete, confirm completion before export
 // add ability to export game made in create mode via hash / 'password'
 
-// add ability to import game via hash / 'password'
-// algorithim for stringifying puzzle solution
-// json stringify
-// own version to make hash smaller ?
-// give a single board dimension  & 0s / 1s
-// use width to read in sets of the hash as lines (# of lines read this way = the other dimension)
+// add ability to toggle tile fillMode & markupMode
 
 // incorporate backend for saving games created with create mode
 // incorporate backend for saving game progress, track completed puzzles
