@@ -1,7 +1,7 @@
 /* ---- Imports Section */
 import React, { useState } from 'react';
-import { PlayGame, importGame } from './picrossGame/gameImportExport/gameImport';
-import { CreateGame, exportGame } from './picrossGame/gameImportExport/gameExport';
+import { PlayGame, importGame } from './picross/gameImportExport/gameImport';
+import { CreateGame, exportGame } from './picross/gameImportExport/gameExport';
 import logo from './logo.svg';
 import './App.css';
 

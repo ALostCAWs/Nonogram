@@ -1,6 +1,6 @@
 
 /* ---- Imports Section */
-import { fillState } from './picrossProvider';
+import { fillState } from "./picrossProvider";
 /* End ---- */
 
 /* ---- Completion Check Functions  */

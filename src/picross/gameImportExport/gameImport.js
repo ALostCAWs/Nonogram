@@ -1,6 +1,6 @@
 /* ---- Imports Section */
 import React, { useState } from 'react';
-import { PicrossProvider } from '../picrossProvider';
+import { PicrossProvider } from '../playGame/picrossProvider';
 
 /* ---- Import Game via code entered into textbox on form */
 // Call PicrossProvider onSubmit
