@@ -1,6 +1,6 @@
 /* ---- Imports Section */
 import React, { useState, useEffect } from 'react';
-import { PicrossProvider } from '../picrossProvider';
+import { PicrossProvider } from '../playGame/picrossProvider';
 
 /* ---- Create Game by providing user with a blank board & allowing them to toggle tile fillState.filled */
 // Call exportGame on submit

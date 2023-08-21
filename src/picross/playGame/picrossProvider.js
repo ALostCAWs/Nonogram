@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup';
 import { Board } from './boardDisplay/board';
 import { checkLineComplete, checkGameComplete, getColumn } from './getBoardInfo';
-import { GameOver } from './gameEndScreens/gameOver';
-import { GameComplete } from './gameEndScreens/gameComplete';
+import { GameOver } from './endScreens/gameOver';
+import { GameComplete } from './endScreens/gameComplete';
 /* End ---- */
 
 /* ---- Enums for state */
