@@ -21,7 +21,7 @@ export const ImportGame = () => {
     <>
       {!submit ? (
         <form action='' id='enterPuzzleCode'>
-          <label for='puzzleCode'>Enter Code: </label>
+          <label htmlFor='puzzleCode'>Enter Code: </label>
           <input type='text' id='puzzleCode' name='puzzleCode' value={puzzleCode} onChange={handleChange} />
           <button type='button' id='submit' name='submit' onClick={() => handleSubmit()}>Play Puzzle</button>
         </form>
@@ -33,8 +33,27 @@ export const ImportGame = () => {
 }
 
 export const decodeGameHash = (gameHash) => {
-  const gameSolution = JSON.parse(atob(gameHash));
   console.log(gameHash);
-  console.log(gameSolution);
+
+  // Obtain the boards' width from the gameHash & remove it & the separater char from the string
+  const spaceIndex = gameHash.indexOf('|');
+  const boardWidth = gameHash.charAt(spaceIndex - 1);
+  gameHash = gameHash.slice(spaceIndex + 1);
+
+  // Use the boards' width to separate the remainder of the hash into strings of that length
+  const hashRows = gameHash.match(new RegExp(`.{1,${boardWidth}}`, 'g'));
+
+  // Build gameSolution as a 2D array
+  // Each newly-separated string in hashRows represents a row on the borad, height / columns are not needed to generate the gameSolution
+  let gameSolution = [];
+  for (let i = 0; i < hashRows.length; i++) {
+    let innerGameSolution = [];
+    let hashVal = hashRows[i].split('');
+    for (let i = 0; i < hashVal.length; i++) {
+      let fillable = hashVal[i] === '1' ? true : false;
+      innerGameSolution.push(fillable)
+    }
+    gameSolution.push(innerGameSolution);
+  }
   return gameSolution;
 }
