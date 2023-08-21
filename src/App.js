@@ -1,7 +1,7 @@
 /* ---- Imports Section */
 import React, { useState } from 'react';
-import { ImportGame, decodeGameHash } from './picrossGame/gameImportExport/gameImport';
-import { encodeGameHAsh } from './picrossGame/gameImportExport/gameExport';
+import { PlayGame, importGame } from './picrossGame/gameImportExport/gameImport';
+import { CreateGame, exportGame } from './picrossGame/gameImportExport/gameExport';
 import logo from './logo.svg';
 import './App.css';
 
@@ -27,9 +27,9 @@ function App() {
   const [playPuzzle, setPlayPuzzle] = useState(false);
   const [createPuzzle, setCreatePuzzle] = useState(false);
 
-  decodeGameHash(encodeGameHAsh(gameSolution1));
-  decodeGameHash(encodeGameHAsh(gameSolution2));
-  decodeGameHash(encodeGameHAsh(gameSolution3));
+  exportGame(gameSolution1);
+  exportGame(gameSolution2);
+  exportGame(gameSolution3);
   return (
     <div className="App">
       {!playPuzzle && !createPuzzle && (
@@ -39,10 +39,10 @@ function App() {
         </>
       )}
       {playPuzzle && (
-        <ImportGame />
+        <PlayGame />
       )}
       {createPuzzle && (
-        <ImportGame />
+        <CreateGame />
       )}
     </div>
   );

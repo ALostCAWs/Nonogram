@@ -4,7 +4,7 @@ import { PicrossProvider } from '../picrossProvider';
 
 /* ---- Import Game via code entered into textbox on form */
 // Call PicrossProvider onSubmit
-export const ImportGame = () => {
+export const PlayGame = () => {
   const [puzzleCode, setPuzzleCode] = useState('');
   const [submit, setSubmit] = useState(false);
 
@@ -13,7 +13,7 @@ export const ImportGame = () => {
     setPuzzleCode(e.target.value);
   }
   const handleSubmit = (e) => {
-    setPuzzleCode(decodeGameHash(puzzleCode));
+    setPuzzleCode(importGame(puzzleCode));
     setSubmit(true);
   }
 
@@ -32,12 +32,13 @@ export const ImportGame = () => {
   );
 }
 
-export const decodeGameHash = (gameHash) => {
+export const importGame = (gameHash) => {
   console.log(gameHash);
 
   // Obtain the boards' width from the gameHash & remove it & the separater char from the string
   const spaceIndex = gameHash.indexOf('|');
-  const boardWidth = gameHash.charAt(spaceIndex - 1);
+  const boardWidth = gameHash.slice(0, spaceIndex);
+  console.log(boardWidth);
   gameHash = gameHash.slice(spaceIndex + 1);
 
   // Use the boards' width to separate the remainder of the hash into strings of that length
