@@ -1,7 +1,9 @@
 /* ---- Imports Section */
 import React, { useState } from 'react';
-import { PlayGame, importGame } from './picross/gameImportExport/gameImport';
-import { CreateGame, exportGame } from './picross/gameImportExport/gameExport';
+import { PlayGame } from './picross/playGame/playGame';
+import { CreateGame } from './picross/createGame/createGame';
+import { importGame } from './picross/gameImportExport/importGame';
+import { exportGame } from './picross/gameImportExport/exportGame';
 import logo from './logo.svg';
 import './App.css';
 
