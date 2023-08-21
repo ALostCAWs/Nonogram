@@ -1,11 +1,14 @@
 /* ---- Imports Section */
 import React, { useState } from 'react';
+// Components
 import { PlayGame } from './picross/playGame/playGame';
 import { CreateGame } from './picross/createGame/createGame';
+// Functions
 import { importGame } from './picross/gameImportExport/importGame';
 import { exportGame } from './picross/gameImportExport/exportGame';
 import logo from './logo.svg';
 import './App.css';
+/* End ---- */
 
 let gameSolution1 = [[true, true, true, true, true],
 [false, true, true, false, false],

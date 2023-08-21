@@ -1,26 +1,14 @@
 /* ---- Imports Section */
 import React, { useEffect, useState } from 'react';
-import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup';
+import { fillState, hintState } from '../state/state';
+// Components
 import { Board } from './boardDisplay/board';
-import { checkLineComplete, checkGameComplete, getColumn } from './getBoardInfo';
-import { GameOver } from './endScreens/gameOver';
 import { GameComplete } from './endScreens/gameComplete';
+import { GameOver } from './endScreens/gameOver';
+// Functions
+import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup';
+import { checkLineComplete, checkGameComplete, getColumn } from './getBoardInfo';
 /* End ---- */
-
-/* ---- Enums for state */
-export const fillState = {
-  empty: '',
-  filled: 'filled',
-  error: 'error',
-  marked: 'marked',
-  complete: 'marked complete'
-};
-export const hintState = {
-  incomplete: '',
-  fullLineIncomplete: 'fullLineIncomplete',
-  zero: 'zeroHint',
-  complete: 'completeHint'
-};
 
 // TODO:
 // update look of the site; color scheme, life imgs, tile 'x' img

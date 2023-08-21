@@ -1,7 +1,10 @@
 /* ---- Imports Section */
 import React from 'react';
-import { getColumn } from '../getBoardInfo';
+// Components
+import { Tile } from '../../tile/tile';
 import { Hints } from './hints';
+// Functions
+import { getColumn } from '../getBoardInfo';
 /* End ---- */
 
 export const Board = ({ currentGame, gameSolution, lives, fillTile, markTile, hoverTile }) => {
@@ -39,14 +42,6 @@ export const Board = ({ currentGame, gameSolution, lives, fillTile, markTile, ho
         )}
       </div>
     </div>
-  );
-}
-
-// Tiles are only aware of their fillState & coords.
-// When they're clicked, they tell the picross provider their coords. & the game array is updated
-const Tile = ({ fill, rowIndex, colIndex, fillTile, markTile, hoverTile }) => {
-  return (
-    <div className={`tile ${fill}`} onClick={e => fillTile(e, rowIndex, colIndex)} onContextMenu={e => markTile(e, rowIndex, colIndex)} onMouseEnter={e => hoverTile(e, rowIndex, colIndex)} onMouseLeave={e => hoverTile(e, rowIndex, colIndex)}></div>
   );
 }
 

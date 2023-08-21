@@ -1,7 +1,10 @@
 /* ---- Imports Section */
 import React, { useState, useEffect } from 'react';
+// Components
+import { CreateGameProvider } from './createGameProvider';
+// Functions
 import { exportGame } from '../gameImportExport/exportGame';
-import { PicrossProvider } from '../playGame/picrossProvider';
+/* End ---- */
 
 /* ---- Create Game by providing user with a blank board & allowing them to toggle tile fillState.filled */
 // Call exportGame on submit
@@ -27,6 +30,7 @@ export const CreateGame = () => {
 
   return (
     <>
+      <CreateGameProvider />
     </>
   );
 }

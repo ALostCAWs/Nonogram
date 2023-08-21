@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import { fillState } from './picrossProvider';
+import { fillState } from '../state/state';
 import { getColumn } from './getBoardInfo';
 /* End ---- */
 
