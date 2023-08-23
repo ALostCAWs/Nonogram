@@ -1,6 +1,6 @@
 /* ---- Imports Section */
 import React from 'react';
-import { fillState, hintState } from '../picrossProvider';
+import { fillState, hintState } from '../state';
 /* End ---- */
 
 /* ---- Hint Text Display */

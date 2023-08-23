@@ -1,9 +1,14 @@
 /* ---- Imports Section */
 import React, { useState } from 'react';
-import { ImportGame, decodeGameHash } from './picrossGame/gameImportExport/gameImport';
-import { encodeGameHAsh } from './picrossGame/gameImportExport/gameExport';
+// Components
+import { PlayGame } from './picross/playGame/playGame';
+import { CreateGameProvider } from './picross/createGame/createGameProvider';
+// Functions
+import { importGame } from './picross/gameImportExport/importGame';
+import { exportGame } from './picross/gameImportExport/exportGame';
 import logo from './logo.svg';
 import './App.css';
+/* End ---- */
 
 let gameSolution1 = [[true, true, true, true, true],
 [false, true, true, false, false],
@@ -27,9 +32,9 @@ function App() {
   const [playPuzzle, setPlayPuzzle] = useState(false);
   const [createPuzzle, setCreatePuzzle] = useState(false);
 
-  decodeGameHash(encodeGameHAsh(gameSolution1));
-  decodeGameHash(encodeGameHAsh(gameSolution2));
-  decodeGameHash(encodeGameHAsh(gameSolution3));
+  exportGame(gameSolution1);
+  exportGame(gameSolution2);
+  exportGame(gameSolution3);
   return (
     <div className="App">
       {!playPuzzle && !createPuzzle && (
@@ -39,10 +44,10 @@ function App() {
         </>
       )}
       {playPuzzle && (
-        <ImportGame />
+        <PlayGame />
       )}
       {createPuzzle && (
-        <ImportGame />
+        <CreateGameProvider />
       )}
     </div>
   );

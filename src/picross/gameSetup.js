@@ -1,6 +1,6 @@
 /* ---- Imports Section */
-import { fillState } from './picrossProvider';
-import { getColumn } from './getBoardInfo';
+import { fillState } from './state';
+import { getColumn } from './playGame/getBoardInfo';
 /* End ---- */
 
 /* ---- Initial Game Setup Functions */
