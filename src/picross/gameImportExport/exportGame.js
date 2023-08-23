@@ -9,5 +9,6 @@ export const exportGame = (gameSolution) => {
       gameHash += hashItem;
     }
   }
+  console.log(gameHash);
   return gameHash;
 }

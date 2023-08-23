@@ -1,12 +1,12 @@
 /* ---- Imports Section */
 import React, { useEffect, useState } from 'react';
-import { fillState, hintState } from '../state/state';
+import { fillState, hintState } from '../state';
 // Components
-import { Board } from './boardDisplay/board';
+import { Board } from '../boardDisplay/board';
 import { GameComplete } from './endScreens/gameComplete';
 import { GameOver } from './endScreens/gameOver';
 // Functions
-import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup';
+import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from '../gameSetup';
 import { checkLineComplete, checkGameComplete, getColumn } from './getBoardInfo';
 /* End ---- */
 

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 // Components
 import { PlayGame } from './picross/playGame/playGame';
-import { CreateGame } from './picross/createGame/createGame';
+import { CreateGameProvider } from './picross/createGame/createGameProvider';
 // Functions
 import { importGame } from './picross/gameImportExport/importGame';
 import { exportGame } from './picross/gameImportExport/exportGame';
@@ -47,7 +47,7 @@ function App() {
         <PlayGame />
       )}
       {createPuzzle && (
-        <CreateGame />
+        <CreateGameProvider />
       )}
     </div>
   );

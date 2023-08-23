@@ -1,6 +1,6 @@
 
 /* ---- Imports Section */
-import { fillState } from "../state/state";
+import { fillState } from "../state";
 /* End ---- */
 
 /* ---- Completion Check Functions  */

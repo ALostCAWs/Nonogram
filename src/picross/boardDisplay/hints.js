@@ -1,6 +1,6 @@
 /* ---- Imports Section */
 import React from 'react';
-import { fillState, hintState } from '../../state/state';
+import { fillState, hintState } from '../state';
 /* End ---- */
 
 /* ---- Hint Text Display */

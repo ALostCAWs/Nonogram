@@ -1,10 +1,76 @@
 /* ---- Imports Section */
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { fillState } from '../state';
+// Components
+import { Board } from '../boardDisplay/board';
+// Functions
+import { exportGame } from '../gameImportExport/exportGame';
+import { copyCurrentGame } from '../gameSetup';
 /* End ---- */
 
-export const CreateGameProvider = ({ gameSolution }) => {
+/* ---- Create Game by providing user with a blank board & allowing them to toggle tile fillState.filled */
+// Call exportGame on submit
+export const CreateGameProvider = () => {
+  const boardHeight = 5;
+  const boardWidth = 5;
+
+  const [currentGame, setCurrentGame] = useState(createBlankGame(boardHeight, boardWidth));
+  const [puzzleCode, setPuzzleCode] = useState('');
+  const [submit, setSubmit] = useState(false);
+
+  useEffect(() => {
+    console.log(currentGame);
+  }, [currentGame]);
+
+  /* <- Handle Puzzle Submission -> */
+  const handleSubmit = (e) => {
+    setPuzzleCode(exportGame(puzzleCode));
+    setSubmit(true);
+    // Take user to page where they can copy their puzzles' code after exporting
+    // Include copy button
+  }
+
+  /* ---- Tile Interaction Functions */
+  // R-click to toggle fillState filled / empty
+  const fillTile = (e, rowIndex, colIndex) => {
+    let updatedGame = copyCurrentGame(currentGame);
+    if (currentGame[rowIndex][colIndex] === fillState.empty) {
+      updatedGame[rowIndex][colIndex] = fillState.filled;
+    } else if (currentGame[rowIndex][colIndex] === fillState.filled) {
+      updatedGame[rowIndex][colIndex] = fillState.empty;
+    }
+    setCurrentGame(updatedGame);
+  }
+  // Add submit button under provider
   return (
     <>
+      <Board currentGame={currentGame} fillTile={fillTile} />
+      <button type='button' className='export button' onClick={() => createBoolGame(currentGame)}>Export</button>
     </>
   );
+}
+
+const createBlankGame = (boardHeight, boardWidth) => {
+  let blankGame = [];
+  for (let i = 0; i < boardHeight; i++) {
+    let blankRow = [];
+    for (let j = 0; j < boardWidth; j++) {
+      blankRow.push(fillState.empty);
+    }
+    blankGame.push(blankRow);
+  }
+  return blankGame;
+}
+
+const createBoolGame = (currentGame) => {
+  let gameSolution = [];
+  for (let i = 0; i < currentGame.length; i++) {
+    let rowSolution = [];
+    for (let j = 0; j < currentGame[0].length; j++) {
+      let filled = currentGame[i][j] === fillState.filled ? true : false;
+      rowSolution.push(filled);
+    }
+    gameSolution.push(rowSolution);
+  }
+  exportGame(gameSolution);
 }
