@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { fillState } from '../state';
 // Components
+import App from '../../App';
 import { Board } from '../boardDisplay/board';
 // Functions
 import { exportGame } from '../gameImportExport/exportGame';
@@ -22,14 +23,6 @@ export const CreateGameProvider = () => {
     console.log(currentGame);
   }, [currentGame]);
 
-  /* <- Handle Puzzle Submission -> */
-  const handleSubmit = (e) => {
-    setPuzzleCode(exportGame(puzzleCode));
-    setSubmit(true);
-    // Take user to page where they can copy their puzzles' code after exporting
-    // Include copy button
-  }
-
   /* ---- Tile Interaction Functions */
   // R-click to toggle fillState filled / empty
   const fillTile = (e, rowIndex, colIndex) => {
@@ -48,8 +41,21 @@ export const CreateGameProvider = () => {
   // Add submit button under provider
   return (
     <>
-      <Board currentGame={currentGame} fillTile={fillTile} />
-      <button type='button' className='export button' onClick={() => createBoolGame(currentGame)}>Export</button>
+      {!submit && (
+        <>
+        <Board currentGame={currentGame} fillTile={fillTile} />
+        <button type='button' className='export button' onClick={() => {
+          let gameHash = createBoolGame(currentGame);
+          navigator.clipboard.writeText(gameHash);
+          setSubmit(true);
+        }}>Export</button>
+        </>
+      )}
+      {submit &&(
+        <>
+          <App />
+        </>
+      )}
     </>
   );
 }
@@ -76,5 +82,5 @@ const createBoolGame = (currentGame) => {
     }
     gameSolution.push(rowSolution);
   }
-  exportGame(gameSolution);
+  return exportGame(gameSolution);
 }
