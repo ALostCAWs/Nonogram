@@ -13,13 +13,7 @@ import { checkLineComplete, checkGameComplete, getColumn } from './getBoardInfo'
 // TODO:
 // update look of the site; color scheme, life imgs, tile 'x' img
 
-// add create game mode
-// only needs to display empty board, no hints / lives
-// update a single array (gameSolution)
-// export button for when complete, confirm completion before export
-// add ability to export game made in create mode via hash / 'password'
-
-// add ability to toggle tile fillMode & markupMode
+// add ability to toggle between tile fillMode & markupMode ( rather than R-click / L-click )
 
 // incorporate backend for saving games created with create mode
 // incorporate backend for saving game progress, track completed puzzles
