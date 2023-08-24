@@ -8,6 +8,7 @@ import { getColumn } from '../playGame/getBoardInfo';
 /* End ---- */
 
 export const Board = ({ currentGame, gameSolution = undefined, lives = undefined, fillTile, markTile, hoverTile }) => {
+  console.log(currentGame);
   // Decouple tiles from board by mapping within return rather than for looping in useEffect
   if (lives !== undefined) {
     lives = [...Array(lives).keys()];

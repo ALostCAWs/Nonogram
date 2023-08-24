@@ -44,8 +44,7 @@ export const PicrossProvider = ({ gameSolution }) => {
   // useEffect triggers on gameComplete change to call set any zero lines to fillState.error
   // Ensures zero lines are filled correctly when puzzle reset
   useEffect(() => {
-    let updatedGame = checkZeroLines(copyCurrentGame(currentGame), gameSolution);
-    setCurrentGame(updatedGame);
+    setCurrentGame(game => checkZeroLines(game, gameSolution));
   }, [gameComplete]);
 
   // useEffect triggers on gameSolution change to call resetGame
@@ -66,11 +65,11 @@ export const PicrossProvider = ({ gameSolution }) => {
   /* ---- Tile Interaction Functions */
   // R-click to attempt fill, fillState.filled & fillState.error are not removable
   const fillTile = (e, rowIndex, colIndex) => {
-    let updatedGame = copyCurrentGame(currentGame);
     if (currentGame[rowIndex][colIndex] !== fillState.empty) {
       return;
     }
     if (gameSolution[rowIndex][colIndex]) {
+      let updatedGame = copyCurrentGame(currentGame);
       updatedGame[rowIndex][colIndex] = fillState.filled;
 
       // Check if filling the tile completed the column and / or row it's in
@@ -88,23 +87,37 @@ export const PicrossProvider = ({ gameSolution }) => {
       if (colLineComplete && rowLineComplete) {
         setGameComplete(checkGameComplete(gameSolution, updatedGame));
       }
+      setCurrentGame(updatedGame);
     } else {
       // Upon error, reduce lives
-      updatedGame[rowIndex][colIndex] = fillState.error;
-      setLives(lives - 1);
+      setCurrentGame(game => {
+        return game.map((row, i) => {
+          return row.map((fill, j) => {
+            if (rowIndex === i && colIndex === j) {
+              return fillState.error;
+            } else {
+              return fill;
+            }
+          });
+        });
+      });
+      setLives(currentLives => currentLives - 1);
     }
-    setCurrentGame(updatedGame);
   }
   // L-click to mark ( used as a removable penalty-free reference )
   const markTile = (e, rowIndex, colIndex) => {
     e.preventDefault();
-    let updatedGame = copyCurrentGame(currentGame);
-    if (currentGame[rowIndex][colIndex] === fillState.empty) {
-      updatedGame[rowIndex][colIndex] = fillState.marked;
-    } else if (currentGame[rowIndex][colIndex] === fillState.marked) {
-      updatedGame[rowIndex][colIndex] = fillState.empty;
-    }
-    setCurrentGame(updatedGame);
+    setCurrentGame(game => {
+      return game.map((row, i) => {
+        return row.map((fill, j) => {
+          if (rowIndex === i && colIndex === j) {
+            return fill === fillState.empty ? fillState.marked : fillState.empty;
+          } else {
+            return fill;
+          }
+        });
+      });
+    });
   }
   // Hovering over a tile highlights it & its' corresponding column / row hints
   const hoverTile = (e, rowIndex, colIndex) => {
