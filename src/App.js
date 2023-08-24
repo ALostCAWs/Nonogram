@@ -28,7 +28,7 @@ let gameSolution3 = [[false, true, true, false, true],
 [false, true, true, false, false],
 [false, true, false, false, false]];
 
-function App() {
+const App = () => {
   const [playPuzzle, setPlayPuzzle] = useState(false);
   const [createPuzzle, setCreatePuzzle] = useState(false);
 
