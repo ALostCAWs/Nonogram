@@ -33,13 +33,17 @@ export const CreateGameProvider = () => {
   /* ---- Tile Interaction Functions */
   // R-click to toggle fillState filled / empty
   const fillTile = (e, rowIndex, colIndex) => {
-    let updatedGame = copyCurrentGame(currentGame);
-    if (currentGame[rowIndex][colIndex] === fillState.empty) {
-      updatedGame[rowIndex][colIndex] = fillState.filled;
-    } else if (currentGame[rowIndex][colIndex] === fillState.filled) {
-      updatedGame[rowIndex][colIndex] = fillState.empty;
-    }
-    setCurrentGame(updatedGame);
+    setCurrentGame(game => {
+      return game.map((row, i) => {
+        return row.map((fill, j) => {
+          if (rowIndex === i && colIndex === j) {
+            return fill === fillState.empty ? fillState.filled : fillState.empty;
+          } else {
+            return fill;
+          }
+        });
+      });
+    });
   }
   // Add submit button under provider
   return (
