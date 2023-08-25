@@ -14,6 +14,7 @@ import { checkLineComplete, checkGameComplete, getColumn } from './getBoardInfo'
 // update look of the site; color scheme, life imgs, tile 'x' img
 
 // add ability to toggle between tile fillMode & markupMode ( rather than R-click / L-click )
+// add click & drag fill / mark ability
 
 // incorporate backend for saving games created with create mode
 // incorporate backend for saving game progress, track completed puzzles
@@ -21,9 +22,13 @@ import { checkLineComplete, checkGameComplete, getColumn } from './getBoardInfo'
 // add other board sizes
 // update grid col / row count & tile sizes in react ?  or need classes for size differences ?
 
+// sanitize user inputs - board dimension in puzzle code, no all-0 puzzles imported or exported
+
 // play game & create game mode
-// create allows user to fill in an empty picross board & save it as a puzzle to be played
-// requires a back end or hash of some kind to load the created game solution as a puzzle
+// browse puzzles, store if user completed them
+// create mode - add buttons in place of hints to fill / unfill all tiles in that row / col
+
+// difficulty rating, algorithm to determine a puzzles' difficulty & give it a star rating /5 (backend)
 
 // Knows the gameSolution ( can be passed to board, maybe not needed though )
 // Secondary currentGame, same size as gameSolution, manages the users' progress
