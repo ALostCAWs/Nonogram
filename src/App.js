@@ -40,6 +40,19 @@ const App = () => {
       {!playPuzzle && !createPuzzle && (
         <>
           <button type='button' className='playPuzzle button' onClick={() => setPlayPuzzle(true)}>Play</button>
+
+          <select name="height" id="height">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
+          <select name="width" id="width">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
           <button type='button' className='createPuzzle button' onClick={() => setCreatePuzzle(true)}>Create</button>
         </>
       )}

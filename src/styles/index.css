@@ -104,16 +104,27 @@ body {
 /* ---- Board & Tile ---- */
 .board {
   display: grid;
-  grid-template-columns: repeat(5, auto);
-  grid-template-rows: repeat(5, auto);
 
   justify-items: stretch;
   justify-content: space-evenly;
 
   gap: 1px;
-
-  height: var(--board-height);
-  width: var(--board-width);
+}
+.col5 {
+  grid-template-columns: repeat(5, auto);
+  width: var(--board-height);
+}
+.col10 {
+  grid-template-columns: repeat(10, auto);
+  width: calc(var(--board-height) * 2);
+}
+.col15 {
+  grid-template-columns: repeat(15, auto);
+  width: calc(var(--board-height) * 3);
+}
+.col10 {
+  grid-template-columns: repeat(20, auto);
+  width: calc(var(--board-height) * 4);
 }
 
 .tile {
