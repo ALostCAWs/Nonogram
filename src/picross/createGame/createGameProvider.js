@@ -15,7 +15,7 @@ export const CreateGameProvider = ({ boardHeight, boardWidth }) => {
   console.log(boardHeight);
   console.log(boardWidth);
   const [currentGame, setCurrentGame] = useState(createBlankGame(boardHeight, boardWidth));
-  const [puzzleCode, setPuzzleCode] = useState('');
+  //const [puzzleCode, setPuzzleCode] = useState('');
   const [submit, setSubmit] = useState(false);
 
   useEffect(() => {
@@ -61,9 +61,9 @@ export const CreateGameProvider = ({ boardHeight, boardWidth }) => {
 
 const createBlankGame = (boardHeight, boardWidth) => {
   let blankGame = [];
-  for (let i = 0; i < boardWidth; i++) {
+  for (let i = 0; i < boardHeight; i++) {
     let blankRow = [];
-    for (let j = 0; j < boardHeight; j++) {
+    for (let j = 0; j < boardWidth; j++) {
       blankRow.push(fillState.empty);
     }
     blankGame.push(blankRow);

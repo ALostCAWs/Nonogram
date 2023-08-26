@@ -7,7 +7,7 @@ import { getColumn } from './playGame/getBoardInfo';
 /* ---- Create lives  */
 export const createLives = (gameSolution) => {
   // Set starting  based on the longest dimension of the board
-  let longestDimension = gameSolution.length <= gameSolution[0].length ? gameSolution.length : gameSolution[0].length;
+  let longestDimension = gameSolution.length >= gameSolution[0].length ? gameSolution.length : gameSolution[0].length;
   let lives = Math.ceil(longestDimension / 2);
   return lives;
 }

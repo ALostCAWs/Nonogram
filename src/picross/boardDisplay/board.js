@@ -8,13 +8,29 @@ import { getColumn } from '../playGame/getBoardInfo';
 /* End ---- */
 
 export const Board = ({ currentGame, gameSolution = undefined, lives = undefined, fillTile, markTile, hoverTile }) => {
-  console.log(currentGame);
   // Decouple tiles from board by mapping within return rather than for looping in useEffect
+  console.log(currentGame);
+  let longestDimension = currentGame.length >= currentGame[0].length ? currentGame.length : currentGame[0].length;
+  console.log(longestDimension);
+
+  let sizeClassName = '';
+  switch (true) {
+    case (longestDimension > 15):
+      sizeClassName = 'large';
+      break;
+    case (longestDimension > 10):
+      sizeClassName = 'medium';
+      break;
+    default:
+      sizeClassName = 'small';
+      break;
+  }
+
   if (lives !== undefined) {
     lives = [...Array(lives).keys()];
   }
   return (
-    <div className='boardContainer'>
+    <div className={`${sizeClassName}BoardContainer`}>
       {gameSolution && (
         <>
           <div className='colHintContainer' key='colHintContainer'>

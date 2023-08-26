@@ -40,6 +40,10 @@
   /* <- Grid & Tiles -> */
   --tile-height: 75px;
   --tile-width: 75px;
+  --tile-height-MBoard: calc(var(--tile-height) - 10px);
+  --tile-width-MBoard: calc(var(--tile-height) - 10px);
+  --tile-height-LBoard: calc(var(--tile-height) - 25px);
+  --tile-width-LBoard: calc(var(--tile-height) - 25px);
 
   --boardContainer-height: calc(var(--tile-height) * 6);
   --boardContainer-width: calc(var(--tile-width) * 6);
@@ -93,10 +97,26 @@ body {
 }
 
 /* ---- BOARD CONTAINER ---- */
-.boardContainer {
+.smallBoardContainer {
   display: grid;
   grid-template-columns: calc(var(--tile-height) + 3px) auto;
   grid-template-rows: calc(var(--tile-height) + 1px) auto calc(var(--tile-height) + 1px);
+
+  margin: auto;
+  width: var(--boardContainer-width);
+}
+.mediumBoardContainer {
+  display: grid;
+  grid-template-columns: calc(var(--tile-height-MBoard) + 3px) auto;
+  grid-template-rows: calc(var(--tile-height-MBoard) + 1px) auto calc(var(--tile-height-MBoard) + 1px);
+
+  margin: auto;
+  width: var(--boardContainer-width);
+}
+.largeBoardContainer {
+  display: grid;
+  grid-template-columns: calc(var(--tile-height-LBoard) + 3px) auto;
+  grid-template-rows: calc(var(--tile-height-LBoard) + 1px) auto calc(var(--tile-height-LBoard) + 1px);
 
   margin: auto;
   width: var(--boardContainer-width);
@@ -143,11 +163,20 @@ body {
   height: calc(var(--board-height) * 4);
 }
 
-
 .tile {
+  background-color: var(--tile-color);
+}
+.smallBoardContainer .tile {
   height: var(--tile-width);
   width: var(--tile-width);
-  background-color: var(--tile-color);
+}
+.mediumBoardContainer .tile {
+  height: var(--tile-width-MBoard);
+  width: var(--tile-width-MBoard);
+}
+.largeBoardContainer .tile {
+  height: var(--tile-width-LBoard);
+  width: var(--tile-width-LBoard);
 }
 .tile:hover {
   outline: var(--tile-hover-border);
