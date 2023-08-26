@@ -35,7 +35,7 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
         </>
       )}
 
-      <div className={`board col${currentGame.length}`}>
+      <div className={`board col${currentGame[0].length} row${currentGame.length}`}>
         {currentGame.map((row, i) =>
           row.map((col, j) =>
             <Tile key={`${i} - ${j}`} fill={currentGame[i][j]} rowIndex={i} colIndex={j} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />

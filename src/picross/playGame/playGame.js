@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 // Components
 import { PicrossProvider } from '../playGame/picrossProvider';
 // Functions
@@ -9,29 +9,27 @@ import { importGame } from '../gameImportExport/importGame';
 /* ---- Import Game via code entered into textbox on form */
 // Call PicrossProvider onSubmit
 export const PlayGame = () => {
-  const [puzzleCode, setPuzzleCode] = useState('');
   const [submit, setSubmit] = useState(false);
+  const gameCode = useRef();
+  const gameSolution = useRef();
 
   /* <- Handle Input Changes & Form Submission -> */
-  const handleChange = (e) => {
-    setPuzzleCode(e.target.value);
-  }
   const handleSubmit = (e) => {
-    setPuzzleCode(importGame(puzzleCode));
+    gameSolution.current = importGame(gameCode.current.value);
     setSubmit(true);
   }
 
   return (
     <>
       {!submit ? (
-        <form action='' id='enterPuzzleCode'>
-          <label htmlFor='puzzleCode'>Enter Code: </label>
-          <input type='text' id='puzzleCode' name='puzzleCode' value={puzzleCode} onChange={handleChange} />
+        <form action='' id='enterGameCode'>
+          <label htmlFor='gameCode'>Enter Code: </label>
+          <input type='text' id='gameCode' name='gameCode' ref={gameCode} />
           <button type='button' id='submit' name='submit' onClick={() => handleSubmit()}>Play Puzzle</button>
         </form>
       ) : (
-        <PicrossProvider gameSolution={puzzleCode} />)
-      }
+          <PicrossProvider gameSolution={gameSolution.current} />
+      )}
     </>
   );
 }

@@ -41,12 +41,10 @@ export const checkZeroLines = (updatedGame, gameSolution) => {
   // Find zero hint lines ( rows and/or columns ) & pass to functions to set fillState.error
   for (let i = 0; i < gameSolution.length; i++) {
     let col = new Set(getColumn(gameSolution, i));
+    let row = new Set(gameSolution[i]);
     if (col.size === 1 && col.has(false)) {
       setTileColZero(i, updatedGame);
     }
-  }
-  for (let i = 0; i < gameSolution[0].length; i++) {
-    let row = new Set(gameSolution[i]);
     if (row.size === 1 && row.has(false)) {
       setTileRowZero(i, updatedGame);
     }

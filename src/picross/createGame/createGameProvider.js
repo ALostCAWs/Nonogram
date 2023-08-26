@@ -11,10 +11,9 @@ import { copyCurrentGame } from '../gameSetup';
 
 /* ---- Create Game by providing user with a blank board & allowing them to toggle tile fillState.filled */
 // Call exportGame on submit
-export const CreateGameProvider = () => {
-  const boardHeight = 5;
-  const boardWidth = 5;
-
+export const CreateGameProvider = ({ boardHeight, boardWidth }) => {
+  console.log(boardHeight);
+  console.log(boardWidth);
   const [currentGame, setCurrentGame] = useState(createBlankGame(boardHeight, boardWidth));
   const [puzzleCode, setPuzzleCode] = useState('');
   const [submit, setSubmit] = useState(false);
@@ -62,9 +61,9 @@ export const CreateGameProvider = () => {
 
 const createBlankGame = (boardHeight, boardWidth) => {
   let blankGame = [];
-  for (let i = 0; i < boardHeight; i++) {
+  for (let i = 0; i < boardWidth; i++) {
     let blankRow = [];
-    for (let j = 0; j < boardWidth; j++) {
+    for (let j = 0; j < boardHeight; j++) {
       blankRow.push(fillState.empty);
     }
     blankGame.push(blankRow);
