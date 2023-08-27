@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 // Components
 import { PlayGame } from './picross/playGame/playGame';
 import { CreateGameProvider } from './picross/createGame/createGameProvider';
@@ -31,6 +31,8 @@ let gameSolution3 = [[false, true, true, false, true],
 const App = () => {
   const [playPuzzle, setPlayPuzzle] = useState(false);
   const [createPuzzle, setCreatePuzzle] = useState(false);
+  const boardHeight = useRef();
+  const boardWidth = useRef();
 
   exportGame(gameSolution1);
   exportGame(gameSolution2);
@@ -41,13 +43,13 @@ const App = () => {
         <>
           <button type='button' className='playPuzzle button' onClick={() => setPlayPuzzle(true)}>Play</button>
 
-          <select name="height" id="height">
+          <select name="height" id="height" ref={boardHeight}>
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="15">15</option>
             <option value="20">20</option>
           </select>
-          <select name="width" id="width">
+          <select name="width" id="width" ref={boardWidth}>
             <option value="5">5</option>
             <option value="10">10</option>
             <option value="15">15</option>
@@ -60,7 +62,7 @@ const App = () => {
         <PlayGame />
       )}
       {createPuzzle && (
-        <CreateGameProvider />
+        <CreateGameProvider boardHeight={boardHeight.current.value} boardWidth={boardWidth.current.value} />
       )}
     </div>
   );

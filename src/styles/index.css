@@ -36,19 +36,6 @@
   --h3: calc(var(--h4) * var(--type-scale));
   --h2: calc(var(--h3) * var(--type-scale));
   --h1: calc(var(--h2) * var(--type-scale));
-
-  /* <- Grid & Tiles -> */
-  --tile-height: 75px;
-  --tile-width: 75px;
-
-  --boardContainer-height: calc(var(--tile-height) * 6);
-  --boardContainer-width: calc(var(--tile-width) * 6);
-
-  --board-height: calc(var(--tile-height) * 5);
-  --board-width: calc(var(--tile-width) * 5);
-
-  --life-height: calc(var(--tile-height) * .8);
-  --life-width: calc(var(--tile-height) * .8);
 }
 
 /* <- Reset, Border-Box, & Font-Var-Set -> */
@@ -63,24 +50,30 @@ html,
 body {
   overflow-x: hidden;
   max-width: 100%;
+  height: 100vh;
 }
 
 /* <- Typescale --> */
 h1 {
   font-size: var(--h1);
 }
+
 h2 {
   font-size: var(--h2);
 }
+
 h3 {
   font-size: var(--h3);
 }
+
 h4 {
   font-size: var(--h4);
 }
+
 h5 {
   font-size: var(--h5);
 }
+
 p {
   font-size: var(--base-size);
 }
@@ -91,56 +84,49 @@ body {
   color: var(--font-color);
 }
 
+.picross {
+  display: flex;
+  justify-content: center;
+}
+
 /* ---- BOARD CONTAINER ---- */
 .boardContainer {
   display: grid;
-  grid-template-columns: calc(var(--tile-height) + 3px) var(--board-width);
-  grid-template-rows: calc(var(--tile-height) + 1px) var(--board-height) calc(var(--tile-height) + 1px);
+  grid-template-columns: repeat(2, fit-content(50%));
+  grid-template-rows: repeat(3, auto);
 
-  margin: auto;
-  width: var(--boardContainer-width);
+  height: auto;
+  /*width: auto;*/
 }
 
 /* ---- Board & Tile ---- */
 .board {
+  grid-column: 2 / -1;
+  grid-row: 2 / -2;
+
   display: grid;
+  gap: .05rem;
 
-  justify-items: stretch;
-  justify-content: space-evenly;
-
-  gap: 1px;
-}
-.col5 {
-  grid-template-columns: repeat(5, auto);
-  width: var(--board-height);
-}
-.col10 {
-  grid-template-columns: repeat(10, auto);
-  width: calc(var(--board-height) * 2);
-}
-.col15 {
-  grid-template-columns: repeat(15, auto);
-  width: calc(var(--board-height) * 3);
-}
-.col10 {
-  grid-template-columns: repeat(20, auto);
-  width: calc(var(--board-height) * 4);
+  height: auto;
+  width: auto;
 }
 
 .tile {
-  height: var(--tile-width);
-  width: var(--tile-width);
   background-color: var(--tile-color);
 }
+
 .tile:hover {
   outline: var(--tile-hover-border);
 }
+
 .filled {
   background-color: var(--fill-color);
 }
+
 .error {
   background-color: var(--error-color);
 }
+
 .marked {
   background-color: var(--mark-color);
 }
@@ -149,27 +135,16 @@ body {
 /* .colHintContainer & rowHintContainers' grid-row/column rule enforces top-left portion of grid to be blank */
 .colHintContainer {
   display: grid;
-  grid-template-columns: repeat(5, var(--tile-width));
-  grid-template-rows: repeat(1, var(--tile-width));
+  grid-auto-flow: column;
   grid-column: 2 / -1;
-
-  justify-content: space-evenly;
-
-  gap: 1px;
-
-  height: var(--tile-width);
-  width: var(--board-width);
+  gap: .05rem;
 }
+
 .rowHintContainer {
+  justify-self: end;
   display: grid;
-  grid-template-columns: repeat(1, var(--tile-width));
-  grid-template-rows: repeat(5, var(--tile-height));
-  grid-row: 2 / -1;
-
-  gap: 1px;
-
-  height: var(--board-height);
-  width: var(--tile-width);
+  grid-row: 2 / -2;
+  gap: .05rem;
 }
 
 .colHints {
@@ -178,11 +153,10 @@ body {
   justify-content: flex-end;
   align-items: center;
 
-  height: var(--tile-width);
-  width: var(--tile-width);
   /* add gradient light top, dark bottom */
   background-color: var(--hint-tile-color);
 }
+
 .rowHints {
   display: flex;
   flex-direction: row;
@@ -190,18 +164,19 @@ body {
   justify-content: flex-end;
   align-items: center;
 
-  height: var(--tile-width);
-  width: var(--tile-width);
   /* add gradient light left, dark right*/
   background-color: var(--hint-tile-color);
 }
 
-.colHints>div {
+/*.colHints>div {
   height: 33%;
 }
+
 .rowHints>div {
   width: 33%;
 }
+
+*/
 
 .hoverHint {
   background-color: var(--hint-hover-color);
@@ -211,35 +186,39 @@ body {
   font-weight: bold;
   color: var(--hint-fullLine-txt-color);
 }
+
 .zeroHint {
   font-weight: bold;
   color: var(--error-color);
 }
+
 .completeHint {
   color: var(--mark-color);
 }
 
 /* ---- Lives ---- */
 .livesContainer {
-  grid-column: 2 / -1;
+  grid-column: 1 / -1;
 
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
 
-  margin-top: 10px;
-  height: var(--life-height);
-  width: var(--board-width);
+  margin-top: 15px;
+  width: auto;
 }
 
 .life {
-  margin-left: 15px;
+  margin-top: 10px;
+  margin-left: 10px;
   height: var(--life-height);
   width: var(--life-width);
   background-color: var(--life-color);
 }
 
 /* ---- Game Complete ---- */
-.gameComplete, .gameOver>div {
+.gameComplete,
+.gameOver>div {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -254,7 +233,7 @@ body {
   width: 100%;
 
   background: rgb(28, 28, 28);
-  background: linear-gradient(180deg, rgba(28, 28, 28, 0.436) 0%, rgba(255,255,255,1) 100%);
+  background: linear-gradient(180deg, rgba(28, 28, 28, 0.436) 0%, rgba(255, 255, 255, 1) 100%);
 }
 
 .gameOver>div {
