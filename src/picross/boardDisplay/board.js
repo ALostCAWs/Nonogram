@@ -14,15 +14,19 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
   console.log(longestDimension);
 
   let sizeClassName = '';
+  let tileSize = 75;
   switch (true) {
     case (longestDimension > 15):
       sizeClassName = 'large';
+      tileSize = 30;
       break;
     case (longestDimension > 10):
       sizeClassName = 'medium';
+      tileSize = 40;
       break;
     default:
       sizeClassName = 'small';
+      tileSize = 60;
       break;
   }
 
@@ -30,51 +34,53 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
     lives = [...Array(lives).keys()];
   }
   return (
-    <div className={`${sizeClassName}BoardContainer`}>
-      {gameSolution && (
-        <>
-          <div className='colHintContainer' key='colHintContainer'>
-            {gameSolution.map((row, i) =>
-              <div key={`colHintCollection${i}`} className={`colHints colHint${i}`}>
-                <Hints lineGameSolution={getColumn(gameSolution, i)} currentLineGame={getColumn(currentGame, i)} lineIndex={i} />
-              </div>
-            )}
-          </div>
+    <div className='picross'>
+      <div className={`boardContainer ${sizeClassName}BoardContainer`}>
+        {gameSolution && (
+          <>
+            <div className='colHintContainer' key='colHintContainer' style={{ gridTemplateColumns: `repeat(${currentGame[0].length}, auto)` }}>
+              {gameSolution.map((row, i) =>
+                <div key={`colHintCollection${i}`} className={`colHints colHint${i}`} style={{ height: tileSize, width: tileSize }}>
+                  <Hints lineGameSolution={getColumn(gameSolution, i)} currentLineGame={getColumn(currentGame, i)} lineIndex={i} />
+                </div>
+              )}
+            </div>
 
-          <div className='rowHintContainer' key='rowHintContainer'>
-            {gameSolution.map((row, i) =>
-              <div key={`rowHintCollection${i}`} className={`rowHints rowHint${i}`}>
-                <Hints lineGameSolution={row} currentLineGame={currentGame[i]} lineIndex={i} />
-              </div>
-            )}
-          </div>
-        </>
-      )}
+            <div className='rowHintContainer' key='rowHintContainer' style={{ gridTemplateRows: `repeat(${currentGame.length}, auto)` }}>
+              {gameSolution.map((row, i) =>
+                <div key={`rowHintCollection${i}`} className={`rowHints rowHint${i}`} style={{ height: tileSize, width: tileSize }}>
+                  <Hints lineGameSolution={row} currentLineGame={currentGame[i]} lineIndex={i} />
+                </div>
+              )}
+            </div>
+          </>
+        )}
 
-      <div className={`board col${currentGame[0].length} row${currentGame.length}`}>
-        {currentGame.map((row, i) =>
-          row.map((col, j) =>
-            <Tile key={`${i} - ${j}`} fill={currentGame[i][j]} rowIndex={i} colIndex={j} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
-          )
+        <div className='board' style={{ gridTemplateColumns: `repeat(${currentGame.length}, auto)` }}>
+          {currentGame.map((row, i) =>
+            row.map((col, j) =>
+              <Tile key={`${i} - ${j}`} fill={currentGame[i][j]} rowIndex={i} colIndex={j} tileSize={tileSize} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
+            )
+          )}
+        </div>
+
+        {lives && (
+          <>
+            <div className='livesContainer'>
+              {lives.map((life, i) =>
+                <Life key={`Life ${i + 1}`} tileSize={tileSize} />
+              )}
+            </div>
+          </>
         )}
       </div>
-
-      {lives && (
-        <>
-          <div className='livesContainer'>
-            {lives.map((life, i) =>
-              <Life key={`Life ${i + 1}`} />
-            )}
-          </div>
-        </>
-      )}
     </div>
   );
 }
 
 // Displays one life counter element per life remaining
-const Life = () => {
+const Life = ({ tileSize }) => {
   return (
-    <div className='life'></div>
+    <div className='life' style={{ height: tileSize, width: tileSize }}></div>
   );
 }
