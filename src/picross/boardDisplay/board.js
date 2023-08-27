@@ -4,28 +4,32 @@ import React from 'react';
 import { Tile } from './tile';
 import { Hints } from './hints';
 // Functions
-import { getColumn } from '../playGame/getBoardInfo';
+import { getColumn, getGameByColumn } from '../playGame/getBoardInfo';
 /* End ---- */
 
 export const Board = ({ currentGame, gameSolution = undefined, lives = undefined, fillTile, markTile, hoverTile }) => {
   // Decouple tiles from board by mapping within return rather than for looping in useEffect
-  console.log(currentGame);
-  let longestDimension = currentGame.length >= currentGame[0].length ? currentGame.length : currentGame[0].length;
-  console.log(longestDimension);
+  let currentGameByColumn = getGameByColumn(currentGame);
+  let gameSolutionByColumn = [];
+  if (gameSolution) {
+    gameSolutionByColumn = getGameByColumn(gameSolution);
+  }
 
-  let sizeClassName = '';
+  let boardContainerColCount = 2;
+  let longestDimension = currentGame.length >= currentGame[0].length ? currentGame.length : currentGame[0].length;
+  if (longestDimension === currentGame.length) {
+    boardContainerColCount++;
+  }
+
   let tileSize = 75;
   switch (true) {
     case (longestDimension > 15):
-      sizeClassName = 'large';
       tileSize = 30;
       break;
     case (longestDimension > 10):
-      sizeClassName = 'medium';
       tileSize = 40;
       break;
     default:
-      sizeClassName = 'small';
       tileSize = 60;
       break;
   }
@@ -33,22 +37,27 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
   if (lives !== undefined) {
     lives = [...Array(lives).keys()];
   }
+
+  for (let i = 0; i < currentGameByColumn.length; i++) {
+    console.log(currentGameByColumn[i]);
+  }
+
   return (
     <div className='picross'>
-      <div className={`boardContainer ${sizeClassName}BoardContainer`}>
+      <div className='boardContainer' style={{ width: tileSize * (currentGame[0].length + 1) }}>
         {gameSolution && (
           <>
-            <div className='colHintContainer' key='colHintContainer' style={{ gridTemplateColumns: `repeat(${currentGame[0].length}, auto)` }}>
-              {gameSolution.map((row, i) =>
-                <div key={`colHintCollection${i}`} className={`colHints colHint${i}`} style={{ height: tileSize, width: tileSize }}>
-                  <Hints lineGameSolution={getColumn(gameSolution, i)} currentLineGame={getColumn(currentGame, i)} lineIndex={i} />
+            <div className='colHintContainer' key='colHintContainer' style={{ gridTemplateColumns: `repeat(${currentGame[0].length}, 1fr)` }}>
+              {gameSolutionByColumn.map((row, i) =>
+                <div key={`colHintCollection${i}`} className={`colHints colHint${i}`} style={{ height: 75, width: tileSize }}>
+                  <Hints lineGameSolution={gameSolutionByColumn[i]} currentLineGame={currentGameByColumn[i]} lineIndex={i} />
                 </div>
               )}
             </div>
 
-            <div className='rowHintContainer' key='rowHintContainer' style={{ gridTemplateRows: `repeat(${currentGame.length}, auto)` }}>
+            <div className='rowHintContainer' key='rowHintContainer' style={{ gridTemplateRows: `repeat(${currentGame.length}, 1fr)` }}>
               {gameSolution.map((row, i) =>
-                <div key={`rowHintCollection${i}`} className={`rowHints rowHint${i}`} style={{ height: tileSize, width: tileSize }}>
+                <div key={`rowHintCollection${i}`} className={`rowHints rowHint${i}`} style={{ height: tileSize, width: 75 }}>
                   <Hints lineGameSolution={row} currentLineGame={currentGame[i]} lineIndex={i} />
                 </div>
               )}
@@ -56,7 +65,7 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
           </>
         )}
 
-        <div className='board' style={{ gridTemplateColumns: `repeat(${currentGame.length}, auto)` }}>
+        <div className='board' style={{ gridTemplateColumns: `repeat(${currentGame[0].length}, 1fr)` }}>
           {currentGame.map((row, i) =>
             row.map((col, j) =>
               <Tile key={`${i} - ${j}`} fill={currentGame[i][j]} rowIndex={i} colIndex={j} tileSize={tileSize} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />

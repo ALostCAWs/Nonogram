@@ -96,7 +96,7 @@ body {
   grid-template-rows: repeat(3, auto);
 
   height: auto;
-  width: auto;
+  /*width: auto;*/
 }
 
 /* ---- Board & Tile ---- */
@@ -105,7 +105,7 @@ body {
   grid-row: 2 / -2;
 
   display: grid;
-  gap: 1px;
+  gap: .05rem;
 
   height: auto;
   width: auto;
@@ -137,16 +137,14 @@ body {
   display: grid;
   grid-auto-flow: column;
   grid-column: 2 / -1;
-
-  gap: 1px;
+  gap: .05rem;
 }
 
 .rowHintContainer {
   justify-self: end;
   display: grid;
   grid-row: 2 / -2;
-
-  gap: 1px;
+  gap: .05rem;
 }
 
 .colHints {
@@ -155,8 +153,6 @@ body {
   justify-content: flex-end;
   align-items: center;
 
-  height: var(--tile-width);
-  width: var(--tile-width);
   /* add gradient light top, dark bottom */
   background-color: var(--hint-tile-color);
 }
@@ -168,8 +164,6 @@ body {
   justify-content: flex-end;
   align-items: center;
 
-  height: var(--tile-width);
-  width: var(--tile-width);
   /* add gradient light left, dark right*/
   background-color: var(--hint-tile-color);
 }
@@ -202,18 +196,19 @@ body {
 
 /* ---- Lives ---- */
 .livesContainer {
-  grid-column: 2 / -1;
+  grid-column: 1 / -1;
 
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
 
-  margin-top: 10px;
-  height: var(--life-height);
+  margin-top: 15px;
   width: auto;
 }
 
 .life {
-  margin-left: 15px;
+  margin-top: 10px;
+  margin-left: 10px;
   height: var(--life-height);
   width: var(--life-width);
   background-color: var(--life-color);

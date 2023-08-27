@@ -39,3 +39,14 @@ export const getColumn = (inputGame, colIndex) => {
   }
   return column;
 }
+
+export const getGameByColumn = (inputGame) => {
+  console.log(inputGame);
+  let gameByColumn = [];
+  for (let i = 0; i < inputGame[0].length; i++) {
+    let column = getColumn(inputGame, i);
+    gameByColumn.push(column);
+  }
+  console.log(gameByColumn);
+  return gameByColumn;
+}
