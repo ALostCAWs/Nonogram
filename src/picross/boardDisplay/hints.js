@@ -7,10 +7,13 @@ import { fillState, hintState } from '../state';
 // Check if . . .
 // Individual hint = gameHeight (col) gameWidth (row) & set to fullHint
 // Hint array for a given col / row empty & set to zeroHint
-export const Hints = ({ lineGameSolution, currentLineGame, lineIndex }) => {
+export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCount, lineType }) => {
   let hints = [];
   let hintCount = 0;
   let currentTilesInHintGameState = [];
+
+  console.log(lineType);
+  console.log(maxHintCount);
 
   for (let j = 0; j < lineGameSolution.length; j++) {
     let solution = lineGameSolution[j];
@@ -53,7 +56,16 @@ export const Hints = ({ lineGameSolution, currentLineGame, lineIndex }) => {
   }
   return (
     <>
-      {hints.map((hint, i) => <div key={`hint${lineIndex} - ${i}`} className={`${hint.state}`}>{hint.value}</div>)}
+      {lineType === 'col' && (
+        <>
+          {hints.map((hint, i) => <div key={`hint${lineIndex} - ${i}`} className={`${hint.state}`} style={{ height: `${100 / maxHintCount}%` }}>{hint.value}</div>)}
+        </>
+      )}
+      {lineType === 'row' && (
+        <>
+          {hints.map((hint, i) => <div key={`hint${lineIndex} - ${i}`} className={`${hint.state}`} style={{ width: `${100 / maxHintCount}%` }}>{hint.value}</div>)}
+        </>
+      )}
     </>
   );
 }

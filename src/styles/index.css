@@ -168,13 +168,15 @@ body {
   background-color: var(--hint-tile-color);
 }
 
-.colHints>div {
+/*.colHints>div {
   height: 33%;
 }
 
 .rowHints>div {
   width: 33%;
 }
+
+*/
 
 .hoverHint {
   background-color: var(--hint-hover-color);

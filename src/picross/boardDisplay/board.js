@@ -15,13 +15,15 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
     gameSolutionByColumn = getGameByColumn(gameSolution);
   }
 
-  let boardContainerColCount = 2;
   let longestDimension = currentGame.length >= currentGame[0].length ? currentGame.length : currentGame[0].length;
-  if (longestDimension === currentGame.length) {
-    boardContainerColCount++;
-  }
+  const maxHintCountByLineLength = {
+    5: 3,
+    10: 5,
+    15: 8,
+    20: 10
+  };
 
-  let tileSize = 75;
+  let tileSize = 300;
   switch (true) {
     case (longestDimension > 15):
       tileSize = 30;
@@ -38,27 +40,23 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
     lives = [...Array(lives).keys()];
   }
 
-  for (let i = 0; i < currentGameByColumn.length; i++) {
-    console.log(currentGameByColumn[i]);
-  }
-
   return (
     <div className='picross'>
       <div className='boardContainer' style={{ width: tileSize * (currentGame[0].length + 1) }}>
         {gameSolution && (
           <>
             <div className='colHintContainer' key='colHintContainer' style={{ gridTemplateColumns: `repeat(${currentGame[0].length}, 1fr)` }}>
-              {gameSolutionByColumn.map((row, i) =>
-                <div key={`colHintCollection${i}`} className={`colHints colHint${i}`} style={{ height: 75, width: tileSize }}>
-                  <Hints lineGameSolution={gameSolutionByColumn[i]} currentLineGame={currentGameByColumn[i]} lineIndex={i} />
+              {gameSolutionByColumn.map((line, i) =>
+                <div key={`colHintCollection${i}`} className={`colHints colHint${i}`} style={{ height: line.length * 12, width: tileSize }}>
+                  <Hints lineGameSolution={gameSolutionByColumn[i]} currentLineGame={currentGameByColumn[i]} lineIndex={i} maxHintCount={maxHintCountByLineLength[line.length]} lineType={'col'} />
                 </div>
               )}
             </div>
 
             <div className='rowHintContainer' key='rowHintContainer' style={{ gridTemplateRows: `repeat(${currentGame.length}, 1fr)` }}>
-              {gameSolution.map((row, i) =>
-                <div key={`rowHintCollection${i}`} className={`rowHints rowHint${i}`} style={{ height: tileSize, width: 75 }}>
-                  <Hints lineGameSolution={row} currentLineGame={currentGame[i]} lineIndex={i} />
+              {gameSolution.map((line, i) =>
+                <div key={`rowHintCollection${i}`} className={`rowHints rowHint${i}`} style={{ height: tileSize, width: line.length * 12 }}>
+                  <Hints lineGameSolution={line} currentLineGame={currentGame[i]} lineIndex={i} maxHintCount={maxHintCountByLineLength[line.length]} lineType={'row'} />
                 </div>
               )}
             </div>
