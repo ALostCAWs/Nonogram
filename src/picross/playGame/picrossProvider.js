@@ -1,6 +1,6 @@
 /* ---- Imports Section */
-import React, { useEffect, useState } from 'react';
-import { fillState, hintState } from '../state';
+import React, { useState, useEffect, createContext } from 'react';
+import { fillState } from '../state';
 // Components
 import { Board } from '../boardDisplay/board';
 import { GameComplete } from './endScreens/gameComplete';
@@ -13,32 +13,29 @@ import { checkLineComplete, checkGameComplete, getColumn } from './getBoardInfo'
 // TODO:
 // update look of the site; color scheme, life imgs, tile 'x' img
 
-// add ability to toggle between tile fillMode & markupMode ( rather than R-click / L-click )
-// add click & drag fill / mark ability
-
-// incorporate backend for saving games created with create mode
 // incorporate backend for saving game progress, track completed puzzles
-
-// add other board sizes
-// update grid col / row count & tile sizes in react ?  or need classes for size differences ?
-
-// sanitize user inputs - board dimension in puzzle code, no all-0 puzzles imported or exported
 
 // play game & create game mode
 // browse puzzles, store if user completed them
-// create mode - add buttons in place of hints to fill / unfill all tiles in that row / col
-
-// difficulty rating, algorithm to determine a puzzles' difficulty & give it a star rating /5 (backend)
 
 // Knows the gameSolution ( can be passed to board, maybe not needed though )
 // Secondary currentGame, same size as gameSolution, manages the users' progress
-// Tiles use callbacks to functions within when onClick / onContextMenu
+// Sets the FillModeContext, which is used to dictate which function the Tile components use as their onClick callback functions
+// Tiles use callbacks to functions within when onClick
 // When tile filled, PicrossProvider checks for column / row completion
 // currentGame passed to Board, making Board purely for displaying
+
+export const FillModeContext = createContext(null);
 export const PicrossProvider = ({ gameSolution }) => {
+  const [fillMode, setFillMode] = useState();
   const [currentGame, setCurrentGame] = useState(createCurrentGame(gameSolution));
   const [lives, setLives] = useState(createLives(gameSolution));
   const [gameComplete, setGameComplete] = useState(checkGameComplete(gameSolution, currentGame));
+
+  /* useEffect ---- Game Setup / Change / Complete */
+  useEffect(() => {
+    setFillMode(true);
+  }, []);
 
   // useEffect triggers on gameComplete change to call set any zero lines to fillState.error
   // Ensures zero lines are filled correctly when puzzle reset
@@ -51,7 +48,8 @@ export const PicrossProvider = ({ gameSolution }) => {
     resetGame();
   }, [gameSolution]);
 
-  // Reset currentGame, lives, & gameComplete
+  /* Functions ---- */
+  /* ---- Game Setup / Change / Complete */
   const resetGame = () => {
     // Using resetGame in place of currentGame to avoid initialization issues
     // Pre-resetGame currentGame was being used still after creating a fresh currentGame, preventing gameComplete value from updating on retry game start
@@ -61,7 +59,12 @@ export const PicrossProvider = ({ gameSolution }) => {
     setGameComplete(checkGameComplete(gameSolution, resetGame));
   }
 
-  /* ---- Tile Interaction Functions */
+  /* ---- Toggle Fill Mode */
+  const toggleFillMode = () => {
+    setFillMode(currentMode => !currentMode);
+  }
+
+  /* ---- Tile Interaction */
   // R-click to attempt fill, fillState.filled & fillState.error are not removable
   const fillTile = (e, rowIndex, colIndex) => {
     if (currentGame[rowIndex][colIndex] !== fillState.empty) {
@@ -164,11 +167,15 @@ export const PicrossProvider = ({ gameSolution }) => {
         <GameOver resetGame={resetGame} />
       )}
 
-      <Board currentGame={currentGame} gameSolution={gameSolution} lives={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
+      <FillModeContext.Provider value={fillMode}>
+        <Board currentGame={currentGame} gameSolution={gameSolution} lives={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
+      </FillModeContext.Provider>
 
       {gameComplete && (
         <GameComplete lives={lives} resetGame={resetGame} />
       )}
+      <button type='button' className='fillModeButton toggleFillMode button' onClick={() => toggleFillMode()} disabled={fillMode}>Fill</button>
+      <button type='button' className='markModeButton toggleFillMode button' onClick={() => toggleFillMode()} disabled={!fillMode}>Mark</button>
     </>
   );
 }
