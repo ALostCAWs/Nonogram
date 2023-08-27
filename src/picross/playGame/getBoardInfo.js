@@ -51,6 +51,11 @@ export const getGameByColumn = (inputGame) => {
   return gameByColumn;
 }
 
+/* ---- Longest Dimension */
+export const getLongestDimension = (inputGame) => {
+  return inputGame.length >= inputGame[0].length ? inputGame.length : inputGame[0].length;
+}
+
 /* ---- Max Number of Hints */
 // Based on the length of the line
 export const getMaxHintCountByLineLength = (lineLength) => {

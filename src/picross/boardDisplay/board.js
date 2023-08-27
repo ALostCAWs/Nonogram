@@ -4,7 +4,7 @@ import React from 'react';
 import { Tile } from './tile';
 import { Hints } from './hints';
 // Functions
-import { getGameByColumn, getMaxHintCountByLineLength } from '../playGame/getBoardInfo';
+import { getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from '../playGame/getBoardInfo';
 /* End ---- */
 
 export const Board = ({ currentGame, gameSolution = undefined, lives = undefined, fillTile, markTile, hoverTile }) => {
@@ -17,7 +17,7 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
     picrossPaddingRight = currentGame[0].length * 12
   }
 
-  let longestDimension = currentGame.length >= currentGame[0].length ? currentGame.length : currentGame[0].length;
+  let longestDimension = getLongestDimension(currentGame);
   let tileSize = 300;
   switch (true) {
     case (longestDimension > 15):
