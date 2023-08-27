@@ -11,12 +11,13 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
   // Decouple tiles from board by mapping within return rather than for looping in useEffect
   let currentGameByColumn = getGameByColumn(currentGame);
   let gameSolutionByColumn = [];
+  let picrossPaddingRight = 0;
   if (gameSolution) {
     gameSolutionByColumn = getGameByColumn(gameSolution);
+    picrossPaddingRight = currentGame[0].length * 12
   }
 
   let longestDimension = currentGame.length >= currentGame[0].length ? currentGame.length : currentGame[0].length;
-
   let tileSize = 300;
   switch (true) {
     case (longestDimension > 15):
@@ -35,7 +36,7 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
   }
 
   return (
-    <div className='picross'>
+    <div className='picross' style={{ paddingRight: picrossPaddingRight }}>
       <div className='boardContainer' style={{ width: tileSize * (currentGame[0].length + 1) }}>
         {gameSolution && (
           <>
