@@ -4,7 +4,7 @@ import React from 'react';
 import { Tile } from './tile';
 import { Hints } from './hints';
 // Functions
-import { getColumn, getGameByColumn, getMaxHintCountByLineLength } from '../playGame/getBoardInfo';
+import { getGameByColumn, getMaxHintCountByLineLength } from '../playGame/getBoardInfo';
 /* End ---- */
 
 export const Board = ({ currentGame, gameSolution = undefined, lives = undefined, fillTile, markTile, hoverTile }) => {

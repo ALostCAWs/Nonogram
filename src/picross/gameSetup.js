@@ -39,7 +39,7 @@ export const copyCurrentGame = (currentGame) => {
 /* ---- Check / Set zero lines */
 export const checkZeroLines = (updatedGame, gameSolution) => {
   // Find zero hint lines ( rows and/or columns ) & pass to functions to set fillState.error
-  for (let i = 0; i < gameSolution.length; i++) {
+  for (let i = 0; i < gameSolution[0].length; i++) {
     let col = new Set(getColumn(gameSolution, i));
     let row = new Set(gameSolution[i]);
     if (col.size === 1 && col.has(false)) {
