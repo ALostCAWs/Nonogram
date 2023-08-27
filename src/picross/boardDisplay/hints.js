@@ -12,9 +12,6 @@ export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCou
   let hintCount = 0;
   let currentTilesInHintGameState = [];
 
-  console.log(lineType);
-  console.log(maxHintCount);
-
   for (let j = 0; j < lineGameSolution.length; j++) {
     let solution = lineGameSolution[j];
 

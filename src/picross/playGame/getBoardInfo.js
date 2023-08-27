@@ -50,3 +50,9 @@ export const getGameByColumn = (inputGame) => {
   console.log(gameByColumn);
   return gameByColumn;
 }
+
+/* ---- Max Number of Hints */
+// Based on the length of the line
+export const getMaxHintCountByLineLength = (lineLength) => {
+  return Math.ceil(lineLength / 2);
+}
