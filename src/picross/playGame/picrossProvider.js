@@ -6,8 +6,8 @@ import { Board } from '../boardDisplay/board';
 import { GameComplete } from './endScreens/gameComplete';
 import { GameOver } from './endScreens/gameOver';
 // Functions
-import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from '../gameSetup';
-import { checkLineComplete, checkGameComplete, getColumn } from './getBoardInfo';
+import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup';
+import { checkLineComplete, checkGameComplete, getColumn } from '../boardDisplay/getBoardInfo';
 /* End ---- */
 
 // TODO:

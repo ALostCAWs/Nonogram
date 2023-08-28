@@ -6,20 +6,19 @@ import App from '../../App';
 import { Board } from '../boardDisplay/board';
 // Functions
 import { exportGame } from '../gameImportExport/exportGame';
-import { copyCurrentGame } from '../gameSetup';
+import { checkGameBlank } from '../boardDisplay/getBoardInfo';
 /* End ---- */
 
 /* ---- Create Game by providing user with a blank board & allowing them to toggle tile fillState.filled */
 // Call exportGame on submit
 export const CreateGameProvider = ({ boardHeight, boardWidth }) => {
-  console.log(boardHeight);
-  console.log(boardWidth);
   const [currentGame, setCurrentGame] = useState(createBlankGame(boardHeight, boardWidth));
-  //const [puzzleCode, setPuzzleCode] = useState('');
   const [submit, setSubmit] = useState(false);
+  const [gameBlank, setGameBlank] = useState(true);
 
   useEffect(() => {
-    console.log(currentGame);
+    setGameBlank(checkGameBlank(currentGame));
+    console.log(gameBlank);
   }, [currentGame]);
 
   /* ---- Tile Interaction Functions */
@@ -47,7 +46,7 @@ export const CreateGameProvider = ({ boardHeight, boardWidth }) => {
           let gameHash = createBoolGame(currentGame);
           navigator.clipboard.writeText(gameHash);
           setSubmit(true);
-        }}>Export</button>
+          }} disabled={gameBlank}>Export</button>
         </>
       )}
       {submit &&(

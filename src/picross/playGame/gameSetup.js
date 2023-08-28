@@ -1,6 +1,6 @@
 /* ---- Imports Section */
-import { fillState } from './state';
-import { getColumn, getLongestDimension } from './playGame/getBoardInfo';
+import { fillState } from '../state';
+import { getColumn, getLongestDimension } from '../boardDisplay/getBoardInfo';
 /* End ---- */
 
 /* ---- Initial Game Setup Functions */
