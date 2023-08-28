@@ -17,7 +17,6 @@ export const PlayGame = () => {
   /* <- Handle Input Changes & Form Submission -> */
   const handleSubmit = (e) => {
     let errorMsg = '';
-    let validCode = false;
     gameSolution.current = importGame(gameCode.current.value);
 
     if (checkGameBlank(gameSolution.current)) {
@@ -27,7 +26,7 @@ export const PlayGame = () => {
       errorMsg += 'Invalid Code. Code entered results in an irregularly shaped puzzle.\n';
     }
 
-    if (validCode) {
+    if (errorMsg === '') {
       setSubmit(true);
     } else {
       alert(errorMsg);
