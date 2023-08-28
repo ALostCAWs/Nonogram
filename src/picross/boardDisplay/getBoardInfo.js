@@ -31,6 +31,41 @@ export const checkGameComplete = (gameSolution, updatedGame) => {
   return gameComplete;
 }
 
+/* ---- Validity Check Functions */
+export const checkGameBlank = (inputGame) => {
+  let gameBlank = true;
+  for (let i = 0; i < inputGame[0].length; i++) {
+    let col = new Set(getColumn(inputGame, i));
+    if (gameBlank && (col.has(fillState.filled) || col.has(true))) {
+      gameBlank = false;
+      break;
+    }
+    console.log(gameBlank);
+  }
+  for (let i = 0; i < inputGame.length; i++) {
+    let row = new Set(inputGame[i]);
+    if (gameBlank && (row.has(fillState.filled) || row.has(true))) {
+      gameBlank = false;
+      break;
+    }
+    console.log(gameBlank);
+  }
+  return gameBlank;
+}
+
+export const checkGameRectangular = (inputGame) => {
+  // Ensure all row lengths are equal to the length of the first row
+  let gameRectangular = true;
+  let rowLengthToEnforce = inputGame[0].length;
+  for (let i = 1; i < inputGame.length; i++) {
+    if (rowLengthToEnforce !== inputGame[i].length) {
+      gameRectangular = false;
+      break;
+    }
+  }
+  return gameRectangular;
+}
+
 /* ---- Get Column */
 export const getColumn = (inputGame, colIndex) => {
   let column = [];
