@@ -40,21 +40,24 @@ export const checkGameBlank = (inputGame) => {
       gameBlank = false;
       break;
     }
-    console.log(gameBlank);
   }
-  for (let i = 0; i < inputGame.length; i++) {
-    let row = new Set(inputGame[i]);
-    if (gameBlank && (row.has(fillState.filled) || row.has(true))) {
-      gameBlank = false;
-      break;
+  // If game already found to be not blank, prevent further checking
+  if (!gameBlank) {
+    for (let i = 0; i < inputGame.length; i++) {
+      let row = new Set(inputGame[i]);
+      if (gameBlank && (row.has(fillState.filled) || row.has(true))) {
+        gameBlank = false;
+        break;
+      }
     }
-    console.log(gameBlank);
   }
   return gameBlank;
 }
 
 export const checkGameRectangular = (inputGame) => {
   // Ensure all row lengths are equal to the length of the first row
+  // Only have to check against the first row due to the import method slicing row by row based on the given width
+  // Only have to check rows as unequal columns result in unequal rows & vice-versa
   let gameRectangular = true;
   let rowLengthToEnforce = inputGame[0].length;
   for (let i = 1; i < inputGame.length; i++) {
