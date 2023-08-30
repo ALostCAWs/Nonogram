@@ -7,7 +7,8 @@ import { fillState, hintState } from '../state';
 // Check if . . .
 // Individual hint = gameHeight (col) gameWidth (row) & set to fullHint
 // Hint array for a given col / row empty & set to zeroHint
-export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCount, lineType }) => {
+// All hints for a given line are complete, add completed class to parent div
+export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCount, lineType, updateHintClassName }) => {
   let hints = [];
   let hintCount = 0;
   let currentTilesInHintGameState = [];
@@ -51,6 +52,21 @@ export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCou
     }
     hints.push(hint);
   }
+
+  let allComplete = true;
+  for (let i = 0; i < hints.length; i++) {
+    if (hints[i].state !== hintState.complete && hints[i].state !== hintState.zero) {
+      allComplete = false;
+    }
+  }
+  if (allComplete) {
+    // Apply lineComplete class to parent
+    // useState method failed as it applies to all parents after 1+ lines are found to be complete
+    // Need method to apply to the partent of the hints being generated, specifically
+
+    // Move to PicrossProvider
+  }
+
   return (
     <>
       {lineType === 'col' && (
