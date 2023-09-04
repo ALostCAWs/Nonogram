@@ -7,7 +7,8 @@ import { fillState, hintState } from '../state';
 // Check if . . .
 // Individual hint = gameHeight (col) gameWidth (row) & set to fullHint
 // Hint array for a given col / row empty & set to zeroHint
-export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCount, lineType }) => {
+// All hints for a given line are complete, add completed class to parent div
+export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCount, lineType, updateHintClassName }) => {
   let hints = [];
   let hintCount = 0;
   let currentTilesInHintGameState = [];
@@ -51,6 +52,7 @@ export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCou
     }
     hints.push(hint);
   }
+
   return (
     <>
       {lineType === 'col' && (
