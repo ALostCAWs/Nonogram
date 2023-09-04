@@ -53,20 +53,6 @@ export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCou
     hints.push(hint);
   }
 
-  let allComplete = true;
-  for (let i = 0; i < hints.length; i++) {
-    if (hints[i].state !== hintState.complete && hints[i].state !== hintState.zero) {
-      allComplete = false;
-    }
-  }
-  if (allComplete) {
-    // Apply lineComplete class to parent
-    // useState method failed as it applies to all parents after 1+ lines are found to be complete
-    // Need method to apply to the partent of the hints being generated, specifically
-
-    // Move to PicrossProvider
-  }
-
   return (
     <>
       {lineType === 'col' && (

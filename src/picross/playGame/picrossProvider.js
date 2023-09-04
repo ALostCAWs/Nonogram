@@ -71,6 +71,8 @@ export const PicrossProvider = ({ gameSolution }) => {
       return;
     }
     if (gameSolution[rowIndex][colIndex]) {
+      const clickedRow = document.querySelector(`.rowHint${rowIndex}`);
+      const clickedCol = document.querySelector(`.colHint${colIndex}`);
       let updatedGame = copyCurrentGame(currentGame);
       updatedGame[rowIndex][colIndex] = fillState.filled;
 
@@ -80,9 +82,13 @@ export const PicrossProvider = ({ gameSolution }) => {
 
       // If line is complete, set all empty or marked tiles to complete
       if (colLineComplete) {
+        console.log('col complete');
+        clickedCol.classList.add('completeLineHint');
         updatedGame = setColComplete(updatedGame, colIndex);
       }
       if (rowLineComplete) {
+        console.log('row complete');
+        clickedRow.classList.add('completeLineHint');
         updatedGame = setRowComplete(updatedGame, rowIndex);
       }
       // Only need to check for game completion if both a column & row were completed by this tile being filled
