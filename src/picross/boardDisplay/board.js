@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import React from 'react';
+import React, { useState } from 'react';
 // Components
 import { Tile } from './tile';
 import { Hints } from './hints';
@@ -42,7 +42,7 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
           <>
             <div className='colHintContainer' key='colHintContainer' style={{ gridTemplateColumns: `repeat(${currentGame[0].length}, 1fr)` }}>
               {gameSolutionByColumn.map((line, i) =>
-                <div key={`colHintCollection${i}`} className={`colHints colHint${i}`} style={{ height: line.length * 12, width: tileSize }}>
+                <div key={`colHint${i}`} className={`colHints colHint${i}`} style={{ height: line.length * 12, width: tileSize }}>
                   <Hints lineGameSolution={gameSolutionByColumn[i]} currentLineGame={currentGameByColumn[i]} lineIndex={i} maxHintCount={getMaxHintCountByLineLength(line.length)} lineType={'col'} />
                 </div>
               )}
@@ -50,7 +50,7 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
 
             <div className='rowHintContainer' key='rowHintContainer' style={{ gridTemplateRows: `repeat(${currentGame.length}, 1fr)` }}>
               {gameSolution.map((line, i) =>
-                <div key={`rowHintCollection${i}`} className={`rowHints rowHint${i}`} style={{ height: tileSize, width: line.length * 12 }}>
+                <div key={`rowHint${i}`} className={`rowHints rowHint${i}`} style={{ height: tileSize, width: line.length * 12 }}>
                   <Hints lineGameSolution={line} currentLineGame={currentGame[i]} lineIndex={i} maxHintCount={getMaxHintCountByLineLength(line.length)} lineType={'row'} />
                 </div>
               )}
