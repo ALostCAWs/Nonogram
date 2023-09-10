@@ -1,14 +1,14 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
 // Components
-import { PicrossProvider } from '../playGame/picrossProvider';
+import { nonogramProvider } from '../playGame/nonogramProvider.js';
 // Functions
-import { importGame } from '../gameImportExport/importGame';
-import { checkGameBlank, checkGameRectangular } from '../boardDisplay/getBoardInfo';
+import { importGame } from '../gameImportExport/importGame.js';
+import { checkGameNotBlank, checkGameRectangular } from '../boardDisplay/getBoardInfo.js';
 /* End ---- */
 
 /* ---- Import Game via code entered into textbox on form */
-// Call PicrossProvider onSubmit
+// Call nonogramProvider onSubmit
 export const PlayGame = () => {
   const [submit, setSubmit] = useState(false);
   const gameCode = useRef();
@@ -19,7 +19,7 @@ export const PlayGame = () => {
     let errorMsg = '';
     gameSolution.current = importGame(gameCode.current.value);
 
-    if (checkGameBlank(gameSolution.current)) {
+    if (checkGameNotBlank(gameSolution.current)) {
       errorMsg += 'Invalid Code. Code entered results in a blank puzzle.\n';
     }
     if (!checkGameRectangular(gameSolution.current)) {
@@ -42,7 +42,7 @@ export const PlayGame = () => {
           <button type='button' id='submit' name='submit' onClick={() => handleSubmit()}>Play Puzzle</button>
         </form>
       ) : (
-          <PicrossProvider gameSolution={gameSolution.current} />
+          <nonogramProvider gameSolution={gameSolution.current} />
       )}
     </>
   );

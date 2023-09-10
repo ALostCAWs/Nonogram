@@ -1,20 +1,20 @@
 /* ---- Imports Section */
 import React, { useState } from 'react';
 // Components
-import { Tile } from './tile';
-import { Hints } from './hints';
+import { Tile } from './tile.js';
+import { Hints } from './hints.js';
 // Functions
-import { getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from './getBoardInfo';
+import { getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from './getBoardInfo.js';
 /* End ---- */
 
 export const Board = ({ currentGame, gameSolution = undefined, lives = undefined, fillTile, markTile, hoverTile }) => {
   // Decouple tiles from board by mapping within return rather than for looping in useEffect
   let currentGameByColumn = getGameByColumn(currentGame);
   let gameSolutionByColumn = [];
-  let picrossPaddingRight = 0;
+  let nonogramPaddingRight = 0;
   if (gameSolution) {
     gameSolutionByColumn = getGameByColumn(gameSolution);
-    picrossPaddingRight = currentGame[0].length * 12
+    nonogramPaddingRight = currentGame[0].length * 12
   }
 
   let longestDimension = getLongestDimension(currentGame);
@@ -36,7 +36,7 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
   }
 
   return (
-    <div className='picross' style={{ paddingRight: picrossPaddingRight }}>
+    <div className='nonogram' style={{ paddingRight: nonogramPaddingRight }}>
       <div className='boardContainer' style={{ width: tileSize * (currentGame[0].length + 1) }}>
         {gameSolution && (
           <>

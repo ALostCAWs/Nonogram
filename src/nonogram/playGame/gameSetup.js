@@ -1,6 +1,6 @@
 /* ---- Imports Section */
-import { fillState } from '../state';
-import { getColumn, getLongestDimension } from '../boardDisplay/getBoardInfo';
+import { fillState } from '../state.js';
+import { getColumn, getLongestDimension } from '../boardDisplay/getBoardInfo.js';
 /* End ---- */
 
 /* ---- Initial Game Setup Functions */
