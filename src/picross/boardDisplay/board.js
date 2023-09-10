@@ -1,10 +1,10 @@
 /* ---- Imports Section */
 import React, { useState } from 'react';
 // Components
-import { Tile } from './tile';
-import { Hints } from './hints';
+import { Tile } from './tile.js';
+import { Hints } from './hints.js';
 // Functions
-import { getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from './getBoardInfo';
+import { getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from './getBoardInfo.js';
 /* End ---- */
 
 export const Board = ({ currentGame, gameSolution = undefined, lives = undefined, fillTile, markTile, hoverTile }) => {

@@ -1,14 +1,24 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
 // Components
-import { PlayGame } from './picross/playGame/playGame';
-import { CreateGameProvider } from './picross/createGame/createGameProvider';
+import { PlayGame } from './picross/playGame/playGame.js';
+import { CreateGameProvider } from './picross/createGame/createGameProvider.js';
 // Functions
-import { importGame } from './picross/gameImportExport/importGame';
-import { exportGame } from './picross/gameImportExport/exportGame';
+import { getGameByColumn } from './picross/boardDisplay/getBoardInfo.js';
+import { importGame } from './picross/gameImportExport/importGame.js';
+import { exportGame } from './picross/gameImportExport/exportGame.js';
 import logo from './logo.svg';
 import './App.css';
 /* End ---- */
+
+const gameSolution5x5 = [[true, true, true, true, true],
+[false, true, true, false, false],
+[false, true, false, true, false],
+[false, true, true, false, false],
+[false, true, true, false, false]];
+let colGame = getGameByColumn(gameSolution5x5);
+console.log('colGame');
+console.log(colGame);
 
 let gameSolution1 = [[true, true, true, true, true],
 [false, true, true, false, false],

@@ -1,13 +1,13 @@
 /* ---- Imports Section */
 import React, { useState, useEffect, createContext } from 'react';
-import { fillState } from '../state';
+import { fillState } from '../state.js';
 // Components
-import { Board } from '../boardDisplay/board';
-import { GameComplete } from './endScreens/gameComplete';
-import { GameOver } from './endScreens/gameOver';
+import { Board } from '../boardDisplay/board.js';
+import { GameComplete } from './endScreens/gameComplete.js';
+import { GameOver } from './endScreens/gameOver.js';
 // Functions
-import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup';
-import { checkLineComplete, checkGameComplete, getColumn } from '../boardDisplay/getBoardInfo';
+import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup.js';
+import { checkLineComplete, checkGameComplete, getColumn } from '../boardDisplay/getBoardInfo.js';
 /* End ---- */
 
 // TODO:

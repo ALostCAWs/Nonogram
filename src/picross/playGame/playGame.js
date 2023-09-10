@@ -1,10 +1,10 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
 // Components
-import { PicrossProvider } from '../playGame/picrossProvider';
+import { PicrossProvider } from '../playGame/picrossProvider.js';
 // Functions
-import { importGame } from '../gameImportExport/importGame';
-import { checkGameBlank, checkGameRectangular } from '../boardDisplay/getBoardInfo';
+import { importGame } from '../gameImportExport/importGame.js';
+import { checkGameBlank, checkGameRectangular } from '../boardDisplay/getBoardInfo.js';
 /* End ---- */
 
 /* ---- Import Game via code entered into textbox on form */

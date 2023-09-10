@@ -1,12 +1,12 @@
 /* ---- Imports Section */
 import React, { useState, useEffect } from 'react';
-import { fillState } from '../state';
+import { fillState } from '../state.js';
 // Components
-import App from '../../App';
-import { Board } from '../boardDisplay/board';
+import App from '../../App.js';
+import { Board } from '../boardDisplay/board.js';
 // Functions
-import { exportGame } from '../gameImportExport/exportGame';
-import { checkGameBlank } from '../boardDisplay/getBoardInfo';
+import { exportGame } from '../gameImportExport/exportGame.js';
+import { checkGameBlank } from '../boardDisplay/getBoardInfo.js';
 /* End ---- */
 
 /* ---- Create Game by providing user with a blank board & allowing them to toggle tile fillState.filled */

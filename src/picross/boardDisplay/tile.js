@@ -1,6 +1,6 @@
 /* ---- Imports Section */
 import React, { useContext } from 'react';
-import { FillModeContext } from '../playGame/picrossProvider'
+import { FillModeContext } from '../playGame/picrossProvider.js'
 /* End ---- */
 
 // Tiles are only aware of their fillState & coords.
