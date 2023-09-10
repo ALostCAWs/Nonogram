@@ -1,14 +1,14 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
 // Components
-import { nonogramProvider } from '../playGame/nonogramProvider.js';
+import { NonogramProvider } from '../playGame/nonogramProvider.js';
 // Functions
 import { importGame } from '../gameImportExport/importGame.js';
 import { checkGameNotBlank, checkGameRectangular } from '../boardDisplay/getBoardInfo.js';
 /* End ---- */
 
 /* ---- Import Game via code entered into textbox on form */
-// Call nonogramProvider onSubmit
+// Call NonogramProvider onSubmit
 export const PlayGame = () => {
   const [submit, setSubmit] = useState(false);
   const gameCode = useRef();
@@ -42,7 +42,7 @@ export const PlayGame = () => {
           <button type='button' id='submit' name='submit' onClick={() => handleSubmit()}>Play Puzzle</button>
         </form>
       ) : (
-          <nonogramProvider gameSolution={gameSolution.current} />
+          <NonogramProvider gameSolution={gameSolution.current} />
       )}
     </>
   );

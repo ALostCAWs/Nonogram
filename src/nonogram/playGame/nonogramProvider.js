@@ -22,11 +22,11 @@ import { checkLineComplete, checkGameComplete, getColumn } from '../boardDisplay
 // Secondary currentGame, same size as gameSolution, manages the users' progress
 // Sets the FillModeContext, which is used to dictate which function the Tile components use as their onClick callback functions
 // Tiles use callbacks to functions within when onClick
-// When tile filled, nonogramProvider checks for column / row completion
+// When tile filled, NonogramProvider checks for column / row completion
 // currentGame passed to Board, making Board purely for displaying
 
 export const FillModeContext = createContext(null);
-export const nonogramProvider = ({ gameSolution }) => {
+export const NonogramProvider = ({ gameSolution }) => {
   const [fillMode, setFillMode] = useState();
   const [currentGame, setCurrentGame] = useState(createCurrentGame(gameSolution));
   const [lives, setLives] = useState(createLives(gameSolution));
