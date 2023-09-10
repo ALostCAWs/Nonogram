@@ -1,12 +1,12 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
 // Components
-import { PlayGame } from './picross/playGame/playGame.js';
-import { CreateGameProvider } from './picross/createGame/createGameProvider.js';
+import { PlayGame } from './nonogram/playGame/playGame.js';
+import { CreateGameProvider } from './nonogram/createGame/createGameProvider.js';
 // Functions
-import { getGameByColumn } from './picross/boardDisplay/getBoardInfo.js';
-import { importGame } from './picross/gameImportExport/importGame.js';
-import { exportGame } from './picross/gameImportExport/exportGame.js';
+import { getGameByColumn } from './nonogram/boardDisplay/getBoardInfo.js';
+import { importGame } from './nonogram/gameImportExport/importGame.js';
+import { exportGame } from './nonogram/gameImportExport/exportGame.js';
 import logo from './logo.svg';
 import './App.css';
 /* End ---- */

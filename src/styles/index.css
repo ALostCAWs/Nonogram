@@ -85,7 +85,7 @@ body {
   color: var(--font-color);
 }
 
-.picross {
+.nonogram {
   display: flex;
   justify-content: center;
 }

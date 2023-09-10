@@ -1,5 +1,5 @@
-import { exportGame } from "../picross/gameImportExport/exportGame.js";
-import { importGame } from "../picross/gameImportExport/importGame.js";
+import { exportGame } from "../nonogram/gameImportExport/exportGame.js";
+import { importGame } from "../nonogram/gameImportExport/importGame.js";
 
 const gameSolution = [[true, true, true, true, true],
 [false, true, true, false, false],

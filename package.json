@@ -1,5 +1,5 @@
 {
-  "name": "picross",
+  "name": "nonogram",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

@@ -1,5 +1,5 @@
-import { fillState } from "../picross/state.js";
-import { checkLineComplete, checkGameComplete, checkGameNotBlank, checkGameRectangular, getColumn, getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from "../picross/boardDisplay/getBoardInfo.js";
+import { fillState } from "../nonogram/state.js";
+import { checkLineComplete, checkGameComplete, checkGameNotBlank, checkGameRectangular, getColumn, getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from "../nonogram/boardDisplay/getBoardInfo.js";
 
 const filled = fillState.filled;
 const marked = fillState.marked;

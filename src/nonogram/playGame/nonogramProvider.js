@@ -22,11 +22,11 @@ import { checkLineComplete, checkGameComplete, getColumn } from '../boardDisplay
 // Secondary currentGame, same size as gameSolution, manages the users' progress
 // Sets the FillModeContext, which is used to dictate which function the Tile components use as their onClick callback functions
 // Tiles use callbacks to functions within when onClick
-// When tile filled, PicrossProvider checks for column / row completion
+// When tile filled, nonogramProvider checks for column / row completion
 // currentGame passed to Board, making Board purely for displaying
 
 export const FillModeContext = createContext(null);
-export const PicrossProvider = ({ gameSolution }) => {
+export const nonogramProvider = ({ gameSolution }) => {
   const [fillMode, setFillMode] = useState();
   const [currentGame, setCurrentGame] = useState(createCurrentGame(gameSolution));
   const [lives, setLives] = useState(createLives(gameSolution));
@@ -146,8 +146,8 @@ export const PicrossProvider = ({ gameSolution }) => {
   // This is only set for lines in which every fillable tile has been filled, specifically NOT for lines with 0 fillable tiles or incomplete lines
   // Lines with 0 fillable tiles are all marked error on game initialization
   // Lines with some completed hints do not trigger this, even in obvious cases such as first / last hint completion
-  // This keeps in line with existing picross games; avoids holding users' hand too much
-  // In this game, fillState.complete is set up to specifically disallow removal unlike many other picross games as that feels unfair for a user to be able to accidentally undo their own progress ( in a sense ) & trigger errors on lines they have already solved
+  // This keeps in line with existing nonogram games; avoids holding users' hand too much
+  // In this game, fillState.complete is set up to specifically disallow removal unlike many other nonogram games as that feels unfair for a user to be able to accidentally undo their own progress ( in a sense ) & trigger errors on lines they have already solved
   const setColComplete = (updatedGame, colIndex) => {
     for (let i = 0; i < currentGame.length; i++) {
       if (updatedGame[i][colIndex] === fillState.empty || updatedGame[i][colIndex] === fillState.marked) {

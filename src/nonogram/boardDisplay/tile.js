@@ -1,10 +1,10 @@
 /* ---- Imports Section */
 import React, { useContext } from 'react';
-import { FillModeContext } from '../playGame/picrossProvider.js'
+import { FillModeContext } from '../playGame/nonogramProvider.js'
 /* End ---- */
 
 // Tiles are only aware of their fillState & coords.
-// When they're clicked, they tell the picross provider their coords. & the game array is updated
+// When they're clicked, they tell the nonogram provider their coords. & the game array is updated
 export const Tile = ({ fill, rowIndex, colIndex, tileSize, fillTile = () => { }, markTile = () => { }, hoverTile = () => { } }) => {
   // Set fillMode to true if null ( handle create mode being fill-only with no FillModeContext )
   const fillMode = useContext(FillModeContext) ?? true;
