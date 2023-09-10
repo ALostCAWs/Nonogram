@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 import { PicrossProvider } from '../playGame/picrossProvider.js';
 // Functions
 import { importGame } from '../gameImportExport/importGame.js';
-import { checkGameBlank, checkGameRectangular } from '../boardDisplay/getBoardInfo.js';
+import { checkGameNotBlank, checkGameRectangular } from '../boardDisplay/getBoardInfo.js';
 /* End ---- */
 
 /* ---- Import Game via code entered into textbox on form */
@@ -19,7 +19,7 @@ export const PlayGame = () => {
     let errorMsg = '';
     gameSolution.current = importGame(gameCode.current.value);
 
-    if (checkGameBlank(gameSolution.current)) {
+    if (checkGameNotBlank(gameSolution.current)) {
       errorMsg += 'Invalid Code. Code entered results in a blank puzzle.\n';
     }
     if (!checkGameRectangular(gameSolution.current)) {

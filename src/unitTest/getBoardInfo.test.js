@@ -1,5 +1,5 @@
 import { fillState } from "../picross/state.js";
-import { checkLineComplete, checkGameComplete, checkGameBlank, checkGameRectangular, getColumn, getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from "../picross/boardDisplay/getBoardInfo.js";
+import { checkLineComplete, checkGameComplete, checkGameNotBlank, checkGameRectangular, getColumn, getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from "../picross/boardDisplay/getBoardInfo.js";
 
 const filled = fillState.filled;
 const marked = fillState.marked;
@@ -83,7 +83,7 @@ it('checks if a given currentGame is complete by comparing it to the gameSolutio
   [empty, marked, marked, empty, empty],
   [empty, marked, marked, empty, empty]];
   const incompleteGame5x5MarkedResult = checkGameComplete(gameSolution5x5, incompleteGame5x5Marked);
-  expect(incompleteGame5x5MarkedResult).toEqual(true);
+  expect(incompleteGame5x5MarkedResult).toEqual(false);
 });
 
 it('ensures the given gameSolution is not blank', () => {
@@ -92,27 +92,27 @@ it('ensures the given gameSolution is not blank', () => {
   [false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false]];
-  const resultBlankSolution = checkGameBlank(blankGameSolution);
-  expect(resultBlankSolution).toEqual(true);
+  const resultBlankSolution = checkGameNotBlank(blankGameSolution);
+  expect(resultBlankSolution).toEqual(false);
 
   let blank5x5Game = [[empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty]];
-  const resultBlankGame = checkGameBlank(blank5x5Game);
-  expect(resultBlankGame).toEqual(true);
+  const resultBlankGame = checkGameNotBlank(blank5x5Game);
+  expect(resultBlankGame).toEqual(false);
 
   let notBlank5x5Game = [[filled, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty]];
-  const resultNotBlankGame = checkGameBlank(notBlank5x5Game);
-  expect(resultNotBlankGame).toEqual(false);
+  const resultNotBlankGame = checkGameNotBlank(notBlank5x5Game);
+  expect(resultNotBlankGame).toEqual(true);
 
-  const resultNotBlankSolution = checkGameBlank(gameSolution5x5);
-  expect(resultNotBlankSolution).toEqual(false);
+  const resultNotBlankSolution = checkGameNotBlank(gameSolution5x5);
+  expect(resultNotBlankSolution).toEqual(true);
 });
 
 it('ensures the given gameSolution is rectangular', () => {
@@ -138,7 +138,7 @@ it('ensures the given gameSolution is rectangular', () => {
 
 it('gets a column from the given gameSolution array using the given index', () => {
   const i = 2;
-  const expectedColumn = [true, true, false, true, false];
+  const expectedColumn = [true, true, false, true, true];
   const result = getColumn(gameSolution5x5, i);
   expect(result).toEqual(expectedColumn);
 });

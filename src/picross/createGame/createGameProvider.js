@@ -6,7 +6,7 @@ import App from '../../App.js';
 import { Board } from '../boardDisplay/board.js';
 // Functions
 import { exportGame } from '../gameImportExport/exportGame.js';
-import { checkGameBlank } from '../boardDisplay/getBoardInfo.js';
+import { checkGameNotBlank } from '../boardDisplay/getBoardInfo.js';
 /* End ---- */
 
 /* ---- Create Game by providing user with a blank board & allowing them to toggle tile fillState.filled */
@@ -17,7 +17,7 @@ export const CreateGameProvider = ({ boardHeight, boardWidth }) => {
   const [gameBlank, setGameBlank] = useState(true);
 
   useEffect(() => {
-    setGameBlank(checkGameBlank(currentGame));
+    setGameBlank(checkGameNotBlank(currentGame));
     console.log(gameBlank);
   }, [currentGame]);
 

@@ -6,11 +6,11 @@ import { fillState } from "../state.js";
 /* ---- Completion Check Functions  */
 // Check if a given column / row is complete & returns bool
 export const checkLineComplete = (gameSolutionLine, updatedGameLine) => {
-  gameSolutionLine.forEach((tile, i) => {
-    if (tile && updatedGameLine[i] !== fillState.filled) {
+  for (let i = 0; i < gameSolutionLine.length; i++) {
+    if (gameSolutionLine[i] && updatedGameLine[i] !== fillState.filled) {
       return false;
     }
-  });
+  }
   return true;
 }
 
@@ -32,7 +32,7 @@ export const checkGameComplete = (gameSolution, updatedGame) => {
 /* ---- Validity Check Functions */
 // Very basic check, only ensures at least one tile is to be filled in
 // Doesn't account for ensuring a puzzle doesn't have multiple feasible solutions based on the hints that will be generated in order to solve it
-export const checkGameBlank = (inputGame) => {
+export const checkGameNotBlank = (inputGame) => {
   for (let i = 0; i < inputGame[0].length; i++) {
     let col = new Set(getColumn(inputGame, i));
     if (col.has(fillState.filled) || col.has(true)) {
