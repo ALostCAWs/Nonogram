@@ -83,6 +83,6 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
 // Displays one life counter element per life remaining
 const Life = ({ tileSize }) => {
   return (
-    <div className='life' style={{ height: tileSize, width: tileSize }}></div>
+    <div data-testid={'life'} className='life' style={{ height: tileSize, width: tileSize }}></div>
   );
 }
