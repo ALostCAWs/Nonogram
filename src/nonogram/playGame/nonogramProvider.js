@@ -61,12 +61,18 @@ export const NonogramProvider = ({ gameSolution }) => {
 
   /* ---- Toggle Fill Mode */
   const toggleFillMode = () => {
+    if (lives === 0) {
+      return;
+    }
     setFillMode(currentMode => !currentMode);
   }
 
   /* ---- Tile Interaction */
   // R-click to attempt fill, fillState.filled & fillState.error are not removable
   const fillTile = (e, rowIndex, colIndex) => {
+    if (lives === 0) {
+      return;
+    }
     if (currentGame[rowIndex][colIndex] !== fillState.empty) {
       return;
     }
@@ -114,6 +120,9 @@ export const NonogramProvider = ({ gameSolution }) => {
   }
   // L-click to mark ( used as a removable penalty-free reference )
   const markTile = (e, rowIndex, colIndex) => {
+    if (lives === 0) {
+      return;
+    }
     e.preventDefault();
     setCurrentGame(game => {
       return game.map((row, i) => {
@@ -129,6 +138,9 @@ export const NonogramProvider = ({ gameSolution }) => {
   }
   // Hovering over a tile highlights it & its' corresponding column / row hints
   const hoverTile = (e, rowIndex, colIndex) => {
+    if (lives === 0) {
+      return;
+    }
     const hoverRow = document.querySelector(`.rowHint${rowIndex}`);
     const hoverCol = document.querySelector(`.colHint${colIndex}`);
     if (e.type === 'mouseenter') {
