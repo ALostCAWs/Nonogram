@@ -1,5 +1,4 @@
 /* ---- Imports Section */
-import react from 'react';
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { fillState } from "../nonogram/state.js";
@@ -10,13 +9,9 @@ import { Tile } from '../nonogram/boardDisplay/tile.js';
 
 const empty = fillState.empty;
 
-// break down tests into very small component-specific parts
-// test their basic abilities, i.e., whether the tile calls the functions passed to it correctly
-// nonogramprovider will test the proper function of the onclick / hover etc.
-// render tile & pass very simple onclick
-
-// screen.debug()
-// print dom of rendered items for unit test
+// Break down tests into very small component-specific parts
+// Test their basic abilities; whether the tile calls the functions passed to it based on the FillModeContext
+// NonogramProvider will test the proper function of the onclick / hover etc.
 
 it('executes fillTile on click when fillMode is true', async () => {
   const rowIndex = 0;

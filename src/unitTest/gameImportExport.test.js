@@ -2,7 +2,6 @@
 // Functions
 import { exportGame } from "../nonogram/gameImportExport/exportGame.js";
 import { importGame } from "../nonogram/gameImportExport/importGame.js";
-import { checkGameNotBlank, checkGameRectangular } from "../nonogram/boardDisplay/getBoardInfo.js";
 /* End ---- */
 
 const gameSolution5x5_NotBlank = [[true, true, true, true, true],

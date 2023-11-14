@@ -6,11 +6,6 @@ import userEvent from "@testing-library/user-event";
 import App from '../App.js';
 /* End ---- */
 
-const gameSolution = [[true, true, true, true, true],
-[false, true, true, false, false],
-[false, true, false, true, false],
-[false, true, true, false, false],
-[false, true, false, false, false]];
 const gameHash = '5|1111101100010100110001000';
 
 it('loads PlayGame when play is selected', () => {
