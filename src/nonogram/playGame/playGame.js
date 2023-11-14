@@ -15,11 +15,11 @@ export const PlayGame = () => {
   const gameSolution = useRef();
 
   /* <- Handle Input Changes & Form Submission -> */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     let errorMsg = '';
-    gameSolution.current = importGame(gameCode.current.value);
+    gameSolution.current = await importGame(gameCode.current.value);
 
-    if (checkGameNotBlank(gameSolution.current)) {
+    if (!checkGameNotBlank(gameSolution.current)) {
       errorMsg += 'Invalid Code. Code entered results in a blank puzzle.\n';
     }
     if (!checkGameRectangular(gameSolution.current)) {
@@ -38,7 +38,7 @@ export const PlayGame = () => {
       {!submit ? (
         <form action='' id='enterGameCode'>
           <label htmlFor='gameCode'>Enter Code: </label>
-          <input type='text' id='gameCode' name='gameCode' ref={gameCode} />
+          <input type='text' id='gameCode' data-testid={'gameCode'} name='gameCode' ref={gameCode} />
           <button type='button' id='submit' name='submit' onClick={() => handleSubmit()}>Play Puzzle</button>
         </form>
       ) : (

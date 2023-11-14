@@ -12,9 +12,9 @@ export const Tile = ({ fill, rowIndex, colIndex, tileSize, fillTile = () => { },
   return (
     <>
       {fillMode ? (
-        <div className={`tile ${fill}`} style={{ height: `${tileSize}px`, width: `${tileSize}px` }} onClick={e => fillTile(e, rowIndex, colIndex)} onMouseEnter={e => hoverTile(e, rowIndex, colIndex)} onMouseLeave={e => hoverTile(e, rowIndex, colIndex)}></div>
+        <div data-testid={`tile${rowIndex}-${colIndex}`} className={`tile ${fill}`} style={{ height: `${tileSize}px`, width: `${tileSize}px` }} onClick={e => fillTile(e, rowIndex, colIndex)} onMouseEnter={e => hoverTile(e, rowIndex, colIndex)} onMouseLeave={e => hoverTile(e, rowIndex, colIndex)}></div>
       ) : (
-        <div className={`tile ${fill}`} style={{ height: `${tileSize}px`, width: `${tileSize}px` }} onClick={e => markTile(e, rowIndex, colIndex)} onMouseEnter={e => hoverTile(e, rowIndex, colIndex)} onMouseLeave={e => hoverTile(e, rowIndex, colIndex)}></div>
+          <div data-testid={`tile${rowIndex}-${colIndex}`} className={`tile ${fill}`} style={{ height: `${tileSize}px`, width: `${tileSize}px` }} onClick={e => markTile(e, rowIndex, colIndex)} onMouseEnter={e => hoverTile(e, rowIndex, colIndex)} onMouseLeave={e => hoverTile(e, rowIndex, colIndex)}></div>
       )}
     </>
   );

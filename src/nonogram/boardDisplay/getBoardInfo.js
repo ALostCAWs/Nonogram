@@ -3,32 +3,6 @@
 import { fillState } from "../state.js";
 /* End ---- */
 
-/* ---- Completion Check Functions  */
-// Check if a given column / row is complete & returns bool
-export const checkLineComplete = (gameSolutionLine, updatedGameLine) => {
-  for (let i = 0; i < gameSolutionLine.length; i++) {
-    if (gameSolutionLine[i] && updatedGameLine[i] !== fillState.filled) {
-      return false;
-    }
-  }
-  return true;
-}
-
-// Check each column & row for completion, break the search as soon as an incomplete line is found
-export const checkGameComplete = (gameSolution, updatedGame) => {
-  for (let i = 0; i < gameSolution.length; i++) {
-    let gameComplete = checkLineComplete(getColumn(gameSolution, i), getColumn(updatedGame, i));
-    if (!gameComplete) {
-      return false;
-    }
-    gameComplete = checkLineComplete(gameSolution[i], updatedGame[i]);
-    if (!gameComplete) {
-      return false;
-    }
-  }
-  return true;
-}
-
 /* ---- Validity Check Functions */
 // Very basic check, only ensures at least one tile is to be filled in
 // Doesn't account for ensuring a puzzle doesn't have multiple feasible solutions based on the hints that will be generated in order to solve it
@@ -61,7 +35,53 @@ export const checkGameRectangular = (inputGame) => {
   return true;
 }
 
-/* ---- Get Column */
+/* ---- Completion Check Functions  */
+// Check if a given column / row is complete & returns bool
+export const checkLineComplete = (gameSolutionLine, updatedGameLine) => {
+  for (let i = 0; i < gameSolutionLine.length; i++) {
+    if (gameSolutionLine[i] && updatedGameLine[i] !== fillState.filled) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// Check each column & row for completion, break the search as soon as an incomplete line is found
+export const checkGameComplete = (gameSolution, updatedGame) => {
+  for (let i = 0; i < gameSolution.length; i++) {
+    let gameComplete = checkLineComplete(getColumn(gameSolution, i), getColumn(updatedGame, i));
+    if (!gameComplete) {
+      return false;
+    }
+    gameComplete = checkLineComplete(gameSolution[i], updatedGame[i]);
+    if (!gameComplete) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export const checkGameOver = (lives) => {
+  return lives === 0 ? true : false;
+}
+
+/* ---- Tile Check */
+export const checkTileFillable = (fill) => {
+  return fill === fillState.empty ? true : false;
+}
+
+export const checkTileMarkable = (fill) => {
+  switch (true) {
+    case fill === fillState.empty:
+    case fill === fillState.marked:
+      return true;
+
+    default:
+      return false;
+  }
+}
+
+/* ---- Column Quality of Life */
 export const getColumn = (inputGame, colIndex) => {
   let column = [];
   for (let i = 0; i < inputGame.length; i++) {

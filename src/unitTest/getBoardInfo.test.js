@@ -1,10 +1,11 @@
 import { fillState } from "../nonogram/state.js";
-import { checkLineComplete, checkGameComplete, checkGameNotBlank, checkGameRectangular, getColumn, getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from "../nonogram/boardDisplay/getBoardInfo.js";
+import { checkGameNotBlank, checkGameRectangular, checkLineComplete, checkGameComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn, getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from "../nonogram/boardDisplay/getBoardInfo.js";
 
 const filled = fillState.filled;
 const marked = fillState.marked;
 const empty = fillState.empty;
 const error = fillState.error;
+const complete = 'complete';
 
 const gameSolution5x5 = [[true, true, true, true, true],
 [false, true, true, false, false],
@@ -12,6 +13,58 @@ const gameSolution5x5 = [[true, true, true, true, true],
 [false, true, true, false, false],
 [false, true, true, false, false]];
 
+// Game validation
+it('ensures the given gameSolution is not blank', () => {
+  let blankGameSolution = [[false, false, false, false, false],
+  [false, false, false, false, false],
+  [false, false, false, false, false],
+  [false, false, false, false, false],
+  [false, false, false, false, false]];
+  const resultBlankSolution = checkGameNotBlank(blankGameSolution);
+  expect(resultBlankSolution).toEqual(false);
+
+  let blank5x5Game = [[empty, empty, empty, empty, empty],
+  [empty, empty, empty, empty, empty],
+  [empty, empty, empty, empty, empty],
+  [empty, empty, empty, empty, empty],
+  [empty, empty, empty, empty, empty]];
+  const resultBlankGame = checkGameNotBlank(blank5x5Game);
+  expect(resultBlankGame).toEqual(false);
+
+  let notBlank5x5Game = [[filled, empty, empty, empty, empty],
+  [empty, empty, empty, empty, empty],
+  [empty, empty, empty, empty, empty],
+  [empty, empty, empty, empty, empty],
+  [empty, empty, empty, empty, empty]];
+  const resultNotBlankGame = checkGameNotBlank(notBlank5x5Game);
+  expect(resultNotBlankGame).toEqual(true);
+
+  const resultNotBlankSolution = checkGameNotBlank(gameSolution5x5);
+  expect(resultNotBlankSolution).toEqual(true);
+});
+
+it('ensures the given gameSolution is rectangular', () => {
+  const resultRectangle = checkGameRectangular(gameSolution5x5);
+  expect(resultRectangle).toEqual(true);
+
+  const irregularRow0GameSolution = [[true, true, true, true],
+  [false, true, true, false, false],
+  [false, true, false, true, false],
+  [false, true, true, false, false],
+  [false, true, true, false, false]];
+  const resultNotRectangleFirstRow = checkGameRectangular(irregularRow0GameSolution);
+  expect(resultNotRectangleFirstRow).toEqual(false);
+
+  const irregularRow4GameSolution = [[true, true, true, true, true],
+  [false, true, true, false, false],
+  [false, true, false, true, false],
+  [false, true, true, false, false],
+  [false, true, true, false]];
+  const resultNotRectangleLastRow = checkGameRectangular(irregularRow4GameSolution);
+  expect(resultNotRectangleLastRow).toEqual(false);
+});
+
+// Completion check
 it('checks if a given column / row is complete by comparing currentGame to gameSolution', () => {
   const mixedLine = [filled, empty, empty, empty, empty];
   const mixedLineSolution = [true, false, false, false, false];
@@ -86,56 +139,31 @@ it('checks if a given currentGame is complete by comparing it to the gameSolutio
   expect(incompleteGame5x5MarkedResult).toEqual(false);
 });
 
-it('ensures the given gameSolution is not blank', () => {
-  let blankGameSolution = [[false, false, false, false, false],
-  [false, false, false, false, false],
-  [false, false, false, false, false],
-  [false, false, false, false, false],
-  [false, false, false, false, false]];
-  const resultBlankSolution = checkGameNotBlank(blankGameSolution);
-  expect(resultBlankSolution).toEqual(false);
-
-  let blank5x5Game = [[empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty]];
-  const resultBlankGame = checkGameNotBlank(blank5x5Game);
-  expect(resultBlankGame).toEqual(false);
-
-  let notBlank5x5Game = [[filled, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty]];
-  const resultNotBlankGame = checkGameNotBlank(notBlank5x5Game);
-  expect(resultNotBlankGame).toEqual(true);
-
-  const resultNotBlankSolution = checkGameNotBlank(gameSolution5x5);
-  expect(resultNotBlankSolution).toEqual(true);
+it('checks if the game is lost', () => {
+  expect(checkGameOver(0)).toEqual(true);
+  expect(checkGameOver(1)).toEqual(false);
 });
 
-it('ensures the given gameSolution is rectangular', () => {
-  const resultRectangle = checkGameRectangular(gameSolution5x5);
-  expect(resultRectangle).toEqual(true);
+// Tile checks
+it('checks if a given tile is fillable', () => {
+  expect(checkTileFillable(empty)).toEqual(true);
 
-  const irregularRow0GameSolution = [[true, true, true, true],
-  [false, true, true, false, false],
-  [false, true, false, true, false],
-  [false, true, true, false, false],
-  [false, true, true, false, false]];
-  const resultNotRectangleFirstRow = checkGameRectangular(irregularRow0GameSolution);
-  expect(resultNotRectangleFirstRow).toEqual(false);
-
-  const irregularRow4GameSolution = [[true, true, true, true, true],
-  [false, true, true, false, false],
-  [false, true, false, true, false],
-  [false, true, true, false, false],
-  [false, true, true, false]];
-  const resultNotRectangleLastRow = checkGameRectangular(irregularRow4GameSolution);
-  expect(resultNotRectangleLastRow).toEqual(false);
+  expect(checkTileFillable(filled)).toEqual(false);
+  expect(checkTileFillable(error)).toEqual(false);
+  expect(checkTileFillable(marked)).toEqual(false);
+  expect(checkTileFillable(complete)).toEqual(false);
 });
 
+it('checks if a given tile is markable', () => {
+  expect(checkTileMarkable(empty)).toEqual(true);
+  expect(checkTileMarkable(marked)).toEqual(true);
+
+  expect(checkTileMarkable(filled)).toEqual(false);
+  expect(checkTileMarkable(error)).toEqual(false);
+  expect(checkTileMarkable(complete)).toEqual(false);
+});
+
+// Array quality of life
 it('gets a column from the given gameSolution array using the given index', () => {
   const i = 2;
   const expectedColumn = [true, true, false, true, true];
