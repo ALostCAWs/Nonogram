@@ -7,7 +7,7 @@ import { GameComplete } from './endScreens/gameComplete.js';
 import { GameOver } from './endScreens/gameOver.js';
 // Functions
 import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup.js';
-import { checkLineComplete, checkGameComplete, getColumn } from '../boardDisplay/getBoardInfo.js';
+import { checkLineComplete, checkGameComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn } from '../boardDisplay/getBoardInfo.js';
 /* End ---- */
 
 // TODO:
@@ -61,7 +61,7 @@ export const NonogramProvider = ({ gameSolution }) => {
 
   /* ---- Toggle Fill Mode */
   const toggleFillMode = () => {
-    if (lives === 0) {
+    if (checkGameOver(lives)) {
       return;
     }
     setFillMode(currentMode => !currentMode);
@@ -70,12 +70,13 @@ export const NonogramProvider = ({ gameSolution }) => {
   /* ---- Tile Interaction */
   // R-click to attempt fill, fillState.filled & fillState.error are not removable
   const fillTile = (e, rowIndex, colIndex) => {
-    if (lives === 0) {
+    if (checkGameOver(lives)) {
       return;
     }
-    if (currentGame[rowIndex][colIndex] !== fillState.empty) {
+    if (!checkTileFillable(currentGame[rowIndex][colIndex])) {
       return;
     }
+
     if (gameSolution[rowIndex][colIndex]) {
       const clickedRow = document.querySelector(`.rowHint${rowIndex}`);
       const clickedCol = document.querySelector(`.colHint${colIndex}`);
@@ -120,9 +121,13 @@ export const NonogramProvider = ({ gameSolution }) => {
   }
   // L-click to mark ( used as a removable penalty-free reference )
   const markTile = (e, rowIndex, colIndex) => {
-    if (lives === 0) {
+    if (checkGameOver(lives)) {
       return;
     }
+    if (!checkTileMarkable(currentGame[rowIndex][colIndex])) {
+      return;
+    }
+
     e.preventDefault();
     setCurrentGame(game => {
       return game.map((row, i) => {
@@ -138,7 +143,7 @@ export const NonogramProvider = ({ gameSolution }) => {
   }
   // Hovering over a tile highlights it & its' corresponding column / row hints
   const hoverTile = (e, rowIndex, colIndex) => {
-    if (lives === 0) {
+    if (checkGameOver(lives)) {
       return;
     }
     const hoverRow = document.querySelector(`.rowHint${rowIndex}`);
@@ -181,7 +186,7 @@ export const NonogramProvider = ({ gameSolution }) => {
 
   return (
     <>
-      {lives === 0 && (
+      {checkGameOver(lives) && (
         <GameOver resetGame={resetGame} />
       )}
 

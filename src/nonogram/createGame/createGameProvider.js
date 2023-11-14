@@ -17,7 +17,7 @@ export const CreateGameProvider = ({ boardHeight, boardWidth }) => {
   const [gameBlank, setGameBlank] = useState(true);
 
   useEffect(() => {
-    setGameBlank(checkGameNotBlank(currentGame));
+    setGameBlank(!checkGameNotBlank(currentGame));
     console.log(gameBlank);
   }, [currentGame]);
 
