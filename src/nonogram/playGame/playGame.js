@@ -17,7 +17,13 @@ export const PlayGame = () => {
   /* <- Handle Input Changes & Form Submission -> */
   const handleSubmit = async (e) => {
     let errorMsg = '';
-    gameSolution.current = await importGame(gameCode.current.value);
+    if (gameCode.current.value === '') {
+      await fetch(`http://localhost:3001/puzzles/1`)
+        .then(res => res.json())
+        .then(puzzle => gameSolution.current = importGame(puzzle.puzzleCode));
+    } else {
+      gameSolution.current = importGame(gameCode.current.value);
+    }
 
     if (!checkGameNotBlank(gameSolution.current)) {
       errorMsg += 'Invalid Code. Code entered results in a blank puzzle.\n';

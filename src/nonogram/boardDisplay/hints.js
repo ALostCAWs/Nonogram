@@ -57,12 +57,12 @@ export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCou
     <>
       {lineType === 'col' && (
         <>
-          {hints.map((hint, i) => <div key={`hint${lineIndex} - ${i}`} className={`${hint.state}`} style={{ height: `${100 / maxHintCount}%` }}>{hint.value}</div>)}
+          {hints.map((hint, i) => <div data-testid={`hint${lineIndex} - ${i}`} key={`hint${lineIndex} - ${i}`} className={`${hint.state}`} style={{ height: `${100 / maxHintCount}%` }}>{hint.value}</div>)}
         </>
       )}
       {lineType === 'row' && (
         <>
-          {hints.map((hint, i) => <div key={`hint${lineIndex} - ${i}`} className={`${hint.state}`} style={{ width: `${100 / maxHintCount}%` }}>{hint.value}</div>)}
+          {hints.map((hint, i) => <div data-testid={`hint${lineIndex} - ${i}`} key={`hint${lineIndex} - ${i}`} className={`${hint.state}`} style={{ width: `${100 / maxHintCount}%` }}>{hint.value}</div>)}
         </>
       )}
     </>

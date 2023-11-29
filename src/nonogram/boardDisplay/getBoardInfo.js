@@ -7,12 +7,6 @@ import { fillState } from "../state.js";
 // Very basic check, only ensures at least one tile is to be filled in
 // Doesn't account for ensuring a puzzle doesn't have multiple feasible solutions based on the hints that will be generated in order to solve it
 export const checkGameNotBlank = (inputGame) => {
-  for (let i = 0; i < inputGame[0].length; i++) {
-    let col = new Set(getColumn(inputGame, i));
-    if (col.has(fillState.filled) || col.has(true)) {
-      return true;
-    }
-  }
   for (let i = 0; i < inputGame.length; i++) {
     let row = new Set(inputGame[i]);
     if (row.has(fillState.filled) || row.has(true)) {

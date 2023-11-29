@@ -297,9 +297,6 @@ it('does not change the lives count when there is no error made', () => {
 /* HINTS */
 // More complex hint tests go here
 // Hints test file is to test very simple things, no user interaction just provide static props
-// 0 hints are red
-// Full hints are highlighted
-// Complete hints are greyed
 
 // Tests for here will involve user interaction & test how hints respond to it
 // Initial hint states will NOT go here, as they are based on static info
