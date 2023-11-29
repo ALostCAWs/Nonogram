@@ -105,7 +105,6 @@ it('initializes full row hints with fullLineHint class', () => {
 // Hint greys when it's associated tiles are filled
 // Full line complete, one complete, all complete
 // Col & row
-
 it(`greys out a rows' hint when its' corresponding tiles are filled`, () => {
   const currentGame5x5_GreyHints_RowTest = [[filled, filled, filled, filled, filled],
   [empty, filled, empty, empty, empty],

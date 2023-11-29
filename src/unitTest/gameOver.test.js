@@ -104,7 +104,7 @@ it('prevents fillMode buttons onClick when the game ends', () => {
   userEvent.click(tile_error_2);
   userEvent.click(tile_error_3);
 
-  // Tiles unclickable
+  // Fill mode buttons unclickable
   userEvent.click(screen.getByRole('button', { name: 'Mark' }));
   expect(screen.getByRole('button', { name: 'Mark' })).toBeEnabled();
 });
