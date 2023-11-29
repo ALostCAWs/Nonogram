@@ -1,18 +1,27 @@
 /* ---- Imports Section */
-import React, { useState } from 'react';
+import React from 'react';
 // Components
-import { Tile } from './tile.js';
-import { Hints } from './hints.js';
+import { Tile } from './tile.tsx';
+import { Hints } from './hints.tsx';
 // Functions
-import { getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from './getBoardInfo.js';
+import { getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from './getBoardInfo.ts';
 /* End ---- */
 
-export const Board = ({ currentGame, gameSolution = undefined, lives = undefined, fillTile, markTile, hoverTile }) => {
+interface BoardProps {
+  currentGame: string[][],
+  gameSolution: boolean[][],
+  livesCount: number | undefined,
+  fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
+  markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
+  hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
+}
+
+export const Board = ({ currentGame, gameSolution = [], livesCount, fillTile, markTile, hoverTile }: BoardProps) => {
   // Decouple tiles from board by mapping within return rather than for looping in useEffect
-  let currentGameByColumn = getGameByColumn(currentGame);
-  let gameSolutionByColumn = [];
+  let currentGameByColumn: string[][] = getGameByColumn(currentGame);
+  let gameSolutionByColumn: boolean[][] = [];
   let nonogramPaddingRight = 0;
-  if (gameSolution) {
+  if (gameSolution.length !== 0) {
     gameSolutionByColumn = getGameByColumn(gameSolution);
     nonogramPaddingRight = currentGame[0].length * 12
   }
@@ -31,14 +40,15 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
       break;
   }
 
-  if (lives !== undefined) {
-    lives = [...Array(lives).keys()];
+  let lives: number[] = [];
+  if (livesCount !== undefined) {
+    lives = [...Array(livesCount).keys()];
   }
 
   return (
     <div className='nonogram' style={{ paddingRight: nonogramPaddingRight }}>
       <div className='boardContainer' style={{ width: tileSize * (currentGame[0].length + 1) }}>
-        {gameSolution && (
+        {gameSolution.length !== 0 && (
           <>
             <div className='colHintContainer' key='colHintContainer' style={{ gridTemplateColumns: `repeat(${currentGame[0].length}, 1fr)` }}>
               {gameSolutionByColumn.map((line, i) =>
@@ -66,7 +76,7 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
           )}
         </div>
 
-        {lives && (
+        {livesCount !== 0 && (
           <>
             <div className='livesContainer'>
               {lives.map((life, i) =>
@@ -81,7 +91,11 @@ export const Board = ({ currentGame, gameSolution = undefined, lives = undefined
 }
 
 // Displays one life counter element per life remaining
-const Life = ({ tileSize }) => {
+interface LifeProps {
+  tileSize: number
+}
+
+const Life = ({ tileSize }: LifeProps) => {
   return (
     <div data-testid={'life'} className='life' style={{ height: tileSize, width: tileSize }}></div>
   );

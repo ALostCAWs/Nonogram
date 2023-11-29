@@ -1,7 +1,7 @@
 /* ---- Imports Section */
 // Functions
-import { exportGame } from "../nonogram/gameImportExport/exportGame.js";
-import { importGame } from "../nonogram/gameImportExport/importGame.js";
+import { exportGame } from "../nonogram/gameImportExport/exportGame.ts";
+import { importGame } from "../nonogram/gameImportExport/importGame.ts";
 /* End ---- */
 
 const gameSolution5x5_NotBlank = [[true, true, true, true, true],

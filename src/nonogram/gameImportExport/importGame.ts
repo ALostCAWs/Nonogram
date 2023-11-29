@@ -1,4 +1,4 @@
-export const importGame = (gameHash) => {
+export const importGame = (gameHash: string): boolean[][] => {
   console.log(gameHash);
 
   // Obtain the boards' width from the gameHash & remove it & the separator char from the string
@@ -12,15 +12,15 @@ export const importGame = (gameHash) => {
 
   // Build gameSolution as a 2D array
   // Each newly-separated string in hashRows represents a row on the board, height / columns are not needed to generate the gameSolution
-  let gameSolution = [];
+  let gameSolution: boolean[][] = [];
   for (let i = 0; i < hashRows.length; i++) {
-    let innerGameSolution = [];
+    let rowSolution: boolean[] = [];
     let hashVal = hashRows[i].split('');
     for (let i = 0; i < hashVal.length; i++) {
       let fillable = hashVal[i] === '1' ? true : false;
-      innerGameSolution.push(fillable)
+      rowSolution.push(fillable)
     }
-    gameSolution.push(innerGameSolution);
+    gameSolution.push(rowSolution);
   }
   return gameSolution;
 }

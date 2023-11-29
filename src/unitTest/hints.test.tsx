@@ -1,11 +1,11 @@
 /* ---- Imports Section */
 import React from 'react';
 import { render, screen } from "@testing-library/react";
-import { fillState, hintState } from "../nonogram/state.js";
+import { fillState, hintState } from "../nonogram/state.ts";
 // Components
-import { Hints } from '../nonogram/boardDisplay/hints.js';
+import { Hints } from '../nonogram/boardDisplay/hints.tsx';
 // Functions
-import { getGameByColumn } from '../nonogram/boardDisplay/getBoardInfo.js';
+import { getGameByColumn } from '../nonogram/boardDisplay/getBoardInfo.ts';
 /* End ---- */
 
 const filled = fillState.filled;
@@ -17,7 +17,7 @@ const zeroHint = hintState.zero;
 const completeHint = hintState.complete;
 
 let gameSolution5x5_ColTest = [[true, true, true, true, false],
-  [true, true, false, false, false],
+[true, true, false, false, false],
 [true, true, false, true, false],
 [true, true, true, false, false],
 [true, false, false, false, false]];

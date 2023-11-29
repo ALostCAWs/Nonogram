@@ -1,23 +1,23 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
 // Components
-import { NonogramProvider } from '../playGame/nonogramProvider.js';
+import { NonogramProvider } from './nonogramProvider.tsx';
 // Functions
-import { importGame } from '../gameImportExport/importGame.js';
-import { checkGameNotBlank, checkGameRectangular } from '../boardDisplay/getBoardInfo.js';
+import { importGame } from '../gameImportExport/importGame.ts';
+import { checkSolutionNotBlank, checkGameRectangular } from '../boardDisplay/getBoardInfo.ts';
 /* End ---- */
 
 /* ---- Import Game via code entered into textbox on form */
 // Call NonogramProvider onSubmit
 export const PlayGame = () => {
-  const [submit, setSubmit] = useState(false);
-  const gameCode = useRef();
-  const gameSolution = useRef();
+  const [submit, setSubmit] = useState<boolean>(false);
+  const gameCode = useRef<HTMLInputElement>(null);
+  const gameSolution = useRef<boolean[][]>([]);
 
   /* <- Handle Input Changes & Form Submission -> */
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.MouseEvent) => {
     let errorMsg = '';
-    if (gameCode.current.value === '') {
+    if (gameCode.current === null || gameCode.current === undefined || gameCode.current.value === '') {
       await fetch(`http://localhost:3001/puzzles/1`)
         .then(res => res.json())
         .then(puzzle => gameSolution.current = importGame(puzzle.puzzleCode));
@@ -25,7 +25,7 @@ export const PlayGame = () => {
       gameSolution.current = importGame(gameCode.current.value);
     }
 
-    if (!checkGameNotBlank(gameSolution.current)) {
+    if (!checkSolutionNotBlank(gameSolution.current)) {
       errorMsg += 'Invalid Code. Code entered results in a blank puzzle.\n';
     }
     if (!checkGameRectangular(gameSolution.current)) {
@@ -45,10 +45,10 @@ export const PlayGame = () => {
         <form action='' id='enterGameCode'>
           <label htmlFor='gameCode'>Enter Code: </label>
           <input type='text' id='gameCode' data-testid={'gameCode'} name='gameCode' ref={gameCode} />
-          <button type='button' id='submit' name='submit' onClick={() => handleSubmit()}>Play Puzzle</button>
+          <button type='button' id='submit' name='submit' onClick={(e) => handleSubmit(e)}>Play Puzzle</button>
         </form>
       ) : (
-          <NonogramProvider gameSolution={gameSolution.current} />
+        <NonogramProvider gameSolution={gameSolution.current} />
       )}
     </>
   );

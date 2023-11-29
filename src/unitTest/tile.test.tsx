@@ -1,10 +1,11 @@
 /* ---- Imports Section */
+import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "../nonogram/state.js";
-import { FillModeContext } from '../nonogram/playGame/nonogramProvider.js';
+import { fillState } from "../nonogram/state.ts";
+import { FillModeContext } from '../nonogram/playGame/nonogramProvider.tsx';
 // Components
-import { Tile } from '../nonogram/boardDisplay/tile.js';
+import { Tile } from '../nonogram/boardDisplay/tile.tsx';
 /* End ---- */
 
 const empty = fillState.empty;
@@ -24,7 +25,7 @@ it('executes fillTile on click when fillMode is true', async () => {
 
   render(
     <FillModeContext.Provider value={true}>
-      <Tile fill={empty} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={fillTile} />
+      <Tile fill={empty} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={fillTile} markTile={(e, rowIndex, colIndex) => { }} hoverTile={(e, rowIndex, colIndex) => { }} />
     </FillModeContext.Provider>
   );
 
@@ -45,7 +46,7 @@ it('executes markTile on click when fillMode is false', async () => {
 
   render(
     <FillModeContext.Provider value={false}>
-      <Tile fill={empty} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} markTile={markTile} />
+      <Tile fill={empty} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={(e, rowIndex, colIndex) => { }} markTile={markTile} hoverTile={(e, rowIndex, colIndex) => { }} />
     </FillModeContext.Provider>
   );
 
@@ -70,7 +71,7 @@ it('executes hoverTile on mouseenter & on mouseleave', async () => {
   }
 
   render(
-    <Tile fill={empty} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} hoverTile={hoverTile} />
+    <Tile fill={empty} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} markTile={(e, rowIndex, colIndex) => { }} fillTile={(e, rowIndex, colIndex) => { }} hoverTile={hoverTile} />
   );
 
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);

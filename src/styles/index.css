@@ -212,7 +212,7 @@ body {
 }
 
 /* ---- Game Complete ---- */
-.gameComplete,
+.gameComplete>div,
 .gameOver>div {
   display: flex;
   flex-direction: column;
@@ -221,6 +221,7 @@ body {
 }
 
 /* ---- Game Over ---- */
+.gameComplete,
 .gameOver {
   z-index: 10;
   position: absolute;
@@ -231,6 +232,7 @@ body {
   background: linear-gradient(180deg, rgba(28, 28, 28, 0.436) 0%, rgba(255, 255, 255, 1) 100%);
 }
 
+.gameComplete>div,
 .gameOver>div {
   height: 100%;
   width: 100%;

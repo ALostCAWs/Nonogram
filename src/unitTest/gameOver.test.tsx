@@ -2,9 +2,9 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "../nonogram/state.js";
+import { fillState } from "../nonogram/state.ts";
 // Components
-import { NonogramProvider } from '../nonogram/playGame/nonogramProvider.js';
+import { NonogramProvider } from '../nonogram/playGame/nonogramProvider.tsx';
 /* End ---- */
 
 const filled = fillState.filled;
