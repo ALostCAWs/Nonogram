@@ -1,10 +1,8 @@
 /* ---- Imports Section */
 import React from 'react';
-import { getByTestId, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { fillState, hintState } from "../nonogram/state.js";
 // Components
-import { NonogramProvider } from '../nonogram/playGame/nonogramProvider.js';
 import { Hints } from '../nonogram/boardDisplay/hints.js';
 // Functions
 import { getGameByColumn } from '../nonogram/boardDisplay/getBoardInfo.js';
