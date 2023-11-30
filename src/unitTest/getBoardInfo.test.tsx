@@ -1,5 +1,5 @@
-import { fillState } from "../nonogram/state.js";
-import { checkGameNotBlank, checkGameRectangular, checkLineComplete, checkGameComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn, getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from "../nonogram/boardDisplay/getBoardInfo.js";
+import { fillState } from "../nonogram/state.ts";
+import { checkSolutionNotBlank, checkBoardNotBlank, checkGameRectangular, checkLineComplete, checkGameComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn, getGameByColumn, getLongestDimension, getMaxHintCountByLineLength } from "../nonogram/boardDisplay/getBoardInfo.ts";
 
 const filled = fillState.filled;
 const marked = fillState.marked;
@@ -20,7 +20,7 @@ it('ensures the given gameSolution is not blank', () => {
   [false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false]];
-  const resultBlankSolution = checkGameNotBlank(blankGameSolution);
+  const resultBlankSolution = checkSolutionNotBlank(blankGameSolution);
   expect(resultBlankSolution).toEqual(false);
 
   let blank5x5Game = [[empty, empty, empty, empty, empty],
@@ -28,7 +28,7 @@ it('ensures the given gameSolution is not blank', () => {
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty]];
-  const resultBlankGame = checkGameNotBlank(blank5x5Game);
+  const resultBlankGame = checkBoardNotBlank(blank5x5Game);
   expect(resultBlankGame).toEqual(false);
 
   let notBlank5x5Game = [[filled, empty, empty, empty, empty],
@@ -36,10 +36,10 @@ it('ensures the given gameSolution is not blank', () => {
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty]];
-  const resultNotBlankGame = checkGameNotBlank(notBlank5x5Game);
+  const resultNotBlankGame = checkBoardNotBlank(notBlank5x5Game);
   expect(resultNotBlankGame).toEqual(true);
 
-  const resultNotBlankSolution = checkGameNotBlank(gameSolution5x5);
+  const resultNotBlankSolution = checkSolutionNotBlank(gameSolution5x5);
   expect(resultNotBlankSolution).toEqual(true);
 });
 

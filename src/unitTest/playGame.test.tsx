@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 // Components
-import App from '../App.js';
+import App from '../App.tsx';
 /* End ---- */
 
 const gameHash = '5|1111101100010100110001000';

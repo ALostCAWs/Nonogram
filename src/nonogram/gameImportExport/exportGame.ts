@@ -1,4 +1,4 @@
-export const exportGame = (gameSolution) => {
+export const exportGame = (gameSolution: boolean[][]): string => {
   // First item is separated from the rest of the string with a pipe (|), this is the boards' width
   let gameHash = `${String(gameSolution[0].length)}|`;
 
@@ -9,6 +9,6 @@ export const exportGame = (gameSolution) => {
       gameHash += hashItem;
     }
   }
-  console.log(gameHash);
+  //console.log(gameHash);
   return gameHash;
 }

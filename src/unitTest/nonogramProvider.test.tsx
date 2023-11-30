@@ -2,9 +2,9 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "../nonogram/state.js";
+import { fillState } from "../nonogram/state.ts";
 // Components
-import { NonogramProvider } from '../nonogram/playGame/nonogramProvider.js';
+import { NonogramProvider } from '../nonogram/playGame/nonogramProvider.tsx';
 /* End ---- */
 
 const filled = fillState.filled;
@@ -297,9 +297,6 @@ it('does not change the lives count when there is no error made', () => {
 /* HINTS */
 // More complex hint tests go here
 // Hints test file is to test very simple things, no user interaction just provide static props
-// 0 hints are red
-// Full hints are highlighted
-// Complete hints are greyed
 
 // Tests for here will involve user interaction & test how hints respond to it
 // Initial hint states will NOT go here, as they are based on static info

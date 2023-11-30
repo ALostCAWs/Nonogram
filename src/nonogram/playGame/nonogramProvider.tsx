@@ -1,13 +1,13 @@
 /* ---- Imports Section */
 import React, { useState, useEffect, createContext } from 'react';
-import { fillState } from '../state.js';
+import { fillState } from '../state.ts';
 // Components
-import { Board } from '../boardDisplay/board.js';
-import { GameComplete } from './endScreens/gameComplete.js';
-import { GameOver } from './endScreens/gameOver.js';
+import { Board } from '../boardDisplay/board.tsx';
+import { GameComplete } from './endScreens/gameComplete.tsx';
+import { GameOver } from './endScreens/gameOver.tsx';
 // Functions
-import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup.js';
-import { checkLineComplete, checkGameComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn } from '../boardDisplay/getBoardInfo.js';
+import { createLives, createCurrentGame, copyCurrentGame, checkZeroLines } from './gameSetup.ts';
+import { checkLineComplete, checkGameComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn } from '../boardDisplay/getBoardInfo.ts';
 /* End ---- */
 
 // TODO:
@@ -25,12 +25,17 @@ import { checkLineComplete, checkGameComplete, checkGameOver, checkTileFillable,
 // When tile filled, NonogramProvider checks for column / row completion
 // currentGame passed to Board, making Board purely for displaying
 
-export const FillModeContext = createContext(null);
-export const NonogramProvider = ({ gameSolution }) => {
-  const [fillMode, setFillMode] = useState();
-  const [currentGame, setCurrentGame] = useState(createCurrentGame(gameSolution));
-  const [lives, setLives] = useState(createLives(gameSolution));
-  const [gameComplete, setGameComplete] = useState(checkGameComplete(gameSolution, currentGame));
+export const FillModeContext = createContext<boolean | null>(null);
+
+interface NonogramProviderProps {
+  gameSolution: boolean[][]
+}
+
+export const NonogramProvider = ({ gameSolution }: NonogramProviderProps) => {
+  const [fillMode, setFillMode] = useState<boolean>(true);
+  const [currentGame, setCurrentGame] = useState<string[][]>(createCurrentGame(gameSolution));
+  const [lives, setLives] = useState<number>(createLives(gameSolution));
+  const [gameComplete, setGameComplete] = useState<boolean>(checkGameComplete(gameSolution, currentGame));
 
   /* useEffect ---- Game Setup / Change / Complete */
   useEffect(() => {
@@ -50,7 +55,7 @@ export const NonogramProvider = ({ gameSolution }) => {
 
   /* Functions ---- */
   /* ---- Game Setup / Change / Complete */
-  const resetGame = () => {
+  const resetGame = (): void => {
     // Using resetGame in place of currentGame to avoid initialization issues
     // Pre-resetGame currentGame was being used still after creating a fresh currentGame, preventing gameComplete value from updating on retry game start
     let resetGame = checkZeroLines(createCurrentGame(gameSolution), gameSolution);
@@ -60,8 +65,8 @@ export const NonogramProvider = ({ gameSolution }) => {
   }
 
   /* ---- Toggle Fill Mode */
-  const toggleFillMode = () => {
-    if (checkGameOver(lives)) {
+  const toggleFillMode = (): void => {
+    if (gameComplete || checkGameOver(lives)) {
       return;
     }
     setFillMode(currentMode => !currentMode);
@@ -69,8 +74,8 @@ export const NonogramProvider = ({ gameSolution }) => {
 
   /* ---- Tile Interaction */
   // R-click to attempt fill, fillState.filled & fillState.error are not removable
-  const fillTile = (e, rowIndex, colIndex) => {
-    if (checkGameOver(lives)) {
+  const fillTile = (e: React.MouseEvent, rowIndex: number, colIndex: number): void => {
+    if (gameComplete || checkGameOver(lives)) {
       return;
     }
     if (!checkTileFillable(currentGame[rowIndex][colIndex])) {
@@ -84,16 +89,16 @@ export const NonogramProvider = ({ gameSolution }) => {
       updatedGame[rowIndex][colIndex] = fillState.filled;
 
       // Check if filling the tile completed the column and / or row it's in
-      const colLineComplete = checkLineComplete(getColumn(gameSolution, colIndex), getColumn(updatedGame, colIndex), colIndex);
-      const rowLineComplete = checkLineComplete(gameSolution[rowIndex], updatedGame[rowIndex], rowIndex);
+      const colLineComplete = checkLineComplete(getColumn(gameSolution, colIndex), getColumn(updatedGame, colIndex));
+      const rowLineComplete = checkLineComplete(gameSolution[rowIndex], updatedGame[rowIndex]);
 
       // If line is complete, set all empty or marked tiles to complete
-      if (colLineComplete) {
+      if (clickedCol !== null && colLineComplete) {
         console.log('col complete');
         clickedCol.classList.add('completeLineHint');
         updatedGame = setColComplete(updatedGame, colIndex);
       }
-      if (rowLineComplete) {
+      if (clickedRow !== null && rowLineComplete) {
         console.log('row complete');
         clickedRow.classList.add('completeLineHint');
         updatedGame = setRowComplete(updatedGame, rowIndex);
@@ -119,9 +124,10 @@ export const NonogramProvider = ({ gameSolution }) => {
       setLives(currentLives => currentLives - 1);
     }
   }
+
   // L-click to mark ( used as a removable penalty-free reference )
-  const markTile = (e, rowIndex, colIndex) => {
-    if (checkGameOver(lives)) {
+  const markTile = (e: React.MouseEvent, rowIndex, colIndex): void => {
+    if (gameComplete || checkGameOver(lives)) {
       return;
     }
     if (!checkTileMarkable(currentGame[rowIndex][colIndex])) {
@@ -141,13 +147,18 @@ export const NonogramProvider = ({ gameSolution }) => {
       });
     });
   }
+
   // Hovering over a tile highlights it & its' corresponding column / row hints
-  const hoverTile = (e, rowIndex, colIndex) => {
-    if (checkGameOver(lives)) {
+  const hoverTile = (e: React.MouseEvent, rowIndex: number, colIndex: number): void => {
+    if (gameComplete || checkGameOver(lives)) {
       return;
     }
     const hoverRow = document.querySelector(`.rowHint${rowIndex}`);
     const hoverCol = document.querySelector(`.colHint${colIndex}`);
+
+    if (hoverRow === null || hoverCol === null) {
+      return;
+    }
     if (e.type === 'mouseenter') {
       hoverRow.classList.add('hoverHint');
       hoverCol.classList.add('hoverHint');
@@ -165,7 +176,7 @@ export const NonogramProvider = ({ gameSolution }) => {
   // Lines with some completed hints do not trigger this, even in obvious cases such as first / last hint completion
   // This keeps in line with existing nonogram games; avoids holding users' hand too much
   // In this game, fillState.complete is set up to specifically disallow removal unlike many other nonogram games as that feels unfair for a user to be able to accidentally undo their own progress ( in a sense ) & trigger errors on lines they have already solved
-  const setColComplete = (updatedGame, colIndex) => {
+  const setColComplete = (updatedGame: string[][], colIndex: number): string[][] => {
     for (let i = 0; i < currentGame.length; i++) {
       if (updatedGame[i][colIndex] === fillState.empty || updatedGame[i][colIndex] === fillState.marked) {
         // fillState.complete matches fillState.marked visually, but cannot be removed
@@ -174,7 +185,8 @@ export const NonogramProvider = ({ gameSolution }) => {
     }
     return updatedGame;
   }
-  const setRowComplete = (updatedGame, rowIndex) => {
+
+  const setRowComplete = (updatedGame: string[][], rowIndex: number): string[][] => {
     for (let i = 0; i < updatedGame[0].length; i++) {
       if (updatedGame[rowIndex][i] === fillState.empty || updatedGame[rowIndex][i] === fillState.marked) {
         // fillState.complete matches fillState.marked visually, but cannot be removed
@@ -190,13 +202,14 @@ export const NonogramProvider = ({ gameSolution }) => {
         <GameOver resetGame={resetGame} />
       )}
 
-      <FillModeContext.Provider value={fillMode}>
-        <Board currentGame={currentGame} gameSolution={gameSolution} lives={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
-      </FillModeContext.Provider>
-
       {gameComplete && (
         <GameComplete lives={lives} resetGame={resetGame} />
       )}
+
+      <FillModeContext.Provider value={fillMode}>
+        <Board currentGame={currentGame} gameSolution={gameSolution} livesCount={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
+      </FillModeContext.Provider>
+
       <button type='button' className='fillModeButton toggleFillMode button' onClick={() => toggleFillMode()} disabled={fillMode}>Fill</button>
       <button type='button' className='markModeButton toggleFillMode button' onClick={() => toggleFillMode()} disabled={!fillMode}>Mark</button>
     </>

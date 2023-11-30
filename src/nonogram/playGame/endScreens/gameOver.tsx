@@ -1,9 +1,13 @@
 /* ---- Imports Section */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 /* End ---- */
 
 /* ---- Display game over message */
-export const GameOver = ({ resetGame }) => {
+interface GameOverProps {
+  resetGame: () => void
+}
+
+export const GameOver = ({ resetGame }: GameOverProps) => {
   return (
     <div className='gameOver'>
       <div>

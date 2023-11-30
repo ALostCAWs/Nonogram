@@ -1,12 +1,12 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
 // Components
-import { PlayGame } from './nonogram/playGame/playGame.js';
-import { CreateGameProvider } from './nonogram/createGame/createGameProvider.js';
+import { PlayGame } from './nonogram/playGame/playGame.tsx';
+import { CreateGameProvider } from './nonogram/createGame/createGameProvider.tsx';
 // Functions
-import { getGameByColumn } from './nonogram/boardDisplay/getBoardInfo.js';
-import { importGame } from './nonogram/gameImportExport/importGame.js';
-import { exportGame } from './nonogram/gameImportExport/exportGame.js';
+import { getGameByColumn } from './nonogram/boardDisplay/getBoardInfo.ts';
+import { importGame } from './nonogram/gameImportExport/importGame.ts';
+import { exportGame } from './nonogram/gameImportExport/exportGame.ts';
 import logo from './logo.svg';
 import './App.css';
 /* End ---- */
@@ -41,8 +41,8 @@ let gameSolution3 = [[false, true, true, false, true],
 export const App = () => {
   const [playPuzzle, setPlayPuzzle] = useState(false);
   const [createPuzzle, setCreatePuzzle] = useState(false);
-  const boardHeight = useRef();
-  const boardWidth = useRef();
+  const boardHeight = useRef<HTMLSelectElement>(null);
+  const boardWidth = useRef<HTMLSelectElement>(null);
 
   exportGame(gameSolution1);
   exportGame(gameSolution2);
@@ -71,8 +71,8 @@ export const App = () => {
       {playPuzzle && (
         <PlayGame />
       )}
-      {createPuzzle && (
-        <CreateGameProvider boardHeight={boardHeight.current.value} boardWidth={boardWidth.current.value} />
+      {createPuzzle && boardHeight.current !== null && boardWidth.current !== null && (
+        <CreateGameProvider boardHeight={parseInt(boardHeight.current.value)} boardWidth={parseInt(boardWidth.current.value)} />
       )}
     </div>
   );

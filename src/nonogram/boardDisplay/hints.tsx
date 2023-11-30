@@ -1,6 +1,6 @@
 /* ---- Imports Section */
 import React from 'react';
-import { fillState, hintState } from '../state.js';
+import { fillState, hintState } from '../state.ts';
 /* End ---- */
 
 /* ---- Hint Text Display */
@@ -8,10 +8,23 @@ import { fillState, hintState } from '../state.js';
 // Individual hint = gameHeight (col) gameWidth (row) & set to fullHint
 // Hint array for a given col / row empty & set to zeroHint
 // All hints for a given line are complete, add completed class to parent div
-export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCount, lineType, updateHintClassName }) => {
-  let hints = [];
+interface HintsProps {
+  lineGameSolution: boolean[],
+  currentLineGame: string[],
+  lineIndex: number,
+  maxHintCount: number,
+  lineType: string
+}
+
+interface Hint {
+  value: number,
+  state: string
+}
+
+export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCount, lineType }: HintsProps) => {
+  let hints: Hint[] = [];
   let hintCount = 0;
-  let currentTilesInHintGameState = [];
+  let currentTilesInHintGameState: string[] = [];
 
   for (let j = 0; j < lineGameSolution.length; j++) {
     let solution = lineGameSolution[j];
@@ -57,12 +70,12 @@ export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCou
     <>
       {lineType === 'col' && (
         <>
-          {hints.map((hint, i) => <div key={`hint${lineIndex} - ${i}`} className={`${hint.state}`} style={{ height: `${100 / maxHintCount}%` }}>{hint.value}</div>)}
+          {hints.map((hint, i) => <div data-testid={`hint${lineIndex} - ${i}`} key={`hint${lineIndex} - ${i}`} className={`${hint.state}`} style={{ height: `${100 / maxHintCount}%` }}>{hint.value}</div>)}
         </>
       )}
       {lineType === 'row' && (
         <>
-          {hints.map((hint, i) => <div key={`hint${lineIndex} - ${i}`} className={`${hint.state}`} style={{ width: `${100 / maxHintCount}%` }}>{hint.value}</div>)}
+          {hints.map((hint, i) => <div data-testid={`hint${lineIndex} - ${i}`} key={`hint${lineIndex} - ${i}`} className={`${hint.state}`} style={{ width: `${100 / maxHintCount}%` }}>{hint.value}</div>)}
         </>
       )}
     </>
