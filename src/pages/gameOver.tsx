@@ -4,15 +4,15 @@ import React from 'react';
 
 /* ---- Display game over message */
 interface GameOverProps {
-  resetGame: () => void
+  resetPuzzle: () => void
 }
 
-export const GameOver = ({ resetGame }: GameOverProps) => {
+export const GameOver = ({ resetPuzzle }: GameOverProps) => {
   return (
     <div className='gameOver'>
       <div>
         <h2>Game Over</h2>
-        <button type='button' className='button' onClick={resetGame}>Retry</button>
+        <button type='button' className='button' onClick={resetPuzzle}>Retry</button>
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
 // Components
-import { NonogramProvider } from './nonogramProvider.tsx';
+import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
 // Functions
-import { importGame } from '../gameImportExport/importGame.ts';
-import { checkSolutionNotBlank, checkGameRectangular } from '../boardDisplay/getBoardInfo.ts';
+import { importPuzzle } from 'functions/importPuzzle';
+import { checkSolutionNotBlank, checkPuzzleRectangular } from 'functions/puzzleValidation';
 /* End ---- */
 
 /* ---- Import Game via code entered into textbox on form */
@@ -20,15 +20,15 @@ export const PlayGame = () => {
     if (gameCode.current === null || gameCode.current === undefined || gameCode.current.value === '') {
       await fetch(`http://localhost:3001/puzzles/1`)
         .then(res => res.json())
-        .then(puzzle => gameSolution.current = importGame(puzzle.puzzleCode));
+        .then(puzzle => gameSolution.current = importPuzzle(puzzle.puzzleCode));
     } else {
-      gameSolution.current = importGame(gameCode.current.value);
+      gameSolution.current = importPuzzle(gameCode.current.value);
     }
 
     if (!checkSolutionNotBlank(gameSolution.current)) {
       errorMsg += 'Invalid Code. Code entered results in a blank puzzle.\n';
     }
-    if (!checkGameRectangular(gameSolution.current)) {
+    if (!checkPuzzleRectangular(gameSolution.current)) {
       errorMsg += 'Invalid Code. Code entered results in an irregularly shaped puzzle.\n';
     }
 
@@ -48,7 +48,7 @@ export const PlayGame = () => {
           <button type='button' id='submit' name='submit' onClick={(e) => handleSubmit(e)}>Play Puzzle</button>
         </form>
       ) : (
-        <NonogramProvider gameSolution={gameSolution.current} />
+        <PlayNonogramProvider puzzleSolution={gameSolution.current} />
       )}
     </>
   );

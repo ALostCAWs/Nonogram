@@ -2,18 +2,18 @@
 import React from 'react';
 /* End ---- */
 
-/* ---- Display game completion messgae */
+/* ---- Display game completion message */
 interface GameCompleteProps {
   lives: number,
-  resetGame: () => void
+  resetPuzzle: () => void
 }
 
-export const GameComplete = ({ lives, resetGame }: GameCompleteProps) => {
+export const GameComplete = ({ lives, resetPuzzle }: GameCompleteProps) => {
   return (
     <div className='gameComplete'>
       <div>
         <h2>{`Puzzle solved with ${lives} lives remaining`}</h2>
-        <button type='button' className='button' onClick={resetGame}>Retry</button>
+        <button type='button' className='button' onClick={resetPuzzle}>Retry</button>
       </div>
     </div>
   );

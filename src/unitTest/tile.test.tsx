@@ -2,17 +2,17 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "../nonogram/state.ts";
-import { FillModeContext } from '../nonogram/playGame/nonogramProvider.tsx';
+import { fillState } from "constants/fillState";
+import { FillModeContext } from 'contexts/fillModeContext';
 // Components
-import { Tile } from '../nonogram/boardDisplay/tile.tsx';
+import { Tile } from 'components/ui/tile';
 /* End ---- */
 
 const empty = fillState.empty;
 
 // Break down tests into very small component-specific parts
 // Test their basic abilities; whether the tile calls the functions passed to it based on the FillModeContext
-// NonogramProvider will test the proper function of the onclick / hover etc.
+// PlayNonogramProvider will test the proper function of the onclick / hover etc.
 
 it('executes fillTile on click when fillMode is true', async () => {
   const rowIndex = 0;
@@ -61,7 +61,7 @@ it('executes hoverTile on mouseenter & on mouseleave', async () => {
   const colIndex = 0;
 
   let isHovered = false;
-  const hoverTile = (e) => {
+  const hoverTile = (e: React.MouseEvent) => {
     if (e.type === 'mouseenter') {
       isHovered = true;
     }

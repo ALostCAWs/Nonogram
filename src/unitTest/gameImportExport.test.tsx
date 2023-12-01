@@ -1,57 +1,57 @@
 /* ---- Imports Section */
 // Functions
-import { exportGame } from "../nonogram/gameImportExport/exportGame.ts";
-import { importGame } from "../nonogram/gameImportExport/importGame.ts";
+import { exportPuzzle } from "functions/exportPuzzle";
+import { importPuzzle } from "functions/importPuzzle";
 /* End ---- */
 
-const gameSolution5x5_NotBlank = [[true, true, true, true, true],
+const puzzleSolution5x5_NotBlank = [[true, true, true, true, true],
 [false, true, true, false, false],
 [false, true, false, true, false],
 [false, true, true, false, false],
 [false, true, false, false, false]];
-const gameHash5x5_NotBlank = '5|1111101100010100110001000';
+const puzzleCode5x5_NotBlank = '5|1111101100010100110001000';
 
-it('exports the game as a string', () => {
+it('exports the puzzle as a string', () => {
   // Does not need to handle invalid exports
-  // gameSolution is checked for validity prior to running the export function
-  const result_GameHashNotBlank = exportGame(gameSolution5x5_NotBlank);
-  expect(result_GameHashNotBlank).toEqual(gameHash5x5_NotBlank);
+  // puzzleSolution is checked for validity prior to running the export function
+  const puzzleCodeNotBlank = exportPuzzle(puzzleSolution5x5_NotBlank);
+  expect(puzzleCodeNotBlank).toEqual(puzzleCode5x5_NotBlank);
 });
 
-it('imports the gameHash string as an array', () => {
+it('imports the puzzleCode string as an array', () => {
   // Needs to be able to handle valid & invalid imports
-  // gameSolution arrays are used to validate the inputs, not the gameHash strings
+  // puzzleSolution arrays are used to validate the inputs, not the puzzleCode strings
 
   // Valid
-  const result_GameSolutionNotBlank = importGame(gameHash5x5_NotBlank);
-  expect(result_GameSolutionNotBlank).toEqual(gameSolution5x5_NotBlank);
+  const puzzleSolutionNotBlank = importPuzzle(puzzleCode5x5_NotBlank);
+  expect(puzzleSolutionNotBlank).toEqual(puzzleSolution5x5_NotBlank);
 
   // Invalid - Blank
-  const gameSolution5x5_Blank = [[false, false, false, false, false],
+  const puzzleSolution5x5_Blank = [[false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false]];
-  const gameHash5x5_Blank = '5|0000000000000000000000000';
-  const result_GameSolutionBlank = importGame(gameHash5x5_Blank);
-  expect(result_GameSolutionBlank).toEqual(gameSolution5x5_Blank);
+  const puzzleCode5x5_Blank = '5|0000000000000000000000000';
+  const puzzleSolutionBlank = importPuzzle(puzzleCode5x5_Blank);
+  expect(puzzleSolutionBlank).toEqual(puzzleSolution5x5_Blank);
 
   // Invalid - Irregular
-  const gameSolution5x5_Irregular_NotBlank = [[true, false, false, false, false],
+  const puzzleSolution5x5_Irregular_NotBlank = [[true, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false]];
-  const gameHash5x5_Irregular_NotBlank = '5|100000000000000000000000';
-  const result_GameSolutionIrregularNotBlank = importGame(gameHash5x5_Irregular_NotBlank);
-  expect(result_GameSolutionIrregularNotBlank).toEqual(gameSolution5x5_Irregular_NotBlank);
+  const puzzleCode5x5_Irregular_NotBlank = '5|100000000000000000000000';
+  const puzzleSolutionIrregularNotBlank = importPuzzle(puzzleCode5x5_Irregular_NotBlank);
+  expect(puzzleSolutionIrregularNotBlank).toEqual(puzzleSolution5x5_Irregular_NotBlank);
 
-  const gameSolution5x5_Irregular_Blank = [[false, false, false, false, false],
+  const puzzleSolution5x5_Irregular_Blank = [[false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false]];
-  const gameHash5x5_Irregular_Blank = '5|000000000000000000000000';
-  const result_GameSolutionIrregularBlank = importGame(gameHash5x5_Irregular_Blank);
-  expect(result_GameSolutionIrregularBlank).toEqual(gameSolution5x5_Irregular_Blank);
+  const puzzleCode5x5_Irregular_Blank = '5|000000000000000000000000';
+  const puzzleSolutionIrregularBlank = importPuzzle(puzzleCode5x5_Irregular_Blank);
+  expect(puzzleSolutionIrregularBlank).toEqual(puzzleSolution5x5_Irregular_Blank);
 });

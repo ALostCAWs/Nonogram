@@ -1,24 +1,24 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
 // Components
-import { PlayGame } from './nonogram/playGame/playGame.tsx';
-import { CreateGameProvider } from './nonogram/createGame/createGameProvider.tsx';
+import { PlayGame } from 'pages/playGame';
+import { CreateNonogramProvider } from 'components/providers/createNonogramProvider';
 // Functions
-import { getGameByColumn } from './nonogram/boardDisplay/getBoardInfo.ts';
-import { importGame } from './nonogram/gameImportExport/importGame.ts';
-import { exportGame } from './nonogram/gameImportExport/exportGame.ts';
+import { getPuzzleByColumn } from 'functions/getPuzzleInfo';
+import { importPuzzle } from 'functions/importPuzzle';
+import { exportPuzzle } from 'functions/exportPuzzle';
 import logo from './logo.svg';
 import './App.css';
 /* End ---- */
 
-const gameSolution5x5 = [[true, true, true, true, true],
+const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, true, false, false],
 [false, true, false, true, false],
 [false, true, true, false, false],
 [false, true, true, false, false]];
-let colGame = getGameByColumn(gameSolution5x5);
-console.log('colGame');
-console.log(colGame);
+let colPuzzle = getPuzzleByColumn(puzzleSolution5x5);
+console.log('colPuzzle');
+console.log(colPuzzle);
 
 let gameSolution1 = [[true, true, true, true, true],
 [false, true, true, false, false],
@@ -44,9 +44,9 @@ export const App = () => {
   const boardHeight = useRef<HTMLSelectElement>(null);
   const boardWidth = useRef<HTMLSelectElement>(null);
 
-  exportGame(gameSolution1);
-  exportGame(gameSolution2);
-  exportGame(gameSolution3);
+  exportPuzzle(gameSolution1);
+  exportPuzzle(gameSolution2);
+  exportPuzzle(gameSolution3);
   return (
     <div className="App">
       {!playPuzzle && !createPuzzle && (
@@ -72,7 +72,7 @@ export const App = () => {
         <PlayGame />
       )}
       {createPuzzle && boardHeight.current !== null && boardWidth.current !== null && (
-        <CreateGameProvider boardHeight={parseInt(boardHeight.current.value)} boardWidth={parseInt(boardWidth.current.value)} />
+        <CreateNonogramProvider boardHeight={parseInt(boardHeight.current.value)} boardWidth={parseInt(boardWidth.current.value)} />
       )}
     </div>
   );

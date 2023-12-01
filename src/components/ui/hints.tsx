@@ -1,16 +1,17 @@
 /* ---- Imports Section */
 import React from 'react';
-import { fillState, hintState } from '../state.ts';
+import { fillState } from 'constants/fillState';
+import { hintState } from 'constants/hintState';
 /* End ---- */
 
 /* ---- Hint Text Display */
 // Check if . . .
-// Individual hint = gameHeight (col) gameWidth (row) & set to fullHint
+// Individual hint = puzzleHeight (col) puzzleWidth (row) & set to fullHint
 // Hint array for a given col / row empty & set to zeroHint
 // All hints for a given line are complete, add completed class to parent div
 interface HintsProps {
-  lineGameSolution: boolean[],
-  currentLineGame: string[],
+  puzzleSolutionLine: boolean[],
+  currentPuzzleLine: string[],
   lineIndex: number,
   maxHintCount: number,
   lineType: string
@@ -21,28 +22,28 @@ interface Hint {
   state: string
 }
 
-export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCount, lineType }: HintsProps) => {
+export const Hints = ({ puzzleSolutionLine, currentPuzzleLine, lineIndex, maxHintCount, lineType }: HintsProps) => {
   let hints: Hint[] = [];
   let hintCount = 0;
-  let currentTilesInHintGameState: string[] = [];
+  let currentTilesInHintFillState: string[] = [];
 
-  for (let j = 0; j < lineGameSolution.length; j++) {
-    let solution = lineGameSolution[j];
+  for (let j = 0; j < puzzleSolutionLine.length; j++) {
+    let solution = puzzleSolutionLine[j];
 
     // Count col-adjacent trues, add current amount when false or when row end
     if (solution) {
       hintCount++;
-      currentTilesInHintGameState.push(currentLineGame[j]);
+      currentTilesInHintFillState.push(currentPuzzleLine[j]);
     }
 
     // If at end of column/row or an unfillable tile is found & there is a hint counted, populate hint object
-    if ((j === lineGameSolution.length - 1 || !solution) && hintCount !== 0) {
+    if ((j === puzzleSolutionLine.length - 1 || !solution) && hintCount !== 0) {
       // Default hintState setup for fullLineIncomplete & incomplete
-      let state = hintCount === lineGameSolution.length ? hintState.fullLineIncomplete : hintState.incomplete;
+      let state = hintCount === puzzleSolutionLine.length ? hintState.fullLineIncomplete : hintState.incomplete;
 
-      // Check if currentTilesInHintGameState ( now a Set => currentTilesInHintGameStateReduced ) contains one fillState.filled item
-      let currentTilesInHintGameStateReduced = new Set(currentTilesInHintGameState);
-      if (currentTilesInHintGameStateReduced.size === 1 && currentTilesInHintGameStateReduced.has(fillState.filled)) {
+      // Check if currentTilesInHintFillState ( now a Set => currentTilesInHintFillStateReduced ) contains one fillState.filled item
+      let currentTilesInHintFillStateReduced = new Set(currentTilesInHintFillState);
+      if (currentTilesInHintFillStateReduced.size === 1 && currentTilesInHintFillStateReduced.has(fillState.filled)) {
         state = hintState.complete;
       }
 
@@ -53,7 +54,7 @@ export const Hints = ({ lineGameSolution, currentLineGame, lineIndex, maxHintCou
       }
       hints.push(hint);
       hintCount = 0;
-      currentTilesInHintGameState = [];
+      currentTilesInHintFillState = [];
     }
   }
   // If hints for a line is empty, that entire line is empty

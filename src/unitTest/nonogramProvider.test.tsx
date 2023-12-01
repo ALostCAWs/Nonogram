@@ -2,9 +2,9 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "../nonogram/state.ts";
+import { fillState } from "constants/fillState";
 // Components
-import { NonogramProvider } from '../nonogram/playGame/nonogramProvider.tsx';
+import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
 /* End ---- */
 
 const filled = fillState.filled;
@@ -12,7 +12,7 @@ const marked = fillState.marked;
 const error = fillState.error;
 const complete = 'complete';
 
-const gameSolution5x5 = [[true, true, true, true, true],
+const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, false, false, false],
 [false, true, false, true, false],
 [true, true, true, false, false],
@@ -20,7 +20,7 @@ const gameSolution5x5 = [[true, true, true, true, true],
 
 /* FILLMODE */
 it('sets the fillMode to true on component initialization', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const fillButton = screen.getByRole('button', { name: 'Fill' });
   const markButton = screen.getByRole('button', { name: 'Mark' });
 
@@ -29,7 +29,7 @@ it('sets the fillMode to true on component initialization', () => {
 });
 
 it('toggles the fillMode on click', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const fillButton = screen.getByRole('button', { name: 'Fill' });
   const markButton = screen.getByRole('button', { name: 'Mark' });
 
@@ -42,7 +42,7 @@ it('toggles the fillMode on click', () => {
 /* TILES */
 // Initialization Tests
 it('initializes the tiles with fillState.empty', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   // true tile
   const tile_true = screen.getByTestId(`tile0-0`);
   expect(tile_true).not.toHaveClass(filled, marked, error, complete);
@@ -53,12 +53,12 @@ it('initializes the tiles with fillState.empty', () => {
 });
 
 it('initializes the tiles in false-only columns with fillState.error', () => {
-  const gameSolution5x5_FalseCol = [[true, true, true, true, false],
+  const puzzleSolution5x5_FalseCol = [[true, true, true, true, false],
   [false, true, false, false, false],
   [false, true, false, true, false],
   [true, true, true, false, false],
   [false, false, false, false, false]];
-  render(<NonogramProvider gameSolution={gameSolution5x5_FalseCol} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5_FalseCol} />);
 
   expect(screen.getByTestId(`tile0-4`)).toHaveClass(error);
   expect(screen.getByTestId(`tile1-4`)).toHaveClass(error);
@@ -68,7 +68,7 @@ it('initializes the tiles in false-only columns with fillState.error', () => {
 });
 
 it('initializes the tiles in false-only rows with fillState.error', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
 
   expect(screen.getByTestId(`tile4-0`)).toHaveClass(error);
   expect(screen.getByTestId(`tile4-1`)).toHaveClass(error);
@@ -81,7 +81,7 @@ it('highlights the associated hints on hover', () => {
   const rowIndex = 0;
   const colIndex = 0;
 
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
 
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);
   const rowHint = screen.getByTestId(`rowHint${rowIndex}`);
@@ -99,22 +99,22 @@ it('highlights the associated hints on hover', () => {
 });
 
 // Fill / Error / Mark - Basic functionality tests
-it('fills tiles that are true according to the gameSolution array', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+it('fills tiles that are true according to the puzzleSolution array', () => {
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile = screen.getByTestId(`tile0-0`)
   userEvent.click(tile);
   expect(tile).toHaveClass(filled);
 });
 
-it('errors tiles that are true according to the gameSolution array', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+it('errors tiles that are true according to the puzzleSolution array', () => {
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile = screen.getByTestId(`tile1-0`);
   userEvent.click(tile);
   expect(tile).toHaveClass(error);
 });
 
-it('marks empty tiles regardless of gameSolution array', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+it('marks empty tiles regardless of puzzleSolution array', () => {
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   userEvent.click(screen.getByRole('button', { name: 'Mark' }));
   const tile_true = screen.getByTestId(`tile0-0`);
   const tile_false = screen.getByTestId(`tile1-0`);
@@ -133,7 +133,7 @@ it('marks empty tiles regardless of gameSolution array', () => {
 });
 
 it('completes all remaining empty tiles in a column when complete', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile_fill = screen.getByTestId(`tile0-4`);
   const tile_mark = screen.getByTestId(`tile1-4`);
   const tile_completeMark_1 = screen.getByTestId(`tile2-4`);
@@ -152,7 +152,7 @@ it('completes all remaining empty tiles in a column when complete', () => {
 });
 
 it('completes all remaining empty tiles in a row when complete', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile_mark = screen.getByTestId(`tile1-0`);
   const tile_fill = screen.getByTestId(`tile1-1`);
   const tile_completeMark_1 = screen.getByTestId(`tile1-2`);
@@ -174,7 +174,7 @@ it('completes all remaining empty tiles in a row when complete', () => {
 
 // Fill / Error / Mark - Preventative functionality tests
 it('prevents filled tiles from being unfilled or marked', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile = screen.getByTestId(`tile0-0`)
   userEvent.click(tile);
   expect(tile).toHaveClass(filled);
@@ -191,7 +191,7 @@ it('prevents filled tiles from being unfilled or marked', () => {
 });
 
 it(`prevents error'd tiles from being unerror'd or marked`, () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile = screen.getByTestId(`tile1-0`)
   userEvent.click(tile);
   expect(tile).toHaveClass(error);
@@ -208,7 +208,7 @@ it(`prevents error'd tiles from being unerror'd or marked`, () => {
 });
 
 it(`prevents marked tiles from being filled / error'd`, () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   userEvent.click(screen.getByRole('button', { name: 'Mark' }));
   const tile_mark = screen.getByTestId(`tile0-0`);
 
@@ -220,7 +220,7 @@ it(`prevents marked tiles from being filled / error'd`, () => {
 });
 
 it(`prevents marked complete tiles from being filled, error'd or unmarked`, () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile_fill_1 = screen.getByTestId(`tile0-0`);
   const tile_fill_2 = screen.getByTestId(`tile3-0`);
   const tile_completeMark_1 = screen.getByTestId(`tile1-0`);
@@ -252,17 +252,17 @@ it(`prevents marked complete tiles from being filled, error'd or unmarked`, () =
 
 /* LIVES */
 it('initializes with the at least one life', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   expect(screen.getAllByTestId('life').length).toBeGreaterThan(0);
 });
 
 it('initializes with the correct number of lives based on the board dimensions', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   expect(screen.getAllByTestId('life').length).toEqual(3);
 });
 
 it('reduces the lives count by one when an error is made', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   let lifeCount_preClick = screen.getAllByTestId('life').length;
   const tile_error = screen.getByTestId(`tile1-0`);
 
@@ -273,7 +273,7 @@ it('reduces the lives count by one when an error is made', () => {
 });
 
 it('only reduces the lives count when clicking on an error tile for the first time', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   let lifeCount_preClick = screen.getAllByTestId('life').length;
   const tile_error = screen.getByTestId(`tile1-0`);
 
@@ -285,7 +285,7 @@ it('only reduces the lives count when clicking on an error tile for the first ti
 });
 
 it('does not change the lives count when there is no error made', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   let lifeCount_preClick = screen.getAllByTestId('life').length;
   const tile_fill = screen.getByTestId(`tile0-0`);
 

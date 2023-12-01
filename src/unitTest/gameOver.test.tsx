@@ -2,9 +2,9 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "../nonogram/state.ts";
+import { fillState } from "constants/fillState";
 // Components
-import { NonogramProvider } from '../nonogram/playGame/nonogramProvider.tsx';
+import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
 /* End ---- */
 
 const filled = fillState.filled;
@@ -12,14 +12,14 @@ const marked = fillState.marked;
 const error = fillState.error;
 const complete = 'complete';
 
-const gameSolution5x5 = [[true, true, true, true, true],
+const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, false, false, false],
 [false, true, false, true, false],
 [true, true, true, false, false],
 [false, false, false, false, false]];
 
 it('ends the game when lives run out', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile_error_1 = screen.getByTestId(`tile1-0`);
   const tile_error_2 = screen.getByTestId(`tile1-2`);
   const tile_error_3 = screen.getByTestId(`tile1-3`);
@@ -42,7 +42,7 @@ it('prevents tile onClick when the game ends', () => {
   // Game will never end with fillMode false
   // Game end while fillMode is false is impossible
   // Cannot switch fill modes after game end
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile_fill_1 = screen.getByTestId(`tile0-0`);
   const tile_error_1 = screen.getByTestId(`tile1-0`);
   const tile_error_2 = screen.getByTestId(`tile1-2`);
@@ -59,7 +59,7 @@ it('prevents tile onClick when the game ends', () => {
 });
 
 it('prevents tile onHover when the game ends', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile_fill_1 = screen.getByTestId(`tile0-0`);
   const tile_fill_2 = screen.getByTestId(`tile3-2`);
   const tile_error_1 = screen.getByTestId(`tile1-0`);
@@ -94,7 +94,7 @@ it('prevents tile onHover when the game ends', () => {
 });
 
 it('prevents fillMode buttons onClick when the game ends', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile_error_1 = screen.getByTestId(`tile1-0`);
   const tile_error_2 = screen.getByTestId(`tile1-2`);
   const tile_error_3 = screen.getByTestId(`tile1-3`);
@@ -110,7 +110,7 @@ it('prevents fillMode buttons onClick when the game ends', () => {
 });
 
 it('resets the game when the retry button is clicked', () => {
-  render(<NonogramProvider gameSolution={gameSolution5x5} />);
+  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile_fill_1 = screen.getByTestId(`tile0-0`);
   const tile_mark_1 = screen.getByTestId(`tile0-1`);
   const tile_error_1 = screen.getByTestId(`tile1-0`);

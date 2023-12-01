@@ -1,10 +1,10 @@
 /* ---- Imports Section */
 import React, { useContext } from 'react';
-import { FillModeContext } from '../playGame/nonogramProvider.tsx'
+import { FillModeContext } from 'contexts/fillModeContext'
 /* End ---- */
 
 // Tiles are only aware of their fillState & coords.
-// When they're clicked, they tell the nonogram provider their coords. & the game array is updated
+// When they're clicked, they tell the nonogram provider their coords. & the puzzle array is updated
 interface TileProps {
   fill: string,
   rowIndex: number,
