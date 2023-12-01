@@ -1,5 +1,4 @@
 import { fillState } from "constants/fillState";
-import { checkSolutionNotBlank, checkBoardNotBlank, checkPuzzleRectangular } from "functions/puzzleValidation";
 import { checkLineComplete, checkPuzzleComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn, getPuzzleByColumn, getLongestDimension, getMaxHintCountByLineLength } from "functions/getPuzzleInfo";
 
 const filled = fillState.filled;
@@ -14,55 +13,22 @@ const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, true, false, false],
 [false, true, true, false, false]];
 
-// Puzzle validation
-it('ensures the given puzzleSolution is not blank', () => {
-  let blankPuzzleSolution = [[false, false, false, false, false],
-  [false, false, false, false, false],
-  [false, false, false, false, false],
-  [false, false, false, false, false],
-  [false, false, false, false, false]];
-  const resultBlankSolution = checkSolutionNotBlank(blankPuzzleSolution);
-  expect(resultBlankSolution).toEqual(false);
-
-  let blank5x5Puzzle = [[empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty]];
-  const resultBlankPuzzle = checkBoardNotBlank(blank5x5Puzzle);
-  expect(resultBlankPuzzle).toEqual(false);
-
-  let notBlank5x5Puzzle = [[filled, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty]];
-  const resultNotBlankPuzzle = checkBoardNotBlank(notBlank5x5Puzzle);
-  expect(resultNotBlankPuzzle).toEqual(true);
-
-  const resultNotBlankSolution = checkSolutionNotBlank(puzzleSolution5x5);
-  expect(resultNotBlankSolution).toEqual(true);
+// Array quality of life
+it('gets a column from the given puzzleSolution array using the given index', () => {
+  const i = 2;
+  const expectedColumn = [true, true, false, true, true];
+  const result = getColumn(puzzleSolution5x5, i);
+  expect(result).toEqual(expectedColumn);
 });
 
-it('ensures the given puzzleSolution is rectangular', () => {
-  const resultRectangle = checkPuzzleRectangular(puzzleSolution5x5);
-  expect(resultRectangle).toEqual(true);
-
-  const irregularRow0puzzleSolution = [[true, true, true, true],
-  [false, true, true, false, false],
-  [false, true, false, true, false],
-  [false, true, true, false, false],
-  [false, true, true, false, false]];
-  const resultNotRectangleFirstRow = checkPuzzleRectangular(irregularRow0puzzleSolution);
-  expect(resultNotRectangleFirstRow).toEqual(false);
-
-  const irregularRow4puzzleSolution = [[true, true, true, true, true],
-  [false, true, true, false, false],
-  [false, true, false, true, false],
-  [false, true, true, false, false],
-  [false, true, true, false]];
-  const resultNotRectangleLastRow = checkPuzzleRectangular(irregularRow4puzzleSolution);
-  expect(resultNotRectangleLastRow).toEqual(false);
+it('returns a given puzzle flipped, allowing puzzle[n] to be used in order to obtain a column rather than a row', () => {
+  const expectedPuzzleSolution5x5ByColumn = [[true, false, false, false, false],
+  [true, true, true, true, true],
+  [true, true, false, true, true],
+  [true, false, true, false, false],
+  [true, false, false, false, false]];
+  const puzzleSolution5x5ByColumn = getPuzzleByColumn(puzzleSolution5x5);
+  expect(puzzleSolution5x5ByColumn).toEqual(expectedPuzzleSolution5x5ByColumn);
 });
 
 // Completion check
@@ -162,24 +128,6 @@ it('checks if a given tile is markable', () => {
   expect(checkTileMarkable(filled)).toEqual(false);
   expect(checkTileMarkable(error)).toEqual(false);
   expect(checkTileMarkable(complete)).toEqual(false);
-});
-
-// Array quality of life
-it('gets a column from the given puzzleSolution array using the given index', () => {
-  const i = 2;
-  const expectedColumn = [true, true, false, true, true];
-  const result = getColumn(puzzleSolution5x5, i);
-  expect(result).toEqual(expectedColumn);
-});
-
-it('returns a given puzzle flipped, allowing puzzle[n] to be used in order to obtain a column rather than a row', () => {
-  const expectedPuzzleSolution5x5ByColumn = [[true, false, false, false, false],
-  [true, true, true, true, true],
-  [true, true, false, true, true],
-  [true, false, true, false, false],
-  [true, false, false, false, false]];
-  const puzzleSolution5x5ByColumn = getPuzzleByColumn(puzzleSolution5x5);
-  expect(puzzleSolution5x5ByColumn).toEqual(expectedPuzzleSolution5x5ByColumn);
 });
 
 it(`returns the length of the boards' longest dimension`, () => {
