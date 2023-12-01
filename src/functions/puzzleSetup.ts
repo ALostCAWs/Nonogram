@@ -1,6 +1,7 @@
 /* ---- Imports Section */
 import { fillState } from 'constants/fillState';
 import { getColumn, getLongestDimension } from 'functions/getPuzzleInfo';
+import { setTileRowFillState, setTileColFillState } from './updatePuzzleLines';
 /* End ---- */
 
 /* ---- Initial Puzzle Setup Functions */
@@ -42,26 +43,14 @@ export const checkZeroLines = (updatedPuzzle: string[][], puzzleSolution: boolea
   for (let i = 0; i < puzzleSolution[0].length; i++) {
     let col = new Set(getColumn(puzzleSolution, i));
     if (col.size === 1 && col.has(false)) {
-      setTileColZero(i, updatedPuzzle);
+      setTileColFillState(updatedPuzzle, i, fillState.empty);
     }
   }
   for (let i = 0; i < puzzleSolution.length; i++) {
     let row = new Set(puzzleSolution[i]);
     if (row.size === 1 && row.has(false)) {
-      setTileRowZero(i, updatedPuzzle);
+      setTileRowFillState(updatedPuzzle, i, fillState.empty);
     }
   }
   return updatedPuzzle;
-}
-
-/* ---- Functions to set all tiles in zero hint lines ( rows and/or columns ) to fillState.error */
-const setTileColZero = (colIndex: number, currentPuzzle: string[][]): void => {
-  for (let i = 0; i < currentPuzzle.length; i++) {
-    currentPuzzle[i][colIndex] = fillState.error;
-  }
-}
-const setTileRowZero = (rowIndex: number, currentPuzzle: string[][]): void => {
-  for (let i = 0; i < currentPuzzle[0].length; i++) {
-    currentPuzzle[rowIndex][i] = fillState.error;
-  }
 }
