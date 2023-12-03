@@ -31,7 +31,7 @@ it('executes fillTile on click when fillMode is true', async () => {
 
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);
 
-  userEvent.click(tile);
+  await userEvent.click(tile);
   expect(isFilled).toEqual(true);
 });
 
@@ -52,7 +52,7 @@ it('executes markTile on click when fillMode is false', async () => {
 
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);
 
-  userEvent.click(tile);
+  await userEvent.click(tile);
   expect(isMarked).toEqual(true);
 });
 
@@ -77,9 +77,9 @@ it('executes hoverTile on mouseenter & on mouseleave', async () => {
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);
 
   // mouseenter
-  userEvent.hover(tile);
+  await userEvent.hover(tile);
   expect(isHovered).toEqual(true);
   // mouseleave
-  userEvent.unhover(tile);
+  await userEvent.unhover(tile);
   expect(isHovered).toEqual(false);
 });

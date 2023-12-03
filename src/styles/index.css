@@ -12,8 +12,8 @@
   --font-color: #232931;
   --font-color-warning: #FCAB10;
 
-  --hint-tile-color: #e5e5e5;
-  --hint-hover-color: #d1d1d1;
+  --lineInfo-tile-color: #e5e5e5;
+    --lineInfo-color: #d1d1d1;
   --hint-completeLine-color: #d3d2d2;
   --hint-fullLine-txt-color: #589333;
 
@@ -132,33 +132,33 @@ body {
   background-color: var(--mark-color);
 }
 
-/* ---- Hints ---- */
-/* .colHintContainer & rowHintContainers' grid-row/column rule enforces top-left portion of grid to be blank */
-.colHintContainer {
+/* ---- Info Tiles ---- */
+/* .colInfoContainer & rowInfoContainers' grid-row/column rule enforces top-left portion of grid to be blank */
+.colInfoContainer {
   display: grid;
   grid-auto-flow: column;
   grid-column: 2 / -1;
   gap: .05rem;
 }
 
-.rowHintContainer {
+.rowInfoContainer {
   justify-self: end;
   display: grid;
   grid-row: 2 / -2;
   gap: .05rem;
 }
 
-.colHints {
+.colInfos {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
 
   /* add gradient light top, dark bottom */
-  background-color: var(--hint-tile-color);
+  background-color: var(--lineInfo-tile-color);
 }
 
-.rowHints {
+.rowInfos {
   display: flex;
   flex-direction: row;
 
@@ -166,13 +166,14 @@ body {
   align-items: center;
 
   /* add gradient light left, dark right*/
-  background-color: var(--hint-tile-color);
+  background-color: var(--lineInfo-tile-color);
 }
 
-.hoverHint {
-  background-color: var(--hint-hover-color);
+.hoverInfo {
+  background-color: var(--lineInfo-color);
 }
 
+/* ---- Hints ---- */
 .completeLineHint {
   background-color: var(--hint-completeLine-color)
 }

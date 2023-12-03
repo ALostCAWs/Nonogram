@@ -1,7 +1,3 @@
-/* ---- Imports Section */
-import { fillState } from 'constants/fillState';
-/* End ---- */
-
 export const setTileColFillState = (currentPuzzle: string[][], colIndex: number, fill: string): void => {
   for (let i = 0; i < currentPuzzle.length; i++) {
     currentPuzzle[i][colIndex] = fill;

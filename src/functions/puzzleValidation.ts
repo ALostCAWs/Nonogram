@@ -27,7 +27,7 @@ export const checkPuzzleRectangular = (puzzleSolution: boolean[][]): boolean => 
   // Ensure all row lengths are equal to the length of the first row
   // Only have to check against the first row due to the import method slicing row by row based on the given width
   // Only have to check rows as unequal columns result in unequal rows & vice-versa
-  let rowLengthToEnforce = puzzleSolution[0].length;
+  const rowLengthToEnforce = puzzleSolution[0].length;
   for (let i = 1; i < puzzleSolution.length; i++) {
     if (rowLengthToEnforce !== puzzleSolution[i].length) {
       return false;

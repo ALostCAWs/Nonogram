@@ -31,29 +31,29 @@ it('initializes the board with the inputted dimensions', () => {
   expect(tile5_0).toBeNull();
 });
 
-it('disables the Export button when the board is blank', () => {
+it('disables the Export button when the board is blank', async () => {
   render(<CreateNonogramProvider boardHeight={5} boardWidth={5} />);
   const exportBtn = screen.getByRole('button', { name: 'Export' });
   const tile0_0 = screen.getByTestId(`tile0-0`);
 
   expect(exportBtn).toBeDisabled();
 
-  userEvent.click(tile0_0);
+  await userEvent.click(tile0_0);
   expect(exportBtn).not.toBeDisabled();
 
-  userEvent.click(tile0_0);
+  await userEvent.click(tile0_0);
   expect(exportBtn).toBeDisabled();
 });
 
-it('toggles the tile fillState between empty and filled', () => {
+it('toggles the tile fillState between empty and filled', async () => {
   render(<CreateNonogramProvider boardHeight={5} boardWidth={5} />);
   const tile0_0 = screen.getByTestId(`tile0-0`);
 
-  userEvent.click(tile0_0);
+  await userEvent.click(tile0_0);
   expect(tile0_0).toHaveClass(filled);
   expect(tile0_0).not.toHaveClass(marked, error, complete);
 
-  userEvent.click(tile0_0);
+  await userEvent.click(tile0_0);
   expect(tile0_0).not.toHaveClass(filled, marked, error, complete);
 });
 

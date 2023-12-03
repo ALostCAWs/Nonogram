@@ -29,7 +29,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
 
   /* ---- Tile Interaction Functions */
   // R-click to toggle fillState filled / empty
-  const fillTile = (_e: any, rowIndex: number, colIndex: number): void => {
+  const fillTile = (e: React.MouseEvent, rowIndex: number, colIndex: number): void => {
     setCurrentPuzzle(puzzle => {
       return puzzle.map((row, i) => {
         return row.map((fill, j) => {
@@ -49,7 +49,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
         <>
           <Board currentPuzzle={currentPuzzle} puzzleSolution={[]} livesCount={undefined} fillTile={fillTile} markTile={(e, rowIndex, colIndex) => { }} hoverTile={(e, rowIndex, colIndex) => { }} />
           <button type='button' className='export button' onClick={() => {
-            let puzzleCode = createBoolPuzzle(currentPuzzle);
+            const puzzleCode = createBoolPuzzle(currentPuzzle);
             navigator.clipboard.writeText(puzzleCode);
             setSubmit(true);
           }} disabled={boardBlank}>Export</button>
@@ -65,9 +65,9 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
 }
 
 const createBlankPuzzle = (boardHeight: number, boardWidth: number): string[][] => {
-  let blankPuzzle: string[][] = [];
+  const blankPuzzle: string[][] = [];
   for (let i = 0; i < boardHeight; i++) {
-    let blankRow: string[] = [];
+    const blankRow: string[] = [];
     for (let j = 0; j < boardWidth; j++) {
       blankRow.push(fillState.empty);
     }
@@ -77,11 +77,11 @@ const createBlankPuzzle = (boardHeight: number, boardWidth: number): string[][] 
 }
 
 const createBoolPuzzle = (currentPuzzle: string[][]): string => {
-  let puzzleSolution: boolean[][] = [];
+  const puzzleSolution: boolean[][] = [];
   for (let i = 0; i < currentPuzzle.length; i++) {
-    let rowSolution: boolean[] = [];
+    const rowSolution: boolean[] = [];
     for (let j = 0; j < currentPuzzle[0].length; j++) {
-      let filled = currentPuzzle[i][j] === fillState.filled ? true : false;
+      const filled = currentPuzzle[i][j] === fillState.filled ? true : false;
       rowSolution.push(filled);
     }
     puzzleSolution.push(rowSolution);

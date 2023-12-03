@@ -4,7 +4,7 @@ import { fillState } from "constants/fillState";
 
 /* ---- Column Quality of Life */
 export const getColumn = <T>(inputPuzzle: T[][], colIndex: number): T[] => {
-  let column: T[] = [];
+  const column: T[] = [];
   for (let i = 0; i < inputPuzzle.length; i++) {
     column.push(inputPuzzle[i][colIndex]);
   }
@@ -12,9 +12,9 @@ export const getColumn = <T>(inputPuzzle: T[][], colIndex: number): T[] => {
 }
 
 export const getPuzzleByColumn = <T>(inputPuzzle: T[][]): T[][] => {
-  let puzzleByColumn: T[][] = [];
+  const puzzleByColumn: T[][] = [];
   for (let i = 0; i < inputPuzzle[0].length; i++) {
-    let column: T[] = getColumn(inputPuzzle, i);
+    const column: T[] = getColumn(inputPuzzle, i);
     puzzleByColumn.push(column);
   }
   return puzzleByColumn;

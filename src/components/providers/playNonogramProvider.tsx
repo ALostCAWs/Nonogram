@@ -29,8 +29,6 @@ import { checkLineComplete, checkPuzzleComplete, checkGameOver, checkTileFillabl
 // When tile filled, NonogramProvider checks for column / row completion
 // currentPuzzle passed to Board, making Board purely for displaying
 
-
-
 interface PlayNonogramProviderProps {
   puzzleSolution: boolean[][]
 }
@@ -62,7 +60,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
   const resetPuzzle = (): void => {
     // Using resetPuzzle in place of currentPuzzle to avoid initialization issues
     // Pre-resetPuzzle currentPuzzle was being used still after creating a fresh currentPuzzle, preventing gameComplete value from updating on retry puzzle start
-    let resetPuzzle = checkZeroLines(createCurrentPuzzle(puzzleSolution), puzzleSolution);
+    const resetPuzzle = checkZeroLines(createCurrentPuzzle(puzzleSolution), puzzleSolution);
     setCurrentPuzzle(resetPuzzle);
     setLives(createLives(puzzleSolution));
     setGameComplete(checkPuzzleComplete(puzzleSolution, resetPuzzle));
@@ -87,8 +85,8 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
     }
 
     if (puzzleSolution[rowIndex][colIndex]) {
-      const clickedRow = document.querySelector(`.rowHint${rowIndex}`);
-      const clickedCol = document.querySelector(`.colHint${colIndex}`);
+      const clickedRow = document.querySelector(`.rowInfo${rowIndex}`);
+      const clickedCol = document.querySelector(`.colInfo${colIndex}`);
       let updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
       updatedPuzzle[rowIndex][colIndex] = fillState.filled;
 
@@ -157,19 +155,19 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
     if (gameComplete || checkGameOver(lives)) {
       return;
     }
-    const hoverRow = document.querySelector(`.rowHint${rowIndex}`);
-    const hoverCol = document.querySelector(`.colHint${colIndex}`);
+    const hoverRow = document.querySelector(`.rowInfo${rowIndex}`);
+    const hoverCol = document.querySelector(`.colInfo${colIndex}`);
 
     if (hoverRow === null || hoverCol === null) {
       return;
     }
     if (e.type === 'mouseenter') {
-      hoverRow.classList.add('hoverHint');
-      hoverCol.classList.add('hoverHint');
+      hoverRow.classList.add('hoverInfo');
+      hoverCol.classList.add('hoverInfo');
     }
     if (e.type === 'mouseleave') {
-      hoverRow.classList.remove('hoverHint');
-      hoverCol.classList.remove('hoverHint');
+      hoverRow.classList.remove('hoverInfo');
+      hoverCol.classList.remove('hoverInfo');
     }
   }
 

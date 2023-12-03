@@ -1,5 +1,8 @@
 /* ---- Imports Section */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
+import { GameModeContext } from 'contexts/gameModeContext';
+// Interfaces
+import { Puzzle } from 'constants/puzzleInterface';
 // Components
 import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
 // Functions
@@ -19,8 +22,8 @@ export const PlayGame = () => {
     let errorMsg = '';
     if (gameCode.current === null || gameCode.current === undefined || gameCode.current.value === '') {
       await fetch(`http://localhost:3001/puzzles/1`)
-        .then(res => res.json())
-        .then(puzzle => gameSolution.current = importPuzzle(puzzle.puzzleCode));
+        .then((res) => res.json())
+        .then((puzzle: Puzzle) => gameSolution.current = importPuzzle(puzzle.puzzleCode));
     } else {
       gameSolution.current = importPuzzle(gameCode.current.value);
     }
@@ -45,7 +48,11 @@ export const PlayGame = () => {
         <form action='' id='enterGameCode'>
           <label htmlFor='gameCode'>Enter Code: </label>
           <input type='text' id='gameCode' data-testid={'gameCode'} name='gameCode' ref={gameCode} />
-          <button type='button' id='submit' name='submit' onClick={(e) => handleSubmit(e)}>Play Puzzle</button>
+          <button type='button' id='submit' name='submit'
+            onClick={(e) => {
+              e.preventDefault();
+              void handleSubmit(e);
+            }}>Play Puzzle</button>
         </form>
       ) : (
         <PlayNonogramProvider puzzleSolution={gameSolution.current} />

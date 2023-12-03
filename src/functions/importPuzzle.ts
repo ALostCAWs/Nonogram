@@ -12,12 +12,12 @@ export const importPuzzle = (puzzleCode: string): boolean[][] => {
 
   // Build puzzleSolution as a 2D array
   // Each newly-separated string in codeRow represents a row on the board, height / columns are not needed to generate the puzzleSolution
-  let puzzleSolution: boolean[][] = [];
+  const puzzleSolution: boolean[][] = [];
   for (let i = 0; i < codeRow.length; i++) {
-    let rowSolution: boolean[] = [];
-    let code = codeRow[i].split('');
+    const rowSolution: boolean[] = [];
+    const code = codeRow[i].split('');
     for (let i = 0; i < code.length; i++) {
-      let fillable = code[i] === '1' ? true : false;
+      const fillable = code[i] === '1' ? true : false;
       rowSolution.push(fillable)
     }
     puzzleSolution.push(rowSolution);

@@ -5,8 +5,8 @@ export const exportPuzzle = (puzzleSolution: boolean[][]): string => {
   // Loop 2D puzzleSolution, adding on to create a simple string based on the arrays' info
   for (let i = 0; i < puzzleSolution.length; i++) {
     for (let j = 0; j < puzzleSolution[i].length; j++) {
-      let hashItem = puzzleSolution[i][j] ? '1' : '0';
-      puzzleCode += hashItem;
+      const codeItem = puzzleSolution[i][j] ? '1' : '0';
+      puzzleCode += codeItem;
     }
   }
   //console.log(puzzleCode);
