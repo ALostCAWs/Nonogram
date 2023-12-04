@@ -48,9 +48,9 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
       {!submit && (
         <>
           <Board currentPuzzle={currentPuzzle} puzzleSolution={[]} livesCount={undefined} fillTile={fillTile} markTile={(e, rowIndex, colIndex) => { }} hoverTile={(e, rowIndex, colIndex) => { }} />
-          <button type='button' className='export button' onClick={() => {
+          <button type='button' className='export button' onClick={async () => {
             const puzzleCode = createBoolPuzzle(currentPuzzle);
-            navigator.clipboard.writeText(puzzleCode);
+            await navigator.clipboard.writeText(puzzleCode);
             setSubmit(true);
           }} disabled={boardBlank}>Export</button>
         </>

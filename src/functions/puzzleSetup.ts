@@ -39,7 +39,6 @@ export const copyCurrentPuzzle = (currentPuzzle: string[][]): string[][] => {
 
 /* ---- Check / Set zero lines */
 export const checkZeroLines = (updatedPuzzle: string[][], puzzleSolution: boolean[][]): string[][] => {
-  console.log('e');
   // Find zero hint lines ( rows and/or columns ) & pass to functions to set fillState.error
   for (let i = 0; i < puzzleSolution[0].length; i++) {
     const col = new Set(getColumn(puzzleSolution, i));
@@ -55,5 +54,6 @@ export const checkZeroLines = (updatedPuzzle: string[][], puzzleSolution: boolea
       setTileRowFillState(updatedPuzzle, i, fillState.empty);
     }
   }
+  console.log(updatedPuzzle);
   return updatedPuzzle;
 }
