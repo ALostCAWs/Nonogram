@@ -15,3 +15,18 @@ export const hoverTile = (e: React.MouseEvent, rowIndex: number, colIndex: numbe
     hoverCol.classList.remove('hoverInfo');
   }
 }
+
+export const resetInfoTiles = <T>(inputPuzzle: T[][]): void => {
+  for (let i = 0; i < inputPuzzle.length; i++) {
+    const rowInfo = document.querySelector(`.rowInfo${i}`);
+    if (rowInfo !== null) {
+      rowInfo.classList.remove('completeLineHint');
+    }
+  }
+  for (let i = 0; i < inputPuzzle[0].length; i++) {
+    const colInfo = document.querySelector(`.colInfo${i}`);
+    if (colInfo !== null) {
+      colInfo.classList.remove('completeLineHint');
+    }
+  }
+}

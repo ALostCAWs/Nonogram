@@ -10,7 +10,7 @@ import { Board } from 'components/ui/board';
 import { GameComplete } from 'pages/gameComplete';
 import { GameOver } from 'pages/gameOver';
 // Functions
-import { hoverTile } from 'functions/tileFunctions';
+import { hoverTile, resetInfoTiles } from 'functions/tileFunctions';
 import { createLives, createCurrentPuzzle, copyCurrentPuzzle, checkZeroLines } from 'functions/puzzleSetup';
 import { checkLineComplete, checkPuzzleComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn } from 'functions/getPuzzleInfo';
 /* End ---- */
@@ -69,6 +69,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
     setCurrentPuzzle(resetPuzzle);
     setLives(createLives(puzzleSolution));
     setGameComplete(checkPuzzleComplete(puzzleSolution, resetPuzzle));
+    resetInfoTiles(puzzleSolution);
   }
 
   /* ---- Toggle Fill Mode */
