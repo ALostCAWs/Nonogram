@@ -28,7 +28,6 @@ import { checkLineComplete, checkPuzzleComplete, checkGameOver, checkTileFillabl
 // Tiles use callbacks to functions within when onClick
 // When tile filled, NonogramProvider checks for column / row completion
 // currentPuzzle passed to Board, making Board purely for displaying
-
 interface PlayNonogramProviderProps {
   puzzleSolution: boolean[][]
 }
