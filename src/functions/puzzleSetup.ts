@@ -43,14 +43,12 @@ export const checkZeroLines = (updatedPuzzle: string[][], puzzleSolution: boolea
   for (let i = 0; i < puzzleSolution[0].length; i++) {
     const col = new Set(getColumn(puzzleSolution, i));
     if (col.size === 1 && col.has(false)) {
-      console.log('c');
       setTileColFillState(updatedPuzzle, i, fillState.error);
     }
   }
   for (let i = 0; i < puzzleSolution.length; i++) {
     const row = new Set(puzzleSolution[i]);
     if (row.size === 1 && row.has(false)) {
-      console.log('r');
       setTileRowFillState(updatedPuzzle, i, fillState.error);
     }
   }

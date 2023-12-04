@@ -10,6 +10,7 @@ import { Board } from 'components/ui/board';
 import { GameComplete } from 'pages/gameComplete';
 import { GameOver } from 'pages/gameOver';
 // Functions
+import { hoverTile } from 'functions/tileFunctions';
 import { createLives, createCurrentPuzzle, copyCurrentPuzzle, checkZeroLines } from 'functions/puzzleSetup';
 import { checkLineComplete, checkPuzzleComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn } from 'functions/getPuzzleInfo';
 /* End ---- */
@@ -37,11 +38,16 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
   const [currentPuzzle, setCurrentPuzzle] = useState<string[][]>(createCurrentPuzzle(puzzleSolution));
   const [lives, setLives] = useState<number>(createLives(puzzleSolution));
   const [gameComplete, setGameComplete] = useState<boolean>(checkPuzzleComplete(puzzleSolution, currentPuzzle));
+  const [gameOver, setGameOver] = useState<boolean>(checkGameOver(lives));
 
   /* useEffect ---- Game Setup / Change / Complete */
   useEffect(() => {
     setFillMode(true);
   }, []);
+
+  useEffect(() => {
+    setGameComplete(checkGameOver(lives));
+  }, [lives]);
 
   // useEffect triggers on gameComplete change to call set any zero lines to fillState.error
   // Ensures zero lines are filled correctly when puzzle reset
@@ -67,7 +73,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
 
   /* ---- Toggle Fill Mode */
   const toggleFillMode = (): void => {
-    if (gameComplete || checkGameOver(lives)) {
+    if (gameComplete || gameOver) {
       return;
     }
     setFillMode(currentMode => !currentMode);
@@ -76,9 +82,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
   /* ---- Tile Interaction */
   // R-click to attempt fill, fillState.filled & fillState.error are not removable
   const fillTile = (e: React.MouseEvent, rowIndex: number, colIndex: number): void => {
-    if (gameComplete || checkGameOver(lives)) {
-      return;
-    }
     if (!checkTileFillable(currentPuzzle[rowIndex][colIndex])) {
       return;
     }
@@ -128,9 +131,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
 
   // L-click to mark ( used as a removable penalty-free reference )
   const markTile = (e: React.MouseEvent, rowIndex: number, colIndex: number): void => {
-    if (gameComplete || checkGameOver(lives)) {
-      return;
-    }
     if (!checkTileMarkable(currentPuzzle[rowIndex][colIndex])) {
       return;
     }
@@ -147,27 +147,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
         });
       });
     });
-  }
-
-  // Hovering over a tile highlights it & its' corresponding column / row hints
-  const hoverTile = (e: React.MouseEvent, rowIndex: number, colIndex: number): void => {
-    if (gameComplete || checkGameOver(lives)) {
-      return;
-    }
-    const hoverRow = document.querySelector(`.rowInfo${rowIndex}`);
-    const hoverCol = document.querySelector(`.colInfo${colIndex}`);
-
-    if (hoverRow === null || hoverCol === null) {
-      return;
-    }
-    if (e.type === 'mouseenter') {
-      hoverRow.classList.add('hoverInfo');
-      hoverCol.classList.add('hoverInfo');
-    }
-    if (e.type === 'mouseleave') {
-      hoverRow.classList.remove('hoverInfo');
-      hoverCol.classList.remove('hoverInfo');
-    }
   }
 
   /* ---- Tile Interaction Trigger Hint Change Functions */
@@ -199,7 +178,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
 
   return (
     <>
-      {checkGameOver(lives) && (
+      {gameOver && (
         <GameOver resetPuzzle={resetPuzzle} />
       )}
 
@@ -207,9 +186,15 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
         <GameComplete lives={lives} resetPuzzle={resetPuzzle} />
       )}
 
-      <FillModeContext.Provider value={fillMode}>
-        <Board currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} livesCount={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
-      </FillModeContext.Provider>
+      {!gameComplete || !gameOver ? (
+        <FillModeContext.Provider value={fillMode}>
+          <Board currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} livesCount={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
+        </FillModeContext.Provider>
+      ) : (
+        <FillModeContext.Provider value={fillMode}>
+          <Board currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} livesCount={lives} fillTile={(e, rowIndex, colIndex) => { }} markTile={(e, rowIndex, colIndex) => { }} hoverTile={(e, rowIndex, colIndex) => { }} />
+        </FillModeContext.Provider>
+      )}
 
       <button type='button' className='fillModeButton toggleFillMode button' onClick={() => toggleFillMode()} disabled={fillMode}>Fill</button>
       <button type='button' className='markModeButton toggleFillMode button' onClick={() => toggleFillMode()} disabled={!fillMode}>Mark</button>

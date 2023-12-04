@@ -6,6 +6,7 @@ import { fillState } from "constants/fillState";
 // Components > UI
 import { Board } from 'components/ui/board';
 // Functions
+import { hoverTile } from 'functions/tileFunctions';
 import { exportPuzzle } from 'functions/exportPuzzle';
 import { checkBoardNotBlank } from 'functions/puzzleValidation';
 /* End ---- */
@@ -42,12 +43,13 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
       });
     });
   }
+
   // Add submit button under provider
   return (
     <>
       {!submit && (
         <>
-          <Board currentPuzzle={currentPuzzle} puzzleSolution={[]} livesCount={undefined} fillTile={fillTile} markTile={(e, rowIndex, colIndex) => { }} hoverTile={(e, rowIndex, colIndex) => { }} />
+          <Board currentPuzzle={currentPuzzle} puzzleSolution={[]} livesCount={undefined} fillTile={fillTile} markTile={(e, rowIndex, colIndex) => { }} hoverTile={hoverTile} />
           <button type='button' className='export button' onClick={async () => {
             const puzzleCode = createBoolPuzzle(currentPuzzle);
             await navigator.clipboard.writeText(puzzleCode);
