@@ -52,6 +52,5 @@ export const checkZeroLines = (updatedPuzzle: string[][], puzzleSolution: boolea
       setTileRowFillState(updatedPuzzle, i, fillState.error);
     }
   }
-  console.log(updatedPuzzle);
   return updatedPuzzle;
 }

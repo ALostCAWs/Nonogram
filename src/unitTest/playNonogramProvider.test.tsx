@@ -1,10 +1,12 @@
 /* ---- Imports Section */
 import React from 'react';
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { fillState } from "constants/fillState";
 // Components
 import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
+import { GameModeContext } from 'contexts/gameModeContext';
+import { gameModeState } from 'constants/gameModeState';
 /* End ---- */
 
 const filled = fillState.filled;
@@ -81,7 +83,11 @@ it('highlights the associated info tiles on hover', async () => {
   const rowIndex = 0;
   const colIndex = 0;
 
-  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
+  render(
+    <GameModeContext.Provider value={gameModeState.play} >
+      <PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />
+    </GameModeContext.Provider>
+  );
 
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);
   const rowInfo = screen.getByTestId(`rowInfo${rowIndex}`);
@@ -166,10 +172,12 @@ it('completes all remaining empty tiles in a row when complete', async () => {
   await userEvent.click(tile_fill);
 
   // All non-error'd false tiles should now have complete class, even if they were already manually marked
-  expect(tile_mark).toHaveClass(complete);
-  expect(tile_completeMark_1).toHaveClass(complete);
-  expect(tile_completeMark_2).toHaveClass(complete);
-  expect(tile_completeMark_3).toHaveClass(complete);
+  await waitFor(() => {
+    expect(tile_mark).toHaveClass(complete);
+    expect(tile_completeMark_1).toHaveClass(complete);
+    expect(tile_completeMark_2).toHaveClass(complete);
+    expect(tile_completeMark_3).toHaveClass(complete);
+  });
 });
 
 // Fill / Error / Mark - Preventative functionality tests
@@ -263,34 +271,34 @@ it('initializes with the correct number of lives based on the board dimensions',
 
 it('reduces the lives count by one when an error is made', async () => {
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
-  let lifeCount_preClick = screen.getAllByTestId('life').length;
+  const lifeCount_preClick = screen.getAllByTestId('life').length;
   const tile_error = screen.getByTestId(`tile1-0`);
 
   await userEvent.click(tile_error);
-  let lifeCount_postClick = screen.getAllByTestId('life').length;
+  const lifeCount_postClick = screen.getAllByTestId('life').length;
 
   expect(lifeCount_preClick - lifeCount_postClick).toEqual(1);
 });
 
 it('only reduces the lives count when clicking on an error tile for the first time', async () => {
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
-  let lifeCount_preClick = screen.getAllByTestId('life').length;
+  const lifeCount_preClick = screen.getAllByTestId('life').length;
   const tile_error = screen.getByTestId(`tile1-0`);
 
   await userEvent.click(tile_error);
   await userEvent.click(tile_error);
-  let lifeCount_postClick = screen.getAllByTestId('life').length;
+  const lifeCount_postClick = screen.getAllByTestId('life').length;
 
   expect(lifeCount_preClick - lifeCount_postClick).toEqual(1);
 });
 
 it('does not change the lives count when there is no error made', async () => {
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
-  let lifeCount_preClick = screen.getAllByTestId('life').length;
+  const lifeCount_preClick = screen.getAllByTestId('life').length;
   const tile_fill = screen.getByTestId(`tile0-0`);
 
   await userEvent.click(tile_fill);
-  let lifeCount_postClick = screen.getAllByTestId('life').length;
+  const lifeCount_postClick = screen.getAllByTestId('life').length;
   expect(lifeCount_preClick - lifeCount_postClick).toEqual(0);
 });
 

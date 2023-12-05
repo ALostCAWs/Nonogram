@@ -5,6 +5,8 @@ import userEvent from "@testing-library/user-event";
 import { fillState } from "constants/fillState";
 // Components
 import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
+import { GameModeContext } from 'contexts/gameModeContext';
+import { gameModeState } from 'constants/gameModeState';
 /* End ---- */
 
 const filled = fillState.filled;
@@ -61,7 +63,11 @@ it('prevents tile onClick when the puzzle is solved', async () => {
 });
 
 it('prevents tile onHover when the puzzle is solved', async () => {
-  render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
+  render(
+    <GameModeContext.Provider value={gameModeState.play}>
+      <PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />
+    </GameModeContext.Provider>
+  );
   const tile_error_1 = screen.getByTestId('tile0-1');
 
   const tile_fill_1 = screen.getByTestId('tile0-0');

@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 // Constants
 import { fillState } from 'constants/fillState';
 // Contexts
@@ -88,8 +88,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
     }
 
     if (puzzleSolution[rowIndex][colIndex]) {
-      const clickedRow = document.querySelector(`.rowInfo${rowIndex}`);
-      const clickedCol = document.querySelector(`.colInfo${colIndex}`);
       let updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
       updatedPuzzle[rowIndex][colIndex] = fillState.filled;
 
@@ -98,14 +96,12 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
       const rowLineComplete = checkLineComplete(puzzleSolution[rowIndex], updatedPuzzle[rowIndex]);
 
       // If line is complete, set all empty or marked tiles to complete
-      if (clickedCol !== null && colLineComplete) {
+      if (colLineComplete) {
         console.log('col complete');
-        clickedCol.classList.add('completeLineHint');
         updatedPuzzle = setColComplete(updatedPuzzle, colIndex);
       }
-      if (clickedRow !== null && rowLineComplete) {
+      if (rowLineComplete) {
         console.log('row complete');
-        clickedRow.classList.add('completeLineHint');
         updatedPuzzle = setRowComplete(updatedPuzzle, rowIndex);
       }
       // Only need to check for game completion if both a column & row were completed by this tile being filled
@@ -187,7 +183,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
         <GameComplete lives={lives} resetPuzzle={resetPuzzle} />
       )}
 
-      {!gameComplete || !gameOver ? (
+      {!gameComplete && !gameOver ? (
         <FillModeContext.Provider value={fillMode}>
           <Board currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} livesCount={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
         </FillModeContext.Provider>
