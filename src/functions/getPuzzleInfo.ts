@@ -3,10 +3,10 @@ import { fillState } from "constants/fillState";
 /* End ---- */
 
 /* ---- Column Quality of Life */
-export const getColumn = <T>(inputPuzzle: T[][], colIndex: number): T[] => {
+export const getColumn = <T>(inputPuzzle: T[][], coli: number): T[] => {
   const column: T[] = [];
   for (let i = 0; i < inputPuzzle.length; i++) {
-    column.push(inputPuzzle[i][colIndex]);
+    column.push(inputPuzzle[i][coli]);
   }
   return column;
 }
@@ -44,6 +44,14 @@ export const checkPuzzleComplete = (puzzleSolution: boolean[][], updatedPuzzle: 
     }
   }
   return true;
+}
+
+export const checkLineFilled = (line: string[]): boolean => {
+  const lineItems = new Set(line);
+  if (lineItems.size === 1 && lineItems.has(fillState.filled)) {
+    return true;
+  }
+  return false;
 }
 
 export const checkGameOver = (lives: number): boolean => {

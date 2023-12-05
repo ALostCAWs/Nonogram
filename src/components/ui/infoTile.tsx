@@ -34,7 +34,7 @@ export const InfoTile = ({ currentPuzzle, puzzleSolution = [], tileSize, lineTyp
         <>
           {currentPuzzle.map((line, i) =>
             <div key={`${lineType}Info${i}`} data-testid={`${lineType}Info${i}`} className={`${lineType}Infos ${lineType}Info${i}`} style={{ height: tileSize, width: line.length * 12 }}>
-              <FillLineToggleButton lineIndex={i} />
+              <FillLineToggleButton currentPuzzle={currentPuzzle} line={line} lineIndex={i} lineType={lineType} />
             </div>
           )}
         </>
