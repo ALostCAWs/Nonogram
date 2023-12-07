@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { GameModeContext } from 'contexts/gameModeContext';
 import { GAME_MODE_STATE } from 'constants/gameModeState';
 import { checkLineComplete, getMaxHintCountByLineLength } from 'functions/getPuzzleInfo';
@@ -15,6 +15,13 @@ interface InfoTileProps {
   lineType: string
 }
 
+/**
+ * Displays InfoTiles along the Boards' top & left sides
+ * These InfoTiles can contain different items depending on the GameModeContext
+ *
+ * @returns GameModeContext === GAME_MODE_STATE.PLAY - Displays Hints based on the puzzleSolution & currentPuzzle
+ * @returns GameModeContext === GAME_MODE_STATE.CREATE - Displays buttons for easy filling & emptying of all Tiles in a line
+ */
 export const InfoTile = ({ currentPuzzle, puzzleSolution = [], tileSize, lineType }: InfoTileProps) => {
   const gameMode = useContext(GameModeContext);
 

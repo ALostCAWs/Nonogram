@@ -1,6 +1,5 @@
 /* ---- Imports Section */
-import React, { useState, useRef, useContext } from 'react';
-import { GameModeContext } from 'contexts/gameModeContext';
+import React, { useState, useRef } from 'react';
 // Interfaces
 import { Puzzle } from 'constants/puzzleInterface';
 // Components
@@ -10,8 +9,12 @@ import { importPuzzle } from 'functions/importPuzzle';
 import { checkSolutionNotBlank, checkPuzzleRectangular } from 'functions/puzzleValidation';
 /* End ---- */
 
-/* ---- Import Game via code entered into textbox on form */
-// Call NonogramProvider onSubmit
+/**
+ * Import Game via code entered into textbox on form
+ *
+ * @returns !onSubmit - Form to input puzzle code
+ * @returns onSubmit - NonogramProvider
+ */
 export const PlayGame = () => {
   const [submit, setSubmit] = useState<boolean>(false);
   const gameCode = useRef<HTMLInputElement>(null);

@@ -7,17 +7,22 @@ import { FILL_STATE } from "constants/fillState";
 import { Board } from 'components/ui/board';
 // Functions
 import { hoverTile } from 'functions/tileFunctions';
-import { exportPuzzle } from 'functions/exportPuzzle';
 import { checkBoardNotBlank } from 'functions/puzzleValidation';
+import { createBlankPuzzle, createBoolPuzzle } from 'functions/puzzleSetup';
 /* End ---- */
 
-/* ---- Create Puzzle by providing user with a blank board & allowing them to toggle tile fillState.filled */
-// Call exportPuzzle on submit
 interface CreateNonogramProviderProps {
   boardHeight: number,
   boardWidth: number,
 }
 
+/**
+ * Create Puzzle by providing user with a blank board & allowing them to toggle tile FILL_STATE.FILLED
+ * Allows the user to create & export their own nonogram puzzle of a specified size
+ *
+ * @returns The Board containing the InfoTiles & Tiles to create the game with
+ * @returns Loads the home screen when the puzzle is exported
+ */
 export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogramProviderProps) => {
   const [currentPuzzle, setCurrentPuzzle] = useState<string[][]>(createBlankPuzzle(boardHeight, boardWidth));
   const [submit, setSubmit] = useState<boolean>(false);
@@ -29,7 +34,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
   }, [currentPuzzle, boardBlank]);
 
   /* ---- Tile Interaction Functions */
-  // R-click to toggle fillState filled / empty
+  // R-click to toggle FILL_STATE FILLED / EMPTY
   const fillTile = (e: React.MouseEvent, rowIndex: number, colIndex: number): void => {
     setCurrentPuzzle(puzzle => {
       return puzzle.map((row, i) => {
@@ -64,29 +69,4 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
       )}
     </>
   );
-}
-
-const createBlankPuzzle = (boardHeight: number, boardWidth: number): string[][] => {
-  const blankPuzzle: string[][] = [];
-  for (let i = 0; i < boardHeight; i++) {
-    const blankRow: string[] = [];
-    for (let j = 0; j < boardWidth; j++) {
-      blankRow.push(FILL_STATE.EMPTY);
-    }
-    blankPuzzle.push(blankRow);
-  }
-  return blankPuzzle;
-}
-
-const createBoolPuzzle = (currentPuzzle: string[][]): string => {
-  const puzzleSolution: boolean[][] = [];
-  for (let i = 0; i < currentPuzzle.length; i++) {
-    const rowSolution: boolean[] = [];
-    for (let j = 0; j < currentPuzzle[0].length; j++) {
-      const filled = currentPuzzle[i][j] === FILL_STATE.FILLED ? true : false;
-      rowSolution.push(filled);
-    }
-    puzzleSolution.push(rowSolution);
-  }
-  return exportPuzzle(puzzleSolution);
 }

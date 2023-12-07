@@ -2,7 +2,6 @@
 import { FILL_STATE } from 'constants/fillState';
 import { checkLineFilled } from 'functions/getPuzzleInfo';
 import { setTileColFillState, setTileRowFillState } from 'functions/updatePuzzleLines';
-import React from 'react';
 /* End ---- */
 
 interface FillLineToggleButtonProps {
@@ -12,6 +11,9 @@ interface FillLineToggleButtonProps {
   lineType: string
 }
 
+/**
+ * @returns A button to toggle whether each Tile in a given line is FILL_STATE FILLED or EMPTY
+ */
 export const FillLineToggleButton = ({ currentPuzzle, line, lineIndex, lineType }: FillLineToggleButtonProps) => {
   const fillToSet = checkLineFilled(line) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
   const toggleFill = lineType === 'row' ? setTileRowFillState.bind(this, currentPuzzle, lineIndex, fillToSet) : setTileColFillState.bind(this, currentPuzzle, lineIndex, fillToSet);

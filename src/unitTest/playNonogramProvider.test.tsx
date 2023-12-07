@@ -43,7 +43,7 @@ it('toggles the fillMode on click', async () => {
 
 /* TILES */
 // Initialization Tests
-it('initializes the tiles with fillState.empty', () => {
+it('initializes the tiles with FILL_STATE.EMPTY', () => {
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   // true tile
   const tile_true = screen.getByTestId(`tile0-0`);
@@ -54,7 +54,7 @@ it('initializes the tiles with fillState.empty', () => {
   expect(tile_false).not.toHaveClass(filled, marked, error, complete);
 });
 
-it('initializes the tiles in false-only columns with fillState.error', () => {
+it('initializes the tiles in false-only columns with FILL_STATE.ERROR', () => {
   const puzzleSolution5x5_FalseCol = [[true, true, true, true, false],
   [false, true, false, false, false],
   [false, true, false, true, false],
@@ -69,7 +69,7 @@ it('initializes the tiles in false-only columns with fillState.error', () => {
   expect(screen.getByTestId(`tile4-4`)).toHaveClass(error);
 });
 
-it('initializes the tiles in false-only rows with fillState.error', () => {
+it('initializes the tiles in false-only rows with FILL_STATE.ERROR', () => {
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
 
   expect(screen.getByTestId(`tile4-0`)).toHaveClass(error);

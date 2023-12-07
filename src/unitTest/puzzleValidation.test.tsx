@@ -14,7 +14,7 @@ const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, true, false, false]];
 
 it('ensures the given puzzleSolution is not blank', () => {
-  let blankPuzzleSolution = [[false, false, false, false, false],
+  const blankPuzzleSolution = [[false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false],
   [false, false, false, false, false],
@@ -22,7 +22,7 @@ it('ensures the given puzzleSolution is not blank', () => {
   const resultBlankSolution = checkSolutionNotBlank(blankPuzzleSolution);
   expect(resultBlankSolution).toEqual(false);
 
-  let blank5x5Puzzle = [[empty, empty, empty, empty, empty],
+  const blank5x5Puzzle = [[empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
@@ -30,7 +30,7 @@ it('ensures the given puzzleSolution is not blank', () => {
   const resultBlankPuzzle = checkBoardNotBlank(blank5x5Puzzle);
   expect(resultBlankPuzzle).toEqual(false);
 
-  let notBlank5x5Puzzle = [[filled, empty, empty, empty, empty],
+  const notBlank5x5Puzzle = [[filled, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],
   [empty, empty, empty, empty, empty],

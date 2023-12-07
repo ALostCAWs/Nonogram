@@ -3,6 +3,7 @@ import React from 'react';
 // Components > UI
 import { Tile } from 'components/ui/tile';
 import { InfoTile } from 'components/ui/infoTile';
+import { Life } from './life';
 // Functions
 import { getPuzzleByColumn, getLongestDimension } from 'functions/getPuzzleInfo';
 /* End ---- */
@@ -16,8 +17,17 @@ interface BoardProps {
   hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
 }
 
+/**
+ * currentPuzzle maintains the Boards' appearance
+ * puzzleSolution contains whether or not each Tile should be filled
+ * Decouple Tiles from Board by mapping within the return
+ *
+ * @returns InfoTile set for columns
+ * @returns InfoTile set for rows
+ * @returns Tile for each item in currentPuzzle
+ * @returns Life components equal to the livesCount prop
+ */
 export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, fillTile, markTile, hoverTile }: BoardProps) => {
-  // Decouple tiles from board by mapping within return rather than for looping in useEffect
   const currentPuzzleByColumn: string[][] = getPuzzleByColumn(currentPuzzle);
   let puzzleSolutionByColumn: boolean[][] = [];
   const nonogramPaddingRight = currentPuzzle[0].length * 12;
@@ -73,16 +83,5 @@ export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, fillTile
         )}
       </div>
     </div>
-  );
-}
-
-// Displays one life counter element per life remaining
-interface LifeProps {
-  tileSize: number
-}
-
-const Life = ({ tileSize }: LifeProps) => {
-  return (
-    <div data-testid={'life'} className='life' style={{ height: tileSize, width: tileSize }}></div>
   );
 }

@@ -20,7 +20,7 @@ const puzzle5x5 = [[empty, empty, empty, empty, empty],
 [empty, empty, empty, empty, empty],
 [empty, empty, empty, empty, empty]];
 
-it(`sets a given lines' fillState to the specified state`, () => {
+it(`sets a given lines' FILL_STATE to the specified state`, () => {
   // FILLED
   let expectedState = filled;
   setTileColFillState(puzzle5x5, 0, expectedState);

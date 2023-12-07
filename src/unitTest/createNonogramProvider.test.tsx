@@ -12,7 +12,7 @@ const marked = FILL_STATE.MARKED;
 const error = FILL_STATE.ERROR;
 const complete = 'complete';
 
-it('initializes the tiles with fillState.empty', () => {
+it('initializes the tiles with FILL_STATE.EMPTY', () => {
   render(<CreateNonogramProvider boardHeight={5} boardWidth={5} />);
 
   const tile0_0 = screen.getByTestId(`tile0-0`);
@@ -45,7 +45,7 @@ it('disables the Export button when the board is blank', async () => {
   expect(exportBtn).toBeDisabled();
 });
 
-it('toggles the tile fillState between empty and filled', async () => {
+it('toggles the tile FILL_STATE between empty and filled', async () => {
   render(<CreateNonogramProvider boardHeight={5} boardWidth={5} />);
   const tile0_0 = screen.getByTestId(`tile0-0`);
 

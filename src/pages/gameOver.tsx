@@ -1,12 +1,10 @@
-/* ---- Imports Section */
-import React from 'react';
-/* End ---- */
-
-/* ---- Display game over message */
 interface GameOverProps {
   resetPuzzle: () => void
 }
 
+/**
+ * @returns Display game over message
+ */
 export const GameOver = ({ resetPuzzle }: GameOverProps) => {
   return (
     <div className='gameOver'>
