@@ -2,14 +2,14 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "constants/fillState";
+import { FILL_STATE } from "constants/fillState";
 // Components
 import { CreateNonogramProvider } from 'components/providers/createNonogramProvider';
 /* End ---- */
 
-const filled = fillState.filled;
-const marked = fillState.marked;
-const error = fillState.error;
+const filled = FILL_STATE.FILLED;
+const marked = FILL_STATE.MARKED;
+const error = FILL_STATE.ERROR;
 const complete = 'complete';
 
 it('initializes the tiles with fillState.empty', () => {

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import App from 'App';
 // Constants
-import { fillState } from "constants/fillState";
+import { FILL_STATE } from "constants/fillState";
 // Components > UI
 import { Board } from 'components/ui/board';
 // Functions
@@ -35,7 +35,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
       return puzzle.map((row, i) => {
         return row.map((fill, j) => {
           if (rowIndex === i && colIndex === j) {
-            return fill === fillState.empty ? fillState.filled : fillState.empty;
+            return fill === FILL_STATE.EMPTY ? FILL_STATE.FILLED : FILL_STATE.EMPTY;
           } else {
             return fill;
           }
@@ -50,9 +50,9 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
       {!submit && (
         <>
           <Board currentPuzzle={currentPuzzle} puzzleSolution={[]} livesCount={undefined} fillTile={fillTile} markTile={(e, rowIndex, colIndex) => { }} hoverTile={hoverTile} />
-          <button type='button' className='export button' onClick={async () => {
+          <button type='button' className='export button' onClick={() => {
             const puzzleCode = createBoolPuzzle(currentPuzzle);
-            await navigator.clipboard.writeText(puzzleCode);
+            navigator.clipboard.writeText(puzzleCode).catch((e) => (console.error(e)));
             setSubmit(true);
           }} disabled={boardBlank}>Export</button>
         </>
@@ -71,7 +71,7 @@ const createBlankPuzzle = (boardHeight: number, boardWidth: number): string[][] 
   for (let i = 0; i < boardHeight; i++) {
     const blankRow: string[] = [];
     for (let j = 0; j < boardWidth; j++) {
-      blankRow.push(fillState.empty);
+      blankRow.push(FILL_STATE.EMPTY);
     }
     blankPuzzle.push(blankRow);
   }
@@ -83,7 +83,7 @@ const createBoolPuzzle = (currentPuzzle: string[][]): string => {
   for (let i = 0; i < currentPuzzle.length; i++) {
     const rowSolution: boolean[] = [];
     for (let j = 0; j < currentPuzzle[0].length; j++) {
-      const filled = currentPuzzle[i][j] === fillState.filled ? true : false;
+      const filled = currentPuzzle[i][j] === FILL_STATE.FILLED ? true : false;
       rowSolution.push(filled);
     }
     puzzleSolution.push(rowSolution);

@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import { fillState } from 'constants/fillState';
+import { FILL_STATE } from 'constants/fillState';
 import { checkLineFilled } from 'functions/getPuzzleInfo';
 import { setTileColFillState, setTileRowFillState } from 'functions/updatePuzzleLines';
 import React from 'react';
@@ -13,7 +13,7 @@ interface FillLineToggleButtonProps {
 }
 
 export const FillLineToggleButton = ({ currentPuzzle, line, lineIndex, lineType }: FillLineToggleButtonProps) => {
-  const fillToSet = checkLineFilled(line) ? fillState.empty : fillState.filled;
+  const fillToSet = checkLineFilled(line) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
   const toggleFill = lineType === 'row' ? setTileRowFillState.bind(this, currentPuzzle, lineIndex, fillToSet) : setTileColFillState.bind(this, currentPuzzle, lineIndex, fillToSet);
   return (
     <>

@@ -1,7 +1,7 @@
 /* ---- Imports Section */
 import React from 'react';
-import { fillState } from 'constants/fillState';
-import { hintState } from 'constants/hintState';
+import { FILL_STATE } from 'constants/fillState';
+import { HINT_STATE } from 'constants/hintState';
 /* End ---- */
 
 /* ---- Hint Text Display */
@@ -39,12 +39,12 @@ export const Hints = ({ puzzleSolutionLine, currentPuzzleLine, lineIndex, maxHin
     // If at end of column/row or an unfillable tile is found & there is a hint counted, populate hint object
     if ((j === puzzleSolutionLine.length - 1 || !solution) && hintCount !== 0) {
       // Default hintState setup for fullLineIncomplete & incomplete
-      let state = hintCount === puzzleSolutionLine.length ? hintState.fullLineIncomplete : hintState.incomplete;
+      let state = hintCount === puzzleSolutionLine.length ? HINT_STATE.FULL_LINE_INCOMPLETE : HINT_STATE.INCOMPLETE;
 
       // Check if currentTilesInHintFillState ( now a Set => currentTilesInHintFillStateReduced ) contains one fillState.filled item
       const currentTilesInHintFillStateReduced = new Set(currentTilesInHintFillState);
-      if (currentTilesInHintFillStateReduced.size === 1 && currentTilesInHintFillStateReduced.has(fillState.filled)) {
-        state = hintState.complete;
+      if (currentTilesInHintFillStateReduced.size === 1 && currentTilesInHintFillStateReduced.has(FILL_STATE.FILLED)) {
+        state = HINT_STATE.COMPLETE;
       }
 
       // Push hint & reset to continue checking for potential hints
@@ -62,7 +62,7 @@ export const Hints = ({ puzzleSolutionLine, currentPuzzleLine, lineIndex, maxHin
     // Set hint zero value & state
     const hint = {
       value: 0,
-      state: hintState.zero
+      state: HINT_STATE.ZERO
     }
     hints.push(hint);
   }

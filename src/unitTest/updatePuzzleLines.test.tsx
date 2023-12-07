@@ -2,16 +2,16 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "constants/fillState";
+import { FILL_STATE } from "constants/fillState";
 // Functions
 import { setTileColFillState } from 'functions/updatePuzzleLines';
 import { setTileRowFillState } from 'functions/updatePuzzleLines';
 /* End ---- */
 
-const filled = fillState.filled;
-const marked = fillState.marked;
-const empty = fillState.empty;
-const error = fillState.error;
+const filled = FILL_STATE.FILLED;
+const marked = FILL_STATE.MARKED;
+const empty = FILL_STATE.EMPTY;
+const error = FILL_STATE.ERROR;
 const complete = 'complete';
 
 const puzzle5x5 = [[empty, empty, empty, empty, empty],

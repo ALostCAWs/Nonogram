@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import { fillState } from "constants/fillState";
+import { FILL_STATE } from "constants/fillState";
 /* End ---- */
 
 /* ---- Column Quality of Life */
@@ -24,7 +24,7 @@ export const getPuzzleByColumn = <T>(inputPuzzle: T[][]): T[][] => {
 // Check if a given column / row is complete & returns bool
 export const checkLineComplete = (puzzleSolutionLine: boolean[], updatedPuzzleLine: string[]): boolean => {
   for (let i = 0; i < puzzleSolutionLine.length; i++) {
-    if (puzzleSolutionLine[i] && updatedPuzzleLine[i] !== fillState.filled) {
+    if (puzzleSolutionLine[i] && updatedPuzzleLine[i] !== FILL_STATE.FILLED) {
       return false;
     }
   }
@@ -48,7 +48,7 @@ export const checkPuzzleComplete = (puzzleSolution: boolean[][], updatedPuzzle: 
 
 export const checkLineFilled = (line: string[]): boolean => {
   const lineItems = new Set(line);
-  if (lineItems.size === 1 && lineItems.has(fillState.filled)) {
+  if (lineItems.size === 1 && lineItems.has(FILL_STATE.FILLED)) {
     return true;
   }
   return false;
@@ -60,13 +60,13 @@ export const checkGameOver = (lives: number): boolean => {
 
 /* ---- Tile Check */
 export const checkTileFillable = (fill: string): boolean => {
-  return fill === fillState.empty ? true : false;
+  return fill === FILL_STATE.EMPTY ? true : false;
 }
 
 export const checkTileMarkable = (fill: string): boolean => {
   switch (true) {
-    case fill === fillState.empty:
-    case fill === fillState.marked:
+    case fill === FILL_STATE.EMPTY:
+    case fill === FILL_STATE.MARKED:
       return true;
 
     default:

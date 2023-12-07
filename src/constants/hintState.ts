@@ -1,7 +1,6 @@
-/* ---- Enums for hintState */
-export const hintState = {
-  incomplete: '',
-  fullLineIncomplete: 'fullLineIncomplete',
-  zero: 'zeroHint',
-  complete: 'completeHint'
+export const HINT_STATE = {
+  INCOMPLETE: '',
+  FULL_LINE_INCOMPLETE: 'fullLineIncomplete',
+  ZERO: 'zeroHint',
+  COMPLETE: 'completeHint'
 };

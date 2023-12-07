@@ -2,13 +2,13 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "constants/fillState";
+import { FILL_STATE } from "constants/fillState";
 import { FillModeContext } from 'contexts/fillModeContext';
 // Components
 import { Tile } from 'components/ui/tile';
 /* End ---- */
 
-const empty = fillState.empty;
+const empty = FILL_STATE.EMPTY;
 
 // Break down tests into very small component-specific parts
 // Test their basic abilities; whether the tile calls the functions passed to it based on the FillModeContext

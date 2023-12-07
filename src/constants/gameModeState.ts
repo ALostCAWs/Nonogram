@@ -1,7 +1,6 @@
-/* ---- Enums for gameMode */
-export const gameModeState = {
-  none: '',
-  play: 'play',
-  create: 'create',
-  preview: 'preview'
+export const GAME_MODE_STATE = {
+  NONE: '',
+  PLAY: 'play',
+  CREATE: 'create',
+  PREVIEW: 'preview'
 };

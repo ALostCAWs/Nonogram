@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 // Contexts
 import { GameModeContext } from 'contexts/gameModeContext';
 // Constants
-import { gameModeState } from 'constants/gameModeState';
+import { GAME_MODE_STATE } from 'constants/gameModeState';
 // Components
 import { PlayGame } from 'pages/playGame';
 import { CreateNonogramProvider } from 'components/providers/createNonogramProvider';
@@ -73,12 +73,12 @@ export const App = () => {
         </>
       )}
       {playPuzzle && (
-        <GameModeContext.Provider value={gameModeState.play}>
+        <GameModeContext.Provider value={GAME_MODE_STATE.PLAY}>
           <PlayGame />
         </GameModeContext.Provider>
       )}
       {createPuzzle && boardHeight.current !== null && boardWidth.current !== null && (
-        <GameModeContext.Provider value={gameModeState.create}>
+        <GameModeContext.Provider value={GAME_MODE_STATE.CREATE}>
           <CreateNonogramProvider boardHeight={parseInt(boardHeight.current.value)} boardWidth={parseInt(boardWidth.current.value)} />
         </GameModeContext.Provider>
       )}

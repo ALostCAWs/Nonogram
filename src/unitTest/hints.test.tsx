@@ -1,21 +1,21 @@
 /* ---- Imports Section */
 import React from 'react';
 import { render, screen } from "@testing-library/react";
-import { fillState } from "constants/fillState";
-import { hintState } from "constants/hintState";
+import { FILL_STATE } from "constants/fillState";
+import { HINT_STATE } from "constants/hintState";
 // Components
 import { Hints } from 'components/ui/hints';
 // Functions
 import { getPuzzleByColumn } from 'functions/getPuzzleInfo';
 /* End ---- */
 
-const filled = fillState.filled;
-const error = fillState.error;
-const empty = fillState.empty
+const filled = FILL_STATE.FILLED;
+const error = FILL_STATE.ERROR;
+const empty = FILL_STATE.EMPTY
 
-const fullLineHint = hintState.fullLineIncomplete;
-const zeroHint = hintState.zero;
-const completeHint = hintState.complete;
+const fullLineHint = HINT_STATE.FULL_LINE_INCOMPLETE;
+const zeroHint = HINT_STATE.ZERO;
+const completeHint = HINT_STATE.COMPLETE;
 
 let puzzleSolution5x5_ColTest = [[true, true, true, true, false],
 [true, true, false, false, false],

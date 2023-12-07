@@ -1,7 +1,7 @@
 /* ---- Imports Section */
 import React, { useContext } from 'react';
 import { GameModeContext } from 'contexts/gameModeContext';
-import { gameModeState } from 'constants/gameModeState';
+import { GAME_MODE_STATE } from 'constants/gameModeState';
 import { checkLineComplete, getMaxHintCountByLineLength } from 'functions/getPuzzleInfo';
 // Components > UI
 import { Hints } from 'components/ui/hints';
@@ -20,7 +20,7 @@ export const InfoTile = ({ currentPuzzle, puzzleSolution = [], tileSize, lineTyp
 
   return (
     <>
-      {gameMode === gameModeState.play && (
+      {gameMode === GAME_MODE_STATE.PLAY && (
         <>
           {puzzleSolution.map((line, i) =>
             <div key={`${lineType}Info${i}`} data-testid={`${lineType}Info${i}`} className={`${lineType}Infos ${lineType}Info${i} ${checkLineComplete(line, currentPuzzle[i]) ? 'completeLineHint' : ''}`} style={{ height: tileSize, width: line.length * 12 }}>
@@ -30,7 +30,7 @@ export const InfoTile = ({ currentPuzzle, puzzleSolution = [], tileSize, lineTyp
         </>
       )}
 
-      {gameMode === gameModeState.create && (
+      {gameMode === GAME_MODE_STATE.CREATE && (
         <>
           {currentPuzzle.map((line, i) =>
             <div key={`${lineType}Info${i}`} data-testid={`${lineType}Info${i}`} className={`${lineType}Infos ${lineType}Info${i}`} style={{ height: tileSize, width: line.length * 12 }}>

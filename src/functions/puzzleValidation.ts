@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import { fillState } from "constants/fillState";
+import { FILL_STATE } from "constants/fillState";
 /* End ---- */
 
 /* ---- Validity Check Functions */
@@ -16,7 +16,7 @@ export const checkSolutionNotBlank = (puzzleSolution: boolean[][]): boolean => {
 
 export const checkBoardNotBlank = (currentPuzzle: string[][]): boolean => {
   for (let i = 0; i < currentPuzzle.length; i++) {
-    if (currentPuzzle[i].includes(fillState.filled)) {
+    if (currentPuzzle[i].includes(FILL_STATE.FILLED)) {
       return true;
     }
   }

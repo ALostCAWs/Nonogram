@@ -1,6 +1,6 @@
 /* ---- Imports Section */
 import React, { createContext } from 'react';
 // Constants
-import { gameModeState } from 'constants/gameModeState';
+import { GAME_MODE_STATE } from 'constants/gameModeState';
 
-export const GameModeContext = createContext<string>(gameModeState.none);
+export const GameModeContext = createContext<string>(GAME_MODE_STATE.NONE);

@@ -2,16 +2,16 @@
 import React from 'react';
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "constants/fillState";
+import { FILL_STATE } from "constants/fillState";
 // Components
 import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
 import { GameModeContext } from 'contexts/gameModeContext';
-import { gameModeState } from 'constants/gameModeState';
+import { GAME_MODE_STATE } from 'constants/gameModeState';
 /* End ---- */
 
-const filled = fillState.filled;
-const marked = fillState.marked;
-const error = fillState.error;
+const filled = FILL_STATE.FILLED;
+const marked = FILL_STATE.MARKED;
+const error = FILL_STATE.ERROR;
 const complete = 'complete';
 
 const puzzleSolution5x5 = [[true, true, true, true, true],
@@ -84,7 +84,7 @@ it('highlights the associated info tiles on hover', async () => {
   const colIndex = 0;
 
   render(
-    <GameModeContext.Provider value={gameModeState.play} >
+    <GameModeContext.Provider value={GAME_MODE_STATE.PLAY} >
       <PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />
     </GameModeContext.Provider>
   );

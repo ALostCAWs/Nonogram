@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import { fillState } from 'constants/fillState';
+import { FILL_STATE } from 'constants/fillState';
 import { getColumn, getLongestDimension } from 'functions/getPuzzleInfo';
 import { setTileRowFillState, setTileColFillState } from './updatePuzzleLines';
 /* End ---- */
@@ -19,7 +19,7 @@ export const createCurrentPuzzle = (puzzleSolution: boolean[][]): string[][] => 
   for (let i = 0; i < puzzleSolution.length; i++) {
     currentPuzzle[i] = [];
     for (let j = 0; j < puzzleSolution[i].length; j++) {
-      currentPuzzle[i][j] = fillState.empty;
+      currentPuzzle[i][j] = FILL_STATE.EMPTY;
     }
   }
   return currentPuzzle;
@@ -43,13 +43,13 @@ export const checkZeroLines = (updatedPuzzle: string[][], puzzleSolution: boolea
   for (let i = 0; i < puzzleSolution[0].length; i++) {
     const col = new Set(getColumn(puzzleSolution, i));
     if (col.size === 1 && col.has(false)) {
-      setTileColFillState(updatedPuzzle, i, fillState.error);
+      setTileColFillState(updatedPuzzle, i, FILL_STATE.ERROR);
     }
   }
   for (let i = 0; i < puzzleSolution.length; i++) {
     const row = new Set(puzzleSolution[i]);
     if (row.size === 1 && row.has(false)) {
-      setTileRowFillState(updatedPuzzle, i, fillState.error);
+      setTileRowFillState(updatedPuzzle, i, FILL_STATE.ERROR);
     }
   }
   return updatedPuzzle;
