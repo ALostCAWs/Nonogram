@@ -1,9 +1,5 @@
-/* ---- Imports Section */
-// Constants
 import { FILL_STATE } from "constants/fillState";
-// Functions
 import { checkSolutionNotBlank, checkBoardNotBlank, checkPuzzleRectangular } from "functions/puzzleValidation";
-/* End ---- */
 
 const FILLED = FILL_STATE.FILLED;
 const MARKED = FILL_STATE.MARKED;

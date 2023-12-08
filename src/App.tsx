@@ -1,19 +1,13 @@
-/* ---- Imports Section */
-import React, { useState, useRef } from 'react';
-// Contexts
+import { useState, useRef } from 'react';
 import { GameModeContext } from 'contexts/gameModeContext';
-// Constants
 import { GAME_MODE_STATE } from 'constants/gameModeState';
-// Components
 import { PlayGame } from 'pages/playGame';
 import { CreateNonogramProvider } from 'components/providers/createNonogramProvider';
-// Functions
 import { importPuzzle } from 'functions/importPuzzle';
 import { exportPuzzle } from 'functions/exportPuzzle';
 import { getPuzzleByColumn } from 'functions/getPuzzleInfo';
 import logo from './logo.svg';
 import './App.css';
-/* End ---- */
 
 const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, true, false, false],

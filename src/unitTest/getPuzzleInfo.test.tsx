@@ -1,9 +1,5 @@
-/* ---- Imports Section */
-// Constants
 import { FILL_STATE } from "constants/fillState";
-// Functions
 import { checkLineComplete, checkPuzzleComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn, getPuzzleByColumn, getLongestDimension, getMaxHintCountByLineLength } from "functions/getPuzzleInfo";
-/* End ---- */
 
 const FILLED = FILL_STATE.FILLED;
 const MARKED = FILL_STATE.MARKED;

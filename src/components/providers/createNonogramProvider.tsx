@@ -1,18 +1,13 @@
-/* ---- Imports Section */
 import { useState, useEffect, useReducer } from 'react';
-import App from 'App';
-// Constants
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
 import { FILL_STATE } from "constants/fillState";
-// Components > UI
+import { App } from 'App';
 import { Board } from 'components/ui/board';
-// Functions
 import { hoverTile } from 'functions/tileFunctions';
 import { checkBoardNotBlank } from 'functions/puzzleValidation';
 import { createBlankPuzzle, createBoolPuzzle, copyCurrentPuzzle } from 'functions/puzzleSetup';
 import { checkLineFilled, getColumn } from 'functions/getPuzzleInfo';
 import { setTileColFillState, setTileRowFillState } from 'functions/updatePuzzleLines';
-/* End ---- */
 
 interface CreateNonogramProviderProps {
   boardHeight: number,
@@ -27,11 +22,9 @@ interface CreateNonogramProviderProps {
  * @returns Loads the home screen when the puzzle is exported
  */
 export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogramProviderProps) => {
-  //const [currentPuzzle, setCurrentPuzzle] = useState<string[][]>(createBlankPuzzle(boardHeight, boardWidth));
   const [submit, setSubmit] = useState<boolean>(false);
   const [boardBlank, setBoardBlank] = useState<boolean>(true);
 
-  /* ---- useReducer */
   const [currentPuzzle, currentPuzzleDispatch] = useReducer(currentPuzzleReducer, createBlankPuzzle(boardHeight, boardWidth));
 
   interface PuzzleAction {
@@ -84,7 +77,9 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
     <>
       {!submit && (
         <>
-          <Board currentPuzzle={currentPuzzle} puzzleSolution={[]} livesCount={undefined}
+          <Board currentPuzzle={currentPuzzle}
+            puzzleSolution={[]}
+            livesCount={undefined}
             fillTile={
               (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL, rowIndex: rowIndex, colIndex: colIndex }) }
             }
@@ -97,11 +92,14 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
               (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_COL_FILL, rowIndex: rowIndex, colIndex: colIndex }) }
             }
           />
-          <button type='button' className='export button' onClick={() => {
-            const puzzleCode = createBoolPuzzle(currentPuzzle);
-            navigator.clipboard.writeText(puzzleCode).catch((e) => (console.error(e)));
-            setSubmit(true);
-          }} disabled={boardBlank}>Export</button>
+          <button type='button'
+            className='export button'
+            onClick={() => {
+              const puzzleCode = createBoolPuzzle(currentPuzzle);
+              navigator.clipboard.writeText(puzzleCode).catch((e) => (console.error(e)));
+              setSubmit(true);
+            }}
+            disabled={boardBlank}>Export</button>
         </>
       )}
       {submit && (

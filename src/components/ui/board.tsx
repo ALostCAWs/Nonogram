@@ -1,12 +1,8 @@
-/* ---- Imports Section */
 import React from 'react';
-// Components > UI
 import { Tile } from 'components/ui/tile';
 import { InfoTile } from 'components/ui/infoTile';
 import { Life } from './life';
-// Functions
 import { getPuzzleByColumn, getLongestDimension } from 'functions/getPuzzleInfo';
-/* End ---- */
 
 interface BoardProps {
   currentPuzzle: string[][],
@@ -83,7 +79,15 @@ export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, fillTile
         <div className='board' style={{ gridTemplateColumns: `repeat(${currentPuzzle[0].length}, 1fr)` }}>
           {currentPuzzle.map((row, i) =>
             row.map((col, j) =>
-              <Tile key={`${i} - ${j}`} fill={currentPuzzle[i][j]} rowIndex={i} colIndex={j} tileSize={tileSize} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
+              <Tile key={`${i} - ${j}`}
+                fill={currentPuzzle[i][j]}
+                rowIndex={i}
+                colIndex={j}
+                tileSize={tileSize}
+                fillTile={fillTile}
+                markTile={markTile}
+                hoverTile={hoverTile}
+              />
             )
           )}
         </div>

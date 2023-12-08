@@ -1,7 +1,4 @@
-/* ---- Imports Section */
-// Constants
 import { FILL_STATE } from "constants/fillState";
-/* End ---- */
 
 /**
  * Column Quality of Life

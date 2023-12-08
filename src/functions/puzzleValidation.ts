@@ -1,7 +1,4 @@
-/* ---- Imports Section */
-// Constants
 import { FILL_STATE } from "constants/fillState";
-/* End ---- */
 
 /**
  * Very basic check, only ensures at least one tile is to be filled in

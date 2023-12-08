@@ -1,13 +1,8 @@
-/* ---- Imports Section */
 import React, { useState, useRef } from 'react';
-// Interfaces
 import { Puzzle } from 'constants/puzzleInterface';
-// Components
 import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
-// Functions
 import { importPuzzle } from 'functions/importPuzzle';
 import { checkSolutionNotBlank, checkPuzzleRectangular } from 'functions/puzzleValidation';
-/* End ---- */
 
 /**
  * Import Game via code entered into textbox on form
@@ -20,7 +15,6 @@ export const PlayGame = () => {
   const gameCode = useRef<HTMLInputElement>(null);
   const gameSolution = useRef<boolean[][]>([]);
 
-  /* <- Handle Input Changes & Form Submission -> */
   const handleSubmit = async (e: React.MouseEvent) => {
     let errorMsg = '';
     if (gameCode.current === null || gameCode.current === undefined || gameCode.current.value === '') {
@@ -51,11 +45,14 @@ export const PlayGame = () => {
         <form action='' id='enterGameCode'>
           <label htmlFor='gameCode'>Enter Code: </label>
           <input type='text' id='gameCode' data-testid={'gameCode'} name='gameCode' ref={gameCode} />
-          <button type='button' id='submit' name='submit'
+          <button type='button'
+            id='submit'
+            name='submit'
             onClick={(e) => {
               e.preventDefault();
               void handleSubmit(e);
-            }}>Play Puzzle</button>
+            }}
+          >Play Puzzle</button>
         </form>
       ) : (
         <PlayNonogramProvider puzzleSolution={gameSolution.current} />

@@ -1,14 +1,9 @@
-/* ---- Imports Section */
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-// Constants
 import { GAME_MODE_STATE } from 'constants/gameModeState';
 import { FILL_STATE } from "constants/fillState";
-// Contexts
 import { GameModeContext } from 'contexts/gameModeContext';
-// Components > Providers
 import { CreateNonogramProvider } from 'components/providers/createNonogramProvider';
-/* End ---- */
 
 const FILLED = FILL_STATE.FILLED;
 const MARKED = FILL_STATE.MARKED;

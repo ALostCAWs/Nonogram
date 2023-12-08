@@ -1,27 +1,12 @@
-/* ---- Imports Section */
 import { useState, useEffect, useReducer } from 'react';
-// Constants
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
-// Contexts
 import { FillModeContext } from 'contexts/fillModeContext';
-// Components > UI
 import { Board } from 'components/ui/board';
-// Pages
 import { GameComplete } from 'pages/gameComplete';
 import { GameOver } from 'pages/gameOver';
-// Functions
 import { fillTile, markTile, hoverTile, resetInfoTiles } from 'functions/tileFunctions';
 import { createLives, createCurrentPuzzle, checkAndSetZeroLines } from 'functions/puzzleSetup';
 import { checkPuzzleComplete, checkGameOver } from 'functions/getPuzzleInfo';
-/* End ---- */
-
-// TODO:
-// update look of the site; color scheme, life imgs, tile 'x' img
-
-// incorporate backend for saving game progress, track completed puzzles
-
-// play game & create game mode
-// browse puzzles, store if user completed them
 
 interface PlayNonogramProviderProps {
   puzzleSolution: boolean[][]
@@ -44,13 +29,11 @@ interface PlayNonogramProviderProps {
  * @returns Loads the Board with empty functions passed to the Tiles when the game has ended to prevent further user interaction
  */
 export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderProps) => {
-  // useState
   const [fillMode, setFillMode] = useState<boolean>(true);
   const [lives, setLives] = useState<number>(createLives(puzzleSolution));
   const [gameOver, setGameOver] = useState<boolean>(checkGameOver(lives));
   const [gameComplete, setGameComplete] = useState<boolean>(false);
 
-  /* ---- useReducer */
   const [currentPuzzle, currentPuzzleDispatch] = useReducer(currentPuzzleReducer, createCurrentPuzzle(puzzleSolution));
 
   interface PuzzleAction {
@@ -62,7 +45,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
   function currentPuzzleReducer(puzzleState: string[][], action: PuzzleAction): string[][] {
     switch (action.type) {
       case PUZZLE_ACTIONS.RESET: {
-        // Pre-resetPuzzle puzzleState / currentPuzzle was being used still after creating a fresh currentPuzzle, preventing gameComplete value from updating on retry puzzle start
         const resetPuzzle = checkAndSetZeroLines(createCurrentPuzzle(puzzleSolution), puzzleSolution);
         setLives(createLives(puzzleSolution));
         setGameComplete(checkPuzzleComplete(puzzleSolution, resetPuzzle));
@@ -97,9 +79,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
         return puzzleState;
     }
   }
-  /* useReducer End ---- */
 
-  /* useEffect ---- Game Setup / Change / Complete */
   useEffect(() => {
     // Triggers on component mount to ensure the fillMode is true on game start
     setFillMode(true);
@@ -120,7 +100,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
     // useEffect triggers on puzzleSolution change to call resetPuzzle
     currentPuzzleDispatch({ type: PUZZLE_ACTIONS.RESET, rowIndex: 0, colIndex: 0 });
   }, [puzzleSolution]);
-  /* useEffect END ---- */
 
   /**
    * Disallow toggle when the game is finished
@@ -136,20 +115,22 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
   return (
     <>
       {gameOver && (
-        <GameOver resetPuzzle={
-          () => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.RESET, rowIndex: 0, colIndex: 0 }) }
-        } />
+        <GameOver resetPuzzle={() => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.RESET, rowIndex: 0, colIndex: 0 }) }} />
       )}
 
       {gameComplete && (
-        <GameComplete lives={lives} resetPuzzle={
-          () => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.RESET, rowIndex: 0, colIndex: 0 }); }
-        } />
+        <GameComplete lives={lives}
+          resetPuzzle={
+            () => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.RESET, rowIndex: 0, colIndex: 0 }); }
+          }
+        />
       )}
 
       {!gameComplete && !gameOver ? (
         <FillModeContext.Provider value={fillMode}>
-          <Board currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} livesCount={lives}
+          <Board currentPuzzle={currentPuzzle}
+            puzzleSolution={puzzleSolution}
+            livesCount={lives}
             fillTile={
               (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL, rowIndex: rowIndex, colIndex: colIndex }) }
             }
@@ -163,7 +144,9 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
         </FillModeContext.Provider>
       ) : (
         <FillModeContext.Provider value={fillMode}>
-            <Board currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} livesCount={lives}
+            <Board currentPuzzle={currentPuzzle}
+              puzzleSolution={puzzleSolution}
+              livesCount={lives}
               fillTile={(e, rowIndex, colIndex) => { }}
               markTile={(e, rowIndex, colIndex) => { }}
               hoverTile={(e, rowIndex, colIndex) => { }}

@@ -1,11 +1,7 @@
-/* ---- Imports Section */
 import React from 'react';
-// Constants
 import { FILL_STATE } from 'constants/fillState';
-// Functions
 import { copyCurrentPuzzle } from 'functions/puzzleSetup';
 import { checkLineComplete, checkPuzzleComplete, checkTileFillable, checkTileMarkable, getColumn } from 'functions/getPuzzleInfo';
-/* End ---- */
 
 interface FillTileResult {
   puzzle: string[][],

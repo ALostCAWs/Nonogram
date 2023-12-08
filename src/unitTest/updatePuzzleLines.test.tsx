@@ -1,10 +1,6 @@
-/* ---- Imports Section */
-// Constants
 import { FILL_STATE } from "constants/fillState";
-// Functions
 import { setTileRowFillState } from 'functions/updatePuzzleLines';
 import { setTileColFillState } from 'functions/updatePuzzleLines';
-/* End ---- */
 
 const FILLED = FILL_STATE.FILLED;
 const MARKED = FILL_STATE.MARKED;

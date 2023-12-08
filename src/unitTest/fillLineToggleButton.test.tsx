@@ -1,11 +1,7 @@
-/* ---- Imports Section */
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-// Constants
 import { FILL_STATE } from "constants/fillState";
-// Components
 import { FillLineToggleButton } from 'components/ui/fillLineToggleButton';
-/* End ---- */
 
 const FILLED = FILL_STATE.FILLED;
 const MARKED = FILL_STATE.MARKED;

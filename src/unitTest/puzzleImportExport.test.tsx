@@ -1,8 +1,5 @@
-/* ---- Imports Section */
-// Functions
 import { exportPuzzle } from "functions/exportPuzzle";
 import { importPuzzle } from "functions/importPuzzle";
-/* End ---- */
 
 const puzzleSolution5x5_NotBlank = [[true, true, true, true, true],
 [false, true, true, false, false],

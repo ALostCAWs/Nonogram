@@ -1,7 +1,4 @@
-/* ---- Imports Section */
-// Functions
 import { checkLineFilled } from 'functions/getPuzzleInfo';
-/* End ---- */
 
 interface FillLineToggleButtonProps {
   line: string[],
@@ -32,8 +29,7 @@ export const FillLineToggleButton = ({ setRowFill, setColFill, line, lineIndex, 
             (e) => setRowFill(e, lineIndex, 0)
           ) : (
             (e) => setColFill(e, 0, lineIndex)
-          )}
-        >Clear</button>
+          )}>Clear</button>
       ) : (
           <button type='button'
             data-testid={`${lineType}FillToggleButton${lineIndex}`}
@@ -46,8 +42,7 @@ export const FillLineToggleButton = ({ setRowFill, setColFill, line, lineIndex, 
               (e) => setRowFill(e, lineIndex, 0)
             ) : (
               (e) => setColFill(e, 0, lineIndex)
-            )}
-          >Fill</button>
+            )}>Fill</button>
       )}
     </>
   );

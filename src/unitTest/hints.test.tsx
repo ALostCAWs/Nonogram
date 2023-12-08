@@ -1,13 +1,8 @@
-/* ---- Imports Section */
 import { render, screen } from "@testing-library/react";
-// Constants
 import { FILL_STATE } from "constants/fillState";
 import { HINT_STATE } from "constants/hintState";
-// Components > UI
 import { Hints } from 'components/ui/hints';
-// Functions
 import { getPuzzleByColumn } from 'functions/getPuzzleInfo';
-/* End ---- */
 
 const FILLED = FILL_STATE.FILLED;
 const ERROR = FILL_STATE.ERROR;

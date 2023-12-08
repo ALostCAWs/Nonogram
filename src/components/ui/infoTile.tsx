@@ -1,15 +1,9 @@
-/* ---- Imports Section */
 import { useContext } from 'react';
-// Constants
 import { GAME_MODE_STATE } from 'constants/gameModeState';
-// Contexts
 import { GameModeContext } from 'contexts/gameModeContext';
-// Components > UI
 import { Hints } from 'components/ui/hints';
 import { FillLineToggleButton } from 'components/ui/fillLineToggleButton';
-// Functions
 import { checkLineComplete, getMaxHintCountByLineLength } from 'functions/getPuzzleInfo';
-/* End ---- */
 
 interface InfoTileProps {
   currentPuzzle: string[][],
@@ -35,13 +29,20 @@ export const InfoTile = ({ currentPuzzle, puzzleSolution = [], setRowFill, setCo
       {gameMode === GAME_MODE_STATE.PLAY && (
         <>
           {puzzleSolution.map((line, i) =>
-            <div key={`${lineType}Info${i}`} data-testid={`${lineType}Info${i}`} className={`${lineType}Infos ${lineType}Info${i} ${checkLineComplete(line, currentPuzzle[i]) ? 'completeLineHint' : ''}`}
+            <div key={`${lineType}Info${i}`}
+              data-testid={`${lineType}Info${i}`}
+              className={`${lineType}Infos ${lineType}Info${i} ${checkLineComplete(line, currentPuzzle[i]) ? 'completeLineHint' : ''}`}
               style={{
                 height: tileSize,
                 width: line.length * 12,
                 justifyContent: 'flex-end'
               }}>
-              <Hints puzzleSolutionLine={line} currentPuzzleLine={currentPuzzle[i]} lineIndex={i} maxHintCount={getMaxHintCountByLineLength(line.length)} lineType={lineType} />
+              <Hints puzzleSolutionLine={line}
+                currentPuzzleLine={currentPuzzle[i]}
+                lineIndex={i}
+                maxHintCount={getMaxHintCountByLineLength(line.length)}
+                lineType={lineType}
+              />
             </div>
           )}
         </>

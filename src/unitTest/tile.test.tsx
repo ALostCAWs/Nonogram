@@ -1,20 +1,11 @@
-/* ---- Imports Section */
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-// Constants
 import { FILL_STATE } from "constants/fillState";
-// Contexts
 import { FillModeContext } from 'contexts/fillModeContext';
-// Components > UI
 import { Tile } from 'components/ui/tile';
-/* End ---- */
 
 const EMPTY = FILL_STATE.EMPTY;
-
-// Break down tests into very small component-specific parts
-// Test their basic abilities; whether the tile calls the functions passed to it based on the FillModeContext
-// PlayNonogramProvider will test the proper function of the onclick / hover etc.
 
 it('executes fillTile on click when fillMode is true', async () => {
   const rowIndex = 0;
