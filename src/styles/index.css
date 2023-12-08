@@ -138,20 +138,20 @@ body {
   display: grid;
   grid-auto-flow: column;
   grid-column: 2 / -1;
-  gap: .05rem;
+  gap: .07rem;
 }
 
 .rowInfoContainer {
   justify-self: end;
   display: grid;
   grid-row: 2 / -2;
-  gap: .05rem;
+  gap: .07rem;
 }
 
 .colInfos {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
 
   /* add gradient light top, dark bottom */
@@ -161,8 +161,7 @@ body {
 .rowInfos {
   display: flex;
   flex-direction: row;
-
-  justify-content: flex-end;
+  justify-self: center;
   align-items: center;
 
   /* add gradient light left, dark right*/

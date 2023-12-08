@@ -30,7 +30,12 @@ export const InfoTile = ({ currentPuzzle, puzzleSolution = [], tileSize, lineTyp
       {gameMode === GAME_MODE_STATE.PLAY && (
         <>
           {puzzleSolution.map((line, i) =>
-            <div key={`${lineType}Info${i}`} data-testid={`${lineType}Info${i}`} className={`${lineType}Infos ${lineType}Info${i} ${checkLineComplete(line, currentPuzzle[i]) ? 'completeLineHint' : ''}`} style={{ height: tileSize, width: line.length * 12 }}>
+            <div key={`${lineType}Info${i}`} data-testid={`${lineType}Info${i}`} className={`${lineType}Infos ${lineType}Info${i} ${checkLineComplete(line, currentPuzzle[i]) ? 'completeLineHint' : ''}`}
+              style={{
+                height: tileSize,
+                width: line.length * 12,
+                justifyContent: 'flex-end'
+              }}>
               <Hints puzzleSolutionLine={line} currentPuzzleLine={currentPuzzle[i]} lineIndex={i} maxHintCount={getMaxHintCountByLineLength(line.length)} lineType={lineType} />
             </div>
           )}
@@ -40,8 +45,16 @@ export const InfoTile = ({ currentPuzzle, puzzleSolution = [], tileSize, lineTyp
       {gameMode === GAME_MODE_STATE.CREATE && (
         <>
           {currentPuzzle.map((line, i) =>
-            <div key={`${lineType}Info${i}`} data-testid={`${lineType}Info${i}`} className={`${lineType}Infos ${lineType}Info${i}`} style={{ height: tileSize, width: line.length * 12 }}>
-              <FillLineToggleButton currentPuzzle={currentPuzzle} line={line} lineIndex={i} lineType={lineType} />
+            <div
+              key={`${lineType}Info${i}`}
+              data-testid={`${lineType}Info${i}`}
+              className={`${lineType}Infos ${lineType}Info${i}`}
+              style={{
+                height: tileSize,
+                width: line.length * 12,
+                justifyContent: 'center'
+              }}>
+              <FillLineToggleButton currentPuzzle={currentPuzzle} line={line} lineIndex={i} tileSize={tileSize} lineType={lineType} />
             </div>
           )}
         </>
