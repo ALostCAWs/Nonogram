@@ -1,11 +1,15 @@
+/* ---- Imports Section */
+// Constants
 import { FILL_STATE } from "constants/fillState";
+// Functions
 import { checkSolutionNotBlank, checkBoardNotBlank, checkPuzzleRectangular } from "functions/puzzleValidation";
+/* End ---- */
 
-const filled = FILL_STATE.FILLED;
-const marked = FILL_STATE.MARKED;
-const empty = FILL_STATE.EMPTY;
-const error = FILL_STATE.ERROR;
-const complete = 'complete';
+const FILLED = FILL_STATE.FILLED;
+const MARKED = FILL_STATE.MARKED;
+const EMPTY = FILL_STATE.EMPTY;
+const ERROR = FILL_STATE.ERROR;
+const COMPLETE = 'complete';
 
 const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, true, false, false],
@@ -22,19 +26,19 @@ it('ensures the given puzzleSolution is not blank', () => {
   const resultBlankSolution = checkSolutionNotBlank(blankPuzzleSolution);
   expect(resultBlankSolution).toEqual(false);
 
-  const blank5x5Puzzle = [[empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty]];
+  const blank5x5Puzzle = [[EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY]];
   const resultBlankPuzzle = checkBoardNotBlank(blank5x5Puzzle);
   expect(resultBlankPuzzle).toEqual(false);
 
-  const notBlank5x5Puzzle = [[filled, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty],
-  [empty, empty, empty, empty, empty]];
+  const notBlank5x5Puzzle = [[FILLED, EMPTY, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY]];
   const resultNotBlankPuzzle = checkBoardNotBlank(notBlank5x5Puzzle);
   expect(resultNotBlankPuzzle).toEqual(true);
 

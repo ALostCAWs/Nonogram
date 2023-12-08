@@ -1,18 +1,19 @@
 /* ---- Imports Section */
-import React from 'react';
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { FILL_STATE } from "constants/fillState";
-// Components
-import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
-import { GameModeContext } from 'contexts/gameModeContext';
+// Constants
 import { GAME_MODE_STATE } from 'constants/gameModeState';
+import { FILL_STATE } from "constants/fillState";
+// Contexts
+import { GameModeContext } from 'contexts/gameModeContext';
+// Components > Providers
+import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
 /* End ---- */
 
-const filled = FILL_STATE.FILLED;
-const marked = FILL_STATE.MARKED;
-const error = FILL_STATE.ERROR;
-const complete = 'complete';
+const FILLED = FILL_STATE.FILLED;
+const MARKED = FILL_STATE.MARKED;
+const ERROR = FILL_STATE.ERROR;
+const COMPLETE = 'complete';
 
 const puzzleSolution5x5 = [[true, false, false, false, false],
 [false, true, false, false, false],
@@ -59,7 +60,7 @@ it('prevents tile onClick when the puzzle is solved', async () => {
 
   // Tiles unclickable
   await userEvent.click(tile_error_1);
-  expect(tile_error_1).not.toHaveClass(filled, marked, error, complete);
+  expect(tile_error_1).not.toHaveClass(FILLED, MARKED, ERROR, COMPLETE);
 });
 
 it('prevents tile onHover when the puzzle is solved', async () => {
@@ -155,17 +156,17 @@ it('resets the game when the retry button is clicked', async () => {
   expect(screen.getAllByTestId('life').length).toEqual(3);
 
   // Clicked are now all empty
-  expect(tile_error_1).not.toHaveClass(filled, marked, error, complete);
-  expect(tile_mark_1).not.toHaveClass(filled, marked, error, complete);
+  expect(tile_error_1).not.toHaveClass(FILLED, MARKED, ERROR, COMPLETE);
+  expect(tile_mark_1).not.toHaveClass(FILLED, MARKED, ERROR, COMPLETE);
 
-  expect(tile_fill_1).not.toHaveClass(filled, marked, error, complete);
-  expect(tile_fill_2).not.toHaveClass(filled, marked, error, complete);
-  expect(tile_fill_3).not.toHaveClass(filled, marked, error, complete);
+  expect(tile_fill_1).not.toHaveClass(FILLED, MARKED, ERROR, COMPLETE);
+  expect(tile_fill_2).not.toHaveClass(FILLED, MARKED, ERROR, COMPLETE);
+  expect(tile_fill_3).not.toHaveClass(FILLED, MARKED, ERROR, COMPLETE);
 
   // Error row is set to error correctly
-  expect(screen.getByTestId(`tile4-0`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile4-1`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile4-2`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile4-3`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile4-4`)).toHaveClass(error);
+  expect(screen.getByTestId(`tile4-0`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile4-1`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile4-2`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile4-3`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile4-4`)).toHaveClass(ERROR);
 });

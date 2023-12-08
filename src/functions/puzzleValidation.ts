@@ -1,4 +1,5 @@
 /* ---- Imports Section */
+// Constants
 import { FILL_STATE } from "constants/fillState";
 /* End ---- */
 

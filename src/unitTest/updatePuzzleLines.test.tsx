@@ -1,28 +1,26 @@
 /* ---- Imports Section */
-import React from 'react';
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+// Constants
 import { FILL_STATE } from "constants/fillState";
 // Functions
-import { setTileColFillState } from 'functions/updatePuzzleLines';
 import { setTileRowFillState } from 'functions/updatePuzzleLines';
+import { setTileColFillState } from 'functions/updatePuzzleLines';
 /* End ---- */
 
-const filled = FILL_STATE.FILLED;
-const marked = FILL_STATE.MARKED;
-const empty = FILL_STATE.EMPTY;
-const error = FILL_STATE.ERROR;
-const complete = 'complete';
+const FILLED = FILL_STATE.FILLED;
+const MARKED = FILL_STATE.MARKED;
+const EMPTY = FILL_STATE.EMPTY;
+const ERROR = FILL_STATE.ERROR;
+const COMPLETE = 'complete';
 
-let puzzle5x5 = [[empty, empty, empty, empty, empty],
-[empty, empty, empty, empty, empty],
-[empty, empty, empty, empty, empty],
-[empty, empty, empty, empty, empty],
-[empty, empty, empty, empty, empty]];
+let puzzle5x5 = [[EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+[EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+[EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+[EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+[EMPTY, EMPTY, EMPTY, EMPTY, EMPTY]];
 
 it(`sets a given lines' FILL_STATE to the specified state`, () => {
   // FILLED
-  let expectedState = filled;
+  let expectedState = FILLED;
   puzzle5x5 = setTileColFillState(puzzle5x5, 0, expectedState);
   puzzle5x5 = setTileRowFillState(puzzle5x5, 0, expectedState);
 
@@ -40,7 +38,7 @@ it(`sets a given lines' FILL_STATE to the specified state`, () => {
   expect(puzzle5x5[0][4]).toEqual(expectedState);
 
   // MARKED
-  expectedState = marked;
+  expectedState = MARKED;
   puzzle5x5 = setTileColFillState(puzzle5x5, 0, expectedState);
   puzzle5x5 = setTileRowFillState(puzzle5x5, 0, expectedState);
 
@@ -58,7 +56,7 @@ it(`sets a given lines' FILL_STATE to the specified state`, () => {
   expect(puzzle5x5[0][4]).toEqual(expectedState);
 
   // EMPTY
-  expectedState = empty;
+  expectedState = EMPTY;
   puzzle5x5 = setTileColFillState(puzzle5x5, 0, expectedState);
   puzzle5x5 = setTileRowFillState(puzzle5x5, 0, expectedState);
 
@@ -76,7 +74,7 @@ it(`sets a given lines' FILL_STATE to the specified state`, () => {
   expect(puzzle5x5[0][4]).toEqual(expectedState);
 
   // ERROR
-  expectedState = error;
+  expectedState = ERROR;
   puzzle5x5 = setTileColFillState(puzzle5x5, 0, expectedState);
   puzzle5x5 = setTileRowFillState(puzzle5x5, 0, expectedState);
 
@@ -94,7 +92,7 @@ it(`sets a given lines' FILL_STATE to the specified state`, () => {
   expect(puzzle5x5[0][4]).toEqual(expectedState);
 
   // COMPLETE
-  expectedState = complete;
+  expectedState = COMPLETE;
   puzzle5x5 = setTileColFillState(puzzle5x5, 0, expectedState);
   puzzle5x5 = setTileRowFillState(puzzle5x5, 0, expectedState);
 

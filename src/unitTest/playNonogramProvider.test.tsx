@@ -1,18 +1,19 @@
 /* ---- Imports Section */
-import React from 'react';
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { FILL_STATE } from "constants/fillState";
-// Components
-import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
-import { GameModeContext } from 'contexts/gameModeContext';
+// Constants
 import { GAME_MODE_STATE } from 'constants/gameModeState';
+import { FILL_STATE } from "constants/fillState";
+// Contexts
+import { GameModeContext } from 'contexts/gameModeContext';
+// Components > UI
+import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
 /* End ---- */
 
-const filled = FILL_STATE.FILLED;
-const marked = FILL_STATE.MARKED;
-const error = FILL_STATE.ERROR;
-const complete = 'complete';
+const FILLED = FILL_STATE.FILLED;
+const MARKED = FILL_STATE.MARKED;
+const ERROR = FILL_STATE.ERROR;
+const COMPLETE = 'complete';
 
 const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, false, false, false],
@@ -47,11 +48,11 @@ it('initializes the tiles with FILL_STATE.EMPTY', () => {
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   // true tile
   const tile_true = screen.getByTestId(`tile0-0`);
-  expect(tile_true).not.toHaveClass(filled, marked, error, complete);
+  expect(tile_true).not.toHaveClass(FILLED, MARKED, ERROR, COMPLETE);
 
   // false tile
   const tile_false = screen.getByTestId(`tile1-0`);
-  expect(tile_false).not.toHaveClass(filled, marked, error, complete);
+  expect(tile_false).not.toHaveClass(FILLED, MARKED, ERROR, COMPLETE);
 });
 
 it('initializes the tiles in false-only columns with FILL_STATE.ERROR', () => {
@@ -62,21 +63,21 @@ it('initializes the tiles in false-only columns with FILL_STATE.ERROR', () => {
   [false, false, false, false, false]];
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5_FalseCol} />);
 
-  expect(screen.getByTestId(`tile0-4`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile1-4`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile2-4`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile3-4`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile4-4`)).toHaveClass(error);
+  expect(screen.getByTestId(`tile0-4`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile1-4`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile2-4`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile3-4`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile4-4`)).toHaveClass(ERROR);
 });
 
 it('initializes the tiles in false-only rows with FILL_STATE.ERROR', () => {
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
 
-  expect(screen.getByTestId(`tile4-0`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile4-1`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile4-2`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile4-3`)).toHaveClass(error);
-  expect(screen.getByTestId(`tile4-4`)).toHaveClass(error);
+  expect(screen.getByTestId(`tile4-0`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile4-1`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile4-2`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile4-3`)).toHaveClass(ERROR);
+  expect(screen.getByTestId(`tile4-4`)).toHaveClass(ERROR);
 });
 
 it('highlights the associated info tiles on hover', async () => {
@@ -109,14 +110,14 @@ it('fills tiles that are true according to the puzzleSolution array', async () =
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile = screen.getByTestId(`tile0-0`)
   await userEvent.click(tile);
-  expect(tile).toHaveClass(filled);
+  expect(tile).toHaveClass(FILLED);
 });
 
 it('errors tiles that are true according to the puzzleSolution array', async () => {
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile = screen.getByTestId(`tile1-0`);
   await userEvent.click(tile);
-  expect(tile).toHaveClass(error);
+  expect(tile).toHaveClass(ERROR);
 });
 
 it('marks empty tiles regardless of puzzleSolution array', async () => {
@@ -127,15 +128,15 @@ it('marks empty tiles regardless of puzzleSolution array', async () => {
 
   // Mark
   await userEvent.click(tile_true);
-  expect(tile_true).toHaveClass(marked);
+  expect(tile_true).toHaveClass(MARKED);
   await userEvent.click(tile_false);
-  expect(tile_false).toHaveClass(marked);
+  expect(tile_false).toHaveClass(MARKED);
 
   // Unmark
   await userEvent.click(tile_true);
-  expect(tile_true).not.toHaveClass(marked);
+  expect(tile_true).not.toHaveClass(MARKED);
   await userEvent.click(tile_false);
-  expect(tile_false).not.toHaveClass(marked);
+  expect(tile_false).not.toHaveClass(MARKED);
 });
 
 it('completes all remaining empty tiles in a column when complete', async () => {
@@ -152,9 +153,9 @@ it('completes all remaining empty tiles in a column when complete', async () => 
   await userEvent.click(tile_fill);
 
   // All non-error'd false tiles should now have complete class, even if they were already manually marked
-  expect(tile_mark).toHaveClass(complete);
-  expect(tile_completeMark_1).toHaveClass(complete);
-  expect(tile_completeMark_2).toHaveClass(complete);
+  expect(tile_mark).toHaveClass(COMPLETE);
+  expect(tile_completeMark_1).toHaveClass(COMPLETE);
+  expect(tile_completeMark_2).toHaveClass(COMPLETE);
 });
 
 it('completes all remaining empty tiles in a row when complete', async () => {
@@ -173,10 +174,10 @@ it('completes all remaining empty tiles in a row when complete', async () => {
 
   // All non-error'd false tiles should now have complete class, even if they were already manually marked
   await waitFor(() => {
-    expect(tile_mark).toHaveClass(complete);
-    expect(tile_completeMark_1).toHaveClass(complete);
-    expect(tile_completeMark_2).toHaveClass(complete);
-    expect(tile_completeMark_3).toHaveClass(complete);
+    expect(tile_mark).toHaveClass(COMPLETE);
+    expect(tile_completeMark_1).toHaveClass(COMPLETE);
+    expect(tile_completeMark_2).toHaveClass(COMPLETE);
+    expect(tile_completeMark_3).toHaveClass(COMPLETE);
   });
 });
 
@@ -185,34 +186,34 @@ it('prevents filled tiles from being unfilled or marked', async () => {
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile = screen.getByTestId(`tile0-0`)
   await userEvent.click(tile);
-  expect(tile).toHaveClass(filled);
+  expect(tile).toHaveClass(FILLED);
 
   // Retain filled class after additional fillMode true click
   await userEvent.click(tile);
-  expect(tile).toHaveClass(filled);
+  expect(tile).toHaveClass(FILLED);
 
   // Retain filled class after mark attempt with fillMode false click
   await userEvent.click(screen.getByRole('button', { name: 'Mark' }));
   await userEvent.click(tile);
-  expect(tile).toHaveClass(filled);
-  expect(tile).not.toHaveClass(marked);
+  expect(tile).toHaveClass(FILLED);
+  expect(tile).not.toHaveClass(MARKED);
 });
 
 it(`prevents error'd tiles from being unerror'd or marked`, async () => {
   render(<PlayNonogramProvider puzzleSolution={puzzleSolution5x5} />);
   const tile = screen.getByTestId(`tile1-0`)
   await userEvent.click(tile);
-  expect(tile).toHaveClass(error);
+  expect(tile).toHaveClass(ERROR);
 
   // Retain error class after additional fillMode true click
   await userEvent.click(tile);
-  expect(tile).toHaveClass(error);
+  expect(tile).toHaveClass(ERROR);
 
   // Retain error class after mark attempt with fillMode false click
   await userEvent.click(screen.getByRole('button', { name: 'Mark' }));
   await userEvent.click(tile);
-  expect(tile).toHaveClass(error);
-  expect(tile).not.toHaveClass(marked);
+  expect(tile).toHaveClass(ERROR);
+  expect(tile).not.toHaveClass(MARKED);
 });
 
 it(`prevents marked tiles from being filled / error'd`, async () => {
@@ -223,8 +224,8 @@ it(`prevents marked tiles from being filled / error'd`, async () => {
   await userEvent.click(tile_mark);
   await userEvent.click(screen.getByRole('button', { name: 'Fill' }));
   await userEvent.click(tile_mark);
-  expect(tile_mark).toHaveClass(marked);
-  expect(tile_mark).not.toHaveClass(filled, error);
+  expect(tile_mark).toHaveClass(MARKED);
+  expect(tile_mark).not.toHaveClass(FILLED, ERROR);
 });
 
 it(`prevents marked complete tiles from being filled, error'd or unmarked`, async () => {
@@ -240,22 +241,22 @@ it(`prevents marked complete tiles from being filled, error'd or unmarked`, asyn
 
   // Attempt error of marked complete tiles
   await userEvent.click(tile_completeMark_1);
-  expect(tile_completeMark_1).toHaveClass(complete);
-  expect(tile_completeMark_1).not.toHaveClass(filled, error);
+  expect(tile_completeMark_1).toHaveClass(COMPLETE);
+  expect(tile_completeMark_1).not.toHaveClass(FILLED, ERROR);
 
   await userEvent.click(tile_completeMark_2);
-  expect(tile_completeMark_2).toHaveClass(complete);
-  expect(tile_completeMark_2).not.toHaveClass(filled, error);
+  expect(tile_completeMark_2).toHaveClass(COMPLETE);
+  expect(tile_completeMark_2).not.toHaveClass(FILLED, ERROR);
 
   // Attempt mark / unmark of complete tiles
   await userEvent.click(screen.getByRole('button', { name: 'Mark' }));
   await userEvent.click(tile_completeMark_1);
-  expect(tile_completeMark_1).toHaveClass(complete);
-  expect(tile_completeMark_1).not.toHaveClass(filled, error);
+  expect(tile_completeMark_1).toHaveClass(COMPLETE);
+  expect(tile_completeMark_1).not.toHaveClass(FILLED, ERROR);
 
   await userEvent.click(tile_completeMark_2);
-  expect(tile_completeMark_2).toHaveClass(complete);
-  expect(tile_completeMark_2).not.toHaveClass(filled, error);
+  expect(tile_completeMark_2).toHaveClass(COMPLETE);
+  expect(tile_completeMark_2).not.toHaveClass(FILLED, ERROR);
 });
 
 /* LIVES */

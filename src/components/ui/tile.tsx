@@ -1,5 +1,6 @@
 /* ---- Imports Section */
 import React, { useContext } from 'react';
+// Contexts
 import { FillModeContext } from 'contexts/fillModeContext'
 /* End ---- */
 

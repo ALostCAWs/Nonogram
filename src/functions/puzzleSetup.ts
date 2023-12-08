@@ -1,5 +1,7 @@
 /* ---- Imports Section */
+// Constants
 import { FILL_STATE } from 'constants/fillState';
+// Functions
 import { exportPuzzle } from 'functions/exportPuzzle';
 import { getColumn, getLongestDimension } from 'functions/getPuzzleInfo';
 import { setTileRowFillState, setTileColFillState } from './updatePuzzleLines';

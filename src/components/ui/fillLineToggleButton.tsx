@@ -1,7 +1,6 @@
 /* ---- Imports Section */
-import { FILL_STATE } from 'constants/fillState';
+// Functions
 import { checkLineFilled } from 'functions/getPuzzleInfo';
-import { setTileColFillState, setTileRowFillState } from 'functions/updatePuzzleLines';
 /* End ---- */
 
 interface FillLineToggleButtonProps {
@@ -23,6 +22,7 @@ export const FillLineToggleButton = ({ setRowFill, setColFill, line, lineIndex, 
     <>
       {checkLineFilled(line) ? (
         <button type='button'
+          data-testid={`${lineType}FillToggleButton${lineIndex}`}
           className='fillLineToggle'
           style={{
             height: `20px`,
@@ -36,6 +36,7 @@ export const FillLineToggleButton = ({ setRowFill, setColFill, line, lineIndex, 
         >Clear</button>
       ) : (
           <button type='button'
+            data-testid={`${lineType}FillToggleButton${lineIndex}`}
             className='fillLineToggle'
             style={{
               height: `20px`,

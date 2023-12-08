@@ -1,4 +1,7 @@
+/* ---- Imports Section */
+// Functions
 import { copyCurrentPuzzle } from "./puzzleSetup";
+/* End ---- */
 
 /**
  * Sets a given rows' tiles in currentPuzzle to the specified FILL_STATE

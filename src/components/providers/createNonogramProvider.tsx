@@ -1,5 +1,5 @@
 /* ---- Imports Section */
-import React, { useState, useEffect, useReducer } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import App from 'App';
 // Constants
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';

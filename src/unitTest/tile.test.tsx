@@ -2,13 +2,15 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+// Constants
 import { FILL_STATE } from "constants/fillState";
+// Contexts
 import { FillModeContext } from 'contexts/fillModeContext';
-// Components
+// Components > UI
 import { Tile } from 'components/ui/tile';
 /* End ---- */
 
-const empty = FILL_STATE.EMPTY;
+const EMPTY = FILL_STATE.EMPTY;
 
 // Break down tests into very small component-specific parts
 // Test their basic abilities; whether the tile calls the functions passed to it based on the FillModeContext
@@ -25,7 +27,7 @@ it('executes fillTile on click when fillMode is true', async () => {
 
   render(
     <FillModeContext.Provider value={true}>
-      <Tile fill={empty} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={fillTile} markTile={(e, rowIndex, colIndex) => { }} hoverTile={(e, rowIndex, colIndex) => { }} />
+      <Tile fill={EMPTY} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={fillTile} markTile={(e, rowIndex, colIndex) => { }} hoverTile={(e, rowIndex, colIndex) => { }} />
     </FillModeContext.Provider>
   );
 
@@ -46,7 +48,7 @@ it('executes markTile on click when fillMode is false', async () => {
 
   render(
     <FillModeContext.Provider value={false}>
-      <Tile fill={empty} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={(e, rowIndex, colIndex) => { }} markTile={markTile} hoverTile={(e, rowIndex, colIndex) => { }} />
+      <Tile fill={EMPTY} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={(e, rowIndex, colIndex) => { }} markTile={markTile} hoverTile={(e, rowIndex, colIndex) => { }} />
     </FillModeContext.Provider>
   );
 
@@ -71,7 +73,7 @@ it('executes hoverTile on mouseenter & on mouseleave', async () => {
   }
 
   render(
-    <Tile fill={empty} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} markTile={(e, rowIndex, colIndex) => { }} fillTile={(e, rowIndex, colIndex) => { }} hoverTile={hoverTile} />
+    <Tile fill={EMPTY} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} markTile={(e, rowIndex, colIndex) => { }} fillTile={(e, rowIndex, colIndex) => { }} hoverTile={hoverTile} />
   );
 
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);

@@ -1,11 +1,14 @@
 /* ---- Imports Section */
 import { useContext } from 'react';
-import { GameModeContext } from 'contexts/gameModeContext';
+// Constants
 import { GAME_MODE_STATE } from 'constants/gameModeState';
-import { checkLineComplete, getMaxHintCountByLineLength } from 'functions/getPuzzleInfo';
+// Contexts
+import { GameModeContext } from 'contexts/gameModeContext';
 // Components > UI
 import { Hints } from 'components/ui/hints';
 import { FillLineToggleButton } from 'components/ui/fillLineToggleButton';
+// Functions
+import { checkLineComplete, getMaxHintCountByLineLength } from 'functions/getPuzzleInfo';
 /* End ---- */
 
 interface InfoTileProps {
