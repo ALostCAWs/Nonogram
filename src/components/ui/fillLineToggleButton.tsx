@@ -5,8 +5,9 @@ import { setTileColFillState, setTileRowFillState } from 'functions/updatePuzzle
 /* End ---- */
 
 interface FillLineToggleButtonProps {
-  currentPuzzle: string[][],
   line: string[],
+  setRowFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
+  setColFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   lineIndex: number,
   tileSize: number,
   lineType: string
@@ -15,19 +16,24 @@ interface FillLineToggleButtonProps {
 /**
  * @returns A button to toggle whether each Tile in a given line is FILL_STATE FILLED or EMPTY
  */
-export const FillLineToggleButton = ({ currentPuzzle, line, lineIndex, tileSize, lineType }: FillLineToggleButtonProps) => {
-  const fillToSet = checkLineFilled(line) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
-  const toggleFill = lineType === 'row' ? setTileRowFillState.bind(this, currentPuzzle, lineIndex, fillToSet) : setTileColFillState.bind(this, currentPuzzle, lineIndex, fillToSet);
+export const FillLineToggleButton = ({ setRowFill, setColFill, line, lineIndex, tileSize, lineType }: FillLineToggleButtonProps) => {
+  //const fillToSet = checkLineFilled(line) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
+  //const toggleFill = lineType === 'row' ? setRowFill.bind(e, lineIndex, 0) : setColFill.bind(e, lineIndex, 0);
   return (
     <>
       {checkLineFilled(line) ? (
         <button type='button'
-          className='fillLineToggle button'
+          className='fillLineToggle'
           style={{
             height: `20px`,
             width: `${tileSize}px`
           }}
-          onClick={toggleFill}>Clear</button>
+          onClick={lineType === 'row' ? (
+            (e) => setRowFill(e, lineIndex, 0)
+          ) : (
+            (e) => setColFill(e, 0, lineIndex)
+          )}
+        >Clear</button>
       ) : (
           <button type='button'
             className='fillLineToggle'
@@ -35,7 +41,12 @@ export const FillLineToggleButton = ({ currentPuzzle, line, lineIndex, tileSize,
               height: `20px`,
               width: `${tileSize}px`
             }}
-            onClick={toggleFill}>Fill</button>
+            onClick={lineType === 'row' ? (
+              (e) => setRowFill(e, lineIndex, 0)
+            ) : (
+              (e) => setColFill(e, 0, lineIndex)
+            )}
+          >Fill</button>
       )}
     </>
   );

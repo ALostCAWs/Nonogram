@@ -10,6 +10,8 @@ import { Board } from 'components/ui/board';
 import { hoverTile } from 'functions/tileFunctions';
 import { checkBoardNotBlank } from 'functions/puzzleValidation';
 import { createBlankPuzzle, createBoolPuzzle, copyCurrentPuzzle } from 'functions/puzzleSetup';
+import { checkLineFilled, getColumn } from 'functions/getPuzzleInfo';
+import { setTileColFillState, setTileRowFillState } from 'functions/updatePuzzleLines';
 /* End ---- */
 
 interface CreateNonogramProviderProps {
@@ -47,6 +49,28 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
         return updatedPuzzle;
       }
 
+      case PUZZLE_ACTIONS.SET_ROW_FILL: {
+        let updatedPuzzle = copyCurrentPuzzle(puzzleState);
+        const fillToSet = checkLineFilled(updatedPuzzle[action.rowIndex]) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
+        updatedPuzzle = setTileRowFillState(updatedPuzzle, action.rowIndex, fillToSet);
+        console.log('row');
+        console.log(fillToSet);
+        console.log(puzzleState);
+        console.log(updatedPuzzle);
+        return updatedPuzzle;
+      }
+
+      case PUZZLE_ACTIONS.SET_COL_FILL: {
+        let updatedPuzzle = copyCurrentPuzzle(puzzleState);
+        const fillToSet = checkLineFilled(getColumn(updatedPuzzle, action.colIndex)) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
+        updatedPuzzle = setTileColFillState(updatedPuzzle, action.colIndex, fillToSet);
+        console.log('col');
+        console.log(fillToSet);
+        console.log(puzzleState);
+        console.log(updatedPuzzle);
+        return updatedPuzzle;
+      }
+
       default:
         return puzzleState;
     }
@@ -54,7 +78,6 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
 
   useEffect(() => {
     setBoardBlank(!checkBoardNotBlank(currentPuzzle));
-    console.log(boardBlank);
   }, [currentPuzzle, boardBlank]);
 
   return (
@@ -66,7 +89,14 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
               (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL, rowIndex: rowIndex, colIndex: colIndex }) }
             }
             markTile={(e, rowIndex, colIndex) => { }}
-            hoverTile={hoverTile} />
+            hoverTile={hoverTile}
+            setRowFill={
+              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_ROW_FILL, rowIndex: rowIndex, colIndex: colIndex }) }
+            }
+            setColFill={
+              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_COL_FILL, rowIndex: rowIndex, colIndex: colIndex }) }
+            }
+          />
           <button type='button' className='export button' onClick={() => {
             const puzzleCode = createBoolPuzzle(currentPuzzle);
             navigator.clipboard.writeText(puzzleCode).catch((e) => (console.error(e)));

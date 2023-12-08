@@ -156,20 +156,20 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
             markTile={
               (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.MARK, rowIndex: rowIndex, colIndex: colIndex }) }
             }
-            hoverTile={hoverTile} />
+            hoverTile={hoverTile}
+            setRowFill={(e, rowIndex, colIndex) => { }}
+            setColFill={(e, rowIndex, colIndex) => { }}
+          />
         </FillModeContext.Provider>
       ) : (
         <FillModeContext.Provider value={fillMode}>
             <Board currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} livesCount={lives}
-              fillTile={
-                (e, rowIndex, colIndex) => { }
-              }
-              markTile={
-                (e, rowIndex, colIndex) => { }
-              }
-              hoverTile={
-                (e, rowIndex, colIndex) => { }
-              } />
+              fillTile={(e, rowIndex, colIndex) => { }}
+              markTile={(e, rowIndex, colIndex) => { }}
+              hoverTile={(e, rowIndex, colIndex) => { }}
+              setRowFill={(e, rowIndex, colIndex) => { }}
+              setColFill={(e, rowIndex, colIndex) => { }}
+            />
         </FillModeContext.Provider>
       )}
 

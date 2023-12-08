@@ -11,6 +11,8 @@ import { FillLineToggleButton } from 'components/ui/fillLineToggleButton';
 interface InfoTileProps {
   currentPuzzle: string[][],
   puzzleSolution: boolean[][],
+  setRowFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
+  setColFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   tileSize: number,
   lineType: string
 }
@@ -22,7 +24,7 @@ interface InfoTileProps {
  * @returns GameModeContext === GAME_MODE_STATE.PLAY - Displays Hints based on the puzzleSolution & currentPuzzle
  * @returns GameModeContext === GAME_MODE_STATE.CREATE - Displays buttons for easy filling & emptying of all Tiles in a line
  */
-export const InfoTile = ({ currentPuzzle, puzzleSolution = [], tileSize, lineType }: InfoTileProps) => {
+export const InfoTile = ({ currentPuzzle, puzzleSolution = [], setRowFill, setColFill, tileSize, lineType }: InfoTileProps) => {
   const gameMode = useContext(GameModeContext);
 
   return (
@@ -54,7 +56,13 @@ export const InfoTile = ({ currentPuzzle, puzzleSolution = [], tileSize, lineTyp
                 width: line.length * 12,
                 justifyContent: 'center'
               }}>
-              <FillLineToggleButton currentPuzzle={currentPuzzle} line={line} lineIndex={i} tileSize={tileSize} lineType={lineType} />
+              <FillLineToggleButton
+                line={line}
+                setRowFill={setRowFill}
+                setColFill={setColFill}
+                lineIndex={i}
+                tileSize={tileSize}
+                lineType={lineType} />
             </div>
           )}
         </>

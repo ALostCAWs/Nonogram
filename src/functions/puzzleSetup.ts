@@ -93,13 +93,13 @@ export const checkAndSetZeroLines = (updatedPuzzle: string[][], puzzleSolution: 
   for (let i = 0; i < puzzleSolution[0].length; i++) {
     const col = new Set(getColumn(puzzleSolution, i));
     if (col.size === 1 && col.has(false)) {
-      setTileColFillState(updatedPuzzle, i, FILL_STATE.ERROR);
+      updatedPuzzle = setTileColFillState(updatedPuzzle, i, FILL_STATE.ERROR);
     }
   }
   for (let i = 0; i < puzzleSolution.length; i++) {
     const row = new Set(puzzleSolution[i]);
     if (row.size === 1 && row.has(false)) {
-      setTileRowFillState(updatedPuzzle, i, FILL_STATE.ERROR);
+      updatedPuzzle = setTileRowFillState(updatedPuzzle, i, FILL_STATE.ERROR);
     }
   }
   return updatedPuzzle;

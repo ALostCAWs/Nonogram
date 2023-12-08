@@ -15,6 +15,8 @@ interface BoardProps {
   fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
+  setRowFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
+  setColFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void
 }
 
 /**
@@ -27,7 +29,7 @@ interface BoardProps {
  * @returns Tile for each item in currentPuzzle
  * @returns Life components equal to the livesCount prop
  */
-export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, fillTile, markTile, hoverTile }: BoardProps) => {
+export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, fillTile, markTile, hoverTile, setRowFill, setColFill }: BoardProps) => {
   const currentPuzzleByColumn: string[][] = getPuzzleByColumn(currentPuzzle);
   let puzzleSolutionByColumn: boolean[][] = [];
   const nonogramPaddingRight = currentPuzzle[0].length * 12;
@@ -58,10 +60,24 @@ export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, fillTile
     <div className='nonogram' style={{ paddingRight: nonogramPaddingRight }}>
       <div className='boardContainer' style={{ width: tileSize * (currentPuzzle[0].length + 1) }}>
         <div className='colInfoContainer' key='colInfoContainer' style={{ gridTemplateColumns: `repeat(${currentPuzzle[0].length}, 1fr)` }}>
-          <InfoTile currentPuzzle={currentPuzzleByColumn} puzzleSolution={puzzleSolutionByColumn} tileSize={tileSize} lineType={'col'} />
+          <InfoTile
+            currentPuzzle={currentPuzzleByColumn}
+            puzzleSolution={puzzleSolutionByColumn}
+            setRowFill={setRowFill}
+            setColFill={setColFill}
+            tileSize={tileSize}
+            lineType={'col'}
+          />
         </div>
         <div className='rowInfoContainer' key='rowInfoContainer' style={{ gridTemplateRows: `repeat(${currentPuzzle.length}, 1fr)` }}>
-          <InfoTile currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} tileSize={tileSize} lineType={'row'} />
+          <InfoTile
+            currentPuzzle={currentPuzzle}
+            puzzleSolution={puzzleSolution}
+            setRowFill={setRowFill}
+            setColFill={setColFill}
+            tileSize={tileSize}
+            lineType={'row'}
+          />
         </div>
 
         <div className='board' style={{ gridTemplateColumns: `repeat(${currentPuzzle[0].length}, 1fr)` }}>
