@@ -2,13 +2,13 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "constants/fillState";
+import { FILL_STATE } from "constants/fillState";
 import { FillModeContext } from 'contexts/fillModeContext';
 // Components
 import { Tile } from 'components/ui/tile';
 /* End ---- */
 
-const empty = fillState.empty;
+const empty = FILL_STATE.EMPTY;
 
 // Break down tests into very small component-specific parts
 // Test their basic abilities; whether the tile calls the functions passed to it based on the FillModeContext
@@ -31,7 +31,7 @@ it('executes fillTile on click when fillMode is true', async () => {
 
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);
 
-  userEvent.click(tile);
+  await userEvent.click(tile);
   expect(isFilled).toEqual(true);
 });
 
@@ -52,7 +52,7 @@ it('executes markTile on click when fillMode is false', async () => {
 
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);
 
-  userEvent.click(tile);
+  await userEvent.click(tile);
   expect(isMarked).toEqual(true);
 });
 
@@ -77,9 +77,9 @@ it('executes hoverTile on mouseenter & on mouseleave', async () => {
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);
 
   // mouseenter
-  userEvent.hover(tile);
+  await userEvent.hover(tile);
   expect(isHovered).toEqual(true);
   // mouseleave
-  userEvent.unhover(tile);
+  await userEvent.unhover(tile);
   expect(isHovered).toEqual(false);
 });

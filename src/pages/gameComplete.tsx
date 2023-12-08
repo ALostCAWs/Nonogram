@@ -1,13 +1,11 @@
-/* ---- Imports Section */
-import React from 'react';
-/* End ---- */
-
-/* ---- Display game completion message */
 interface GameCompleteProps {
   lives: number,
   resetPuzzle: () => void
 }
 
+/**
+ * @returns Display game completion message
+ */
 export const GameComplete = ({ lives, resetPuzzle }: GameCompleteProps) => {
   return (
     <div className='gameComplete'>

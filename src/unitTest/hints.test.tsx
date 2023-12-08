@@ -1,21 +1,21 @@
 /* ---- Imports Section */
 import React from 'react';
 import { render, screen } from "@testing-library/react";
-import { fillState } from "constants/fillState";
-import { hintState } from "constants/hintState";
+import { FILL_STATE } from "constants/fillState";
+import { HINT_STATE } from "constants/hintState";
 // Components
 import { Hints } from 'components/ui/hints';
 // Functions
 import { getPuzzleByColumn } from 'functions/getPuzzleInfo';
 /* End ---- */
 
-const filled = fillState.filled;
-const error = fillState.error;
-const empty = fillState.empty
+const filled = FILL_STATE.FILLED;
+const error = FILL_STATE.ERROR;
+const empty = FILL_STATE.EMPTY
 
-const fullLineHint = hintState.fullLineIncomplete;
-const zeroHint = hintState.zero;
-const completeHint = hintState.complete;
+const fullLineHint = HINT_STATE.FULL_LINE_INCOMPLETE;
+const zeroHint = HINT_STATE.ZERO;
+const completeHint = HINT_STATE.COMPLETE;
 
 let puzzleSolution5x5_ColTest = [[true, true, true, true, false],
 [true, true, false, false, false],
@@ -50,7 +50,7 @@ const currentPuzzle5x5_RowTest = [[empty, empty, empty, empty, empty],
 
 /* ---- Initialization Tests */
 it('initializes a standard hint as black', () => {
-  let index = 1;
+  const index = 1;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_RowTest[index]} currentPuzzleLine={currentPuzzle5x5_RowTest[index]} lineIndex={index} maxHintCount={3} lineType={'row'} />);
 
   expect(screen.getByTestId(`hint${index} - 0`)).not.toHaveClass(fullLineHint, zeroHint, completeHint);
@@ -58,7 +58,7 @@ it('initializes a standard hint as black', () => {
 });
 
 it('initializes multiple standard hints as black', () => {
-  let index = 3;
+  const index = 3;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_RowTest[index]} currentPuzzleLine={currentPuzzle5x5_RowTest[index]} lineIndex={index} maxHintCount={3} lineType={'row'} />);
   expect(screen.getByTestId(`hint${index} - 0`)).toHaveTextContent('3');
   expect(screen.getByTestId(`hint${index} - 0`)).not.toHaveClass(fullLineHint, zeroHint, completeHint);
@@ -67,7 +67,7 @@ it('initializes multiple standard hints as black', () => {
 });
 
 it('initializes empty column hints as 0 with zeroHint class', () => {
-  let index = 4;
+  const index = 4;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_ColTest[index]} currentPuzzleLine={currentPuzzle5x5_ColTest[index]} lineIndex={index} maxHintCount={3} lineType={'col'} />);
 
   expect(screen.getByTestId(`hint${index} - 0`)).toHaveClass(zeroHint);
@@ -76,7 +76,7 @@ it('initializes empty column hints as 0 with zeroHint class', () => {
 });
 
 it('initializes empty row hints as 0 with zeroHint class', () => {
-  let index = 4;
+  const index = 4;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_RowTest[index]} currentPuzzleLine={currentPuzzle5x5_RowTest[index]} lineIndex={index} maxHintCount={3} lineType={'row'} />);
 
   expect(screen.getByTestId(`hint${index} - 0`)).toHaveClass(zeroHint);
@@ -85,7 +85,7 @@ it('initializes empty row hints as 0 with zeroHint class', () => {
 });
 
 it('initializes full column hints with fullLineHint class', () => {
-  let index = 0;
+  const index = 0;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_ColTest[index]} currentPuzzleLine={currentPuzzle5x5_ColTest[index]} lineIndex={index} maxHintCount={3} lineType={'col'} />);
 
   expect(screen.getByTestId(`hint${index} - 0`)).toHaveClass(fullLineHint);
@@ -94,7 +94,7 @@ it('initializes full column hints with fullLineHint class', () => {
 });
 
 it('initializes full row hints with fullLineHint class', () => {
-  let index = 0;
+  const index = 0;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_RowTest[index]} currentPuzzleLine={currentPuzzle5x5_RowTest[index]} lineIndex={index} maxHintCount={3} lineType={'row'} />);
 
   expect(screen.getByTestId(`hint${index} - 0`)).toHaveClass(fullLineHint);
@@ -114,20 +114,20 @@ it(`greys out a rows' hint when its' corresponding tiles are filled`, () => {
   [error, error, error, error, error]];
 
   // 0 - hint index 0 Complete, full line
-  let fullLineIndex = 0;
+  const fullLineIndex = 0;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_RowTest[fullLineIndex]} currentPuzzleLine={currentPuzzle5x5_GreyHints_RowTest[fullLineIndex]} lineIndex={fullLineIndex} maxHintCount={0} lineType={'row'} />);
   expect(screen.getByTestId(`hint${fullLineIndex} - 0`)).toHaveClass(completeHint);
   expect(screen.getByTestId(`hint${fullLineIndex} - 0`)).not.toHaveClass(fullLineHint, zeroHint);
 
   // 2 - hint index 0 Complete, hint index 1 Incomplete
-  let oneHintCompleteIndex = 2;
+  const oneHintCompleteIndex = 2;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_RowTest[oneHintCompleteIndex]} currentPuzzleLine={currentPuzzle5x5_GreyHints_RowTest[oneHintCompleteIndex]} lineIndex={oneHintCompleteIndex} maxHintCount={0} lineType={'row'} />);
   expect(screen.getByTestId(`hint${oneHintCompleteIndex} - 0`)).toHaveClass(completeHint);
   expect(screen.getByTestId(`hint${oneHintCompleteIndex} - 0`)).not.toHaveClass(fullLineHint, zeroHint);
   expect(screen.getByTestId(`hint${oneHintCompleteIndex} - 1`)).not.toHaveClass(fullLineHint, zeroHint, completeHint);
 
   // 3 - hint index 0 & 1 Complete
-  let allHintCompleteIndex = 3;
+  const allHintCompleteIndex = 3;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_RowTest[allHintCompleteIndex]} currentPuzzleLine={currentPuzzle5x5_GreyHints_RowTest[allHintCompleteIndex]} lineIndex={allHintCompleteIndex} maxHintCount={0} lineType={'row'} />);
   expect(screen.getByTestId(`hint${allHintCompleteIndex} - 0`)).toHaveClass(completeHint);
   expect(screen.getByTestId(`hint${allHintCompleteIndex} - 0`)).not.toHaveClass(fullLineHint, zeroHint);
@@ -144,20 +144,20 @@ it(`greys out a columns' hint when its' corresponding tiles are filled`, () => {
   currentPuzzle5x5_GreyHints_ColTest = getPuzzleByColumn(currentPuzzle5x5_GreyHints_ColTest);
 
   // 0 - hint index 0 Complete, full line
-  let fullLineIndex = 0;
+  const fullLineIndex = 0;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_ColTest[fullLineIndex]} currentPuzzleLine={currentPuzzle5x5_GreyHints_ColTest[fullLineIndex]} lineIndex={fullLineIndex} maxHintCount={0} lineType={'col'} />);
   expect(screen.getByTestId(`hint${fullLineIndex} - 0`)).toHaveClass(completeHint);
   expect(screen.getByTestId(`hint${fullLineIndex} - 0`)).not.toHaveClass(fullLineHint, zeroHint);
 
   // 1 - hint index 1 Incomplete, hint index 0 Complete
-  let oneHintCompleteIndex = 2;
+  const oneHintCompleteIndex = 2;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_ColTest[oneHintCompleteIndex]} currentPuzzleLine={currentPuzzle5x5_GreyHints_ColTest[oneHintCompleteIndex]} lineIndex={oneHintCompleteIndex} maxHintCount={0} lineType={'col'} />);
   expect(screen.getByTestId(`hint${oneHintCompleteIndex} - 0`)).not.toHaveClass(fullLineHint, zeroHint, completeHint);
   expect(screen.getByTestId(`hint${oneHintCompleteIndex} - 1`)).toHaveClass(completeHint);
   expect(screen.getByTestId(`hint${oneHintCompleteIndex} - 1`)).not.toHaveClass(fullLineHint, zeroHint);
 
   // 3 - hint index 0 & 1 Complete
-  let allHintCompleteIndex = 3;
+  const allHintCompleteIndex = 3;
   render(<Hints puzzleSolutionLine={puzzleSolution5x5_ColTest[allHintCompleteIndex]} currentPuzzleLine={currentPuzzle5x5_GreyHints_ColTest[allHintCompleteIndex]} lineIndex={allHintCompleteIndex} maxHintCount={0} lineType={'col'} />);
   expect(screen.getByTestId(`hint${allHintCompleteIndex} - 0`)).toHaveClass(completeHint);
   expect(screen.getByTestId(`hint${allHintCompleteIndex} - 0`)).not.toHaveClass(fullLineHint, zeroHint);

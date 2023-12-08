@@ -1,32 +1,78 @@
 /* ---- Imports Section */
-import { fillState } from 'constants/fillState';
+import { FILL_STATE } from 'constants/fillState';
+import { exportPuzzle } from 'functions/exportPuzzle';
 import { getColumn, getLongestDimension } from 'functions/getPuzzleInfo';
+import { setTileRowFillState, setTileColFillState } from './updatePuzzleLines';
 /* End ---- */
 
-/* ---- Initial Puzzle Setup Functions */
-/* ---- Create lives  */
+/**
+ * Set starting based on the longest dimension of the board
+ *
+ * @returns The number of lives to start the game with
+ */
 export const createLives = (puzzleSolution: boolean[][]): number => {
-  // Set starting  based on the longest dimension of the board
-  let longestDimension = getLongestDimension(puzzleSolution);
-  let lives = Math.ceil(longestDimension / 2);
+  const longestDimension = getLongestDimension(puzzleSolution);
+  const lives = Math.ceil(longestDimension / 2);
   return lives;
 }
 
-/* ---- Create / Copy currentPuzzle  */
+/**
+ * Creates a 2D array based on the given puzzle dimensions populated with FILL_STATE.EMPTY
+ *
+ * @param boardHeight
+ * @param boardWidth
+ * @returns {string[][]} blankPuzzle
+ */
+export const createBlankPuzzle = (boardHeight: number, boardWidth: number): string[][] => {
+  const blankPuzzle: string[][] = [];
+  for (let i = 0; i < boardHeight; i++) {
+    const blankRow: string[] = [];
+    for (let j = 0; j < boardWidth; j++) {
+      blankRow.push(FILL_STATE.EMPTY);
+    }
+    blankPuzzle.push(blankRow);
+  }
+  return blankPuzzle;
+}
+
+/**
+ * Creates a boolean[][] version of a string[][] ( Generates a created puzzles' solution )
+ *
+ * @param currentPuzzle
+ * @returns {boolean[][]} puzzleSolution
+ */
+export const createBoolPuzzle = (currentPuzzle: string[][]): string => {
+  const puzzleSolution: boolean[][] = [];
+  for (let i = 0; i < currentPuzzle.length; i++) {
+    const rowSolution: boolean[] = [];
+    for (let j = 0; j < currentPuzzle[0].length; j++) {
+      const filled = currentPuzzle[i][j] === FILL_STATE.FILLED ? true : false;
+      rowSolution.push(filled);
+    }
+    puzzleSolution.push(rowSolution);
+  }
+  return exportPuzzle(puzzleSolution);
+}
+
+/**
+ * @returns A deep copy of a given puzzleSolution, populated with FILL_STATE.EMPTY
+ */
 export const createCurrentPuzzle = (puzzleSolution: boolean[][]): string[][] => {
-  let currentPuzzle: string[][] = [];
+  const currentPuzzle: string[][] = [];
   for (let i = 0; i < puzzleSolution.length; i++) {
     currentPuzzle[i] = [];
     for (let j = 0; j < puzzleSolution[i].length; j++) {
-      currentPuzzle[i][j] = fillState.empty;
+      currentPuzzle[i][j] = FILL_STATE.EMPTY;
     }
   }
   return currentPuzzle;
 }
 
-// A simple assignment failed to trigger a re-render due to the arrays referencing the same point in memory
+/**
+ * @returns A deep copy of a given currentPuzzle
+ */
 export const copyCurrentPuzzle = (currentPuzzle: string[][]): string[][] => {
-  let puzzleCopy: string[][] = [];
+  const puzzleCopy: string[][] = [];
   for (let i = 0; i < currentPuzzle.length; i++) {
     puzzleCopy[i] = [];
     for (let j = 0; j < currentPuzzle[i].length; j++) {
@@ -36,32 +82,25 @@ export const copyCurrentPuzzle = (currentPuzzle: string[][]): string[][] => {
   return puzzleCopy;
 }
 
-/* ---- Check / Set zero lines */
-export const checkZeroLines = (updatedPuzzle: string[][], puzzleSolution: boolean[][]): string[][] => {
-  // Find zero hint lines ( rows and/or columns ) & pass to functions to set fillState.error
+/**
+ * Checks a puzzleSolution for false-only lines
+ * Find zero hint lines ( rows and/or columns ) & pass to functions to set FILL_STATE.ERROR
+ * If not found, the updatedPuzzle is unchanged
+ *
+ * @returns updatedPuzzle with any zero lines set to FILL_STATE.ERROR
+ */
+export const checkAndSetZeroLines = (updatedPuzzle: string[][], puzzleSolution: boolean[][]): string[][] => {
   for (let i = 0; i < puzzleSolution[0].length; i++) {
-    let col = new Set(getColumn(puzzleSolution, i));
+    const col = new Set(getColumn(puzzleSolution, i));
     if (col.size === 1 && col.has(false)) {
-      setTileColZero(i, updatedPuzzle);
+      updatedPuzzle = setTileColFillState(updatedPuzzle, i, FILL_STATE.ERROR);
     }
   }
   for (let i = 0; i < puzzleSolution.length; i++) {
-    let row = new Set(puzzleSolution[i]);
+    const row = new Set(puzzleSolution[i]);
     if (row.size === 1 && row.has(false)) {
-      setTileRowZero(i, updatedPuzzle);
+      updatedPuzzle = setTileRowFillState(updatedPuzzle, i, FILL_STATE.ERROR);
     }
   }
   return updatedPuzzle;
-}
-
-/* ---- Functions to set all tiles in zero hint lines ( rows and/or columns ) to fillState.error */
-const setTileColZero = (colIndex: number, currentPuzzle: string[][]): void => {
-  for (let i = 0; i < currentPuzzle.length; i++) {
-    currentPuzzle[i][colIndex] = fillState.error;
-  }
-}
-const setTileRowZero = (rowIndex: number, currentPuzzle: string[][]): void => {
-  for (let i = 0; i < currentPuzzle[0].length; i++) {
-    currentPuzzle[rowIndex][i] = fillState.error;
-  }
 }

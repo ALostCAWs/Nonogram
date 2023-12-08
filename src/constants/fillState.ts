@@ -1,8 +1,7 @@
-/* ---- Enums for fillState */
-export const fillState = {
-  empty: '',
-  filled: 'filled',
-  error: 'error',
-  marked: 'marked',
-  complete: 'marked complete'
+export const FILL_STATE = {
+  EMPTY: '',
+  FILLED: 'filled',
+  ERROR: 'error',
+  MARKED: 'marked',
+  COMPLETE: 'marked complete'
 };

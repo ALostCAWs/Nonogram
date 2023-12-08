@@ -1,12 +1,16 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
+// Contexts
+import { GameModeContext } from 'contexts/gameModeContext';
+// Constants
+import { GAME_MODE_STATE } from 'constants/gameModeState';
 // Components
 import { PlayGame } from 'pages/playGame';
 import { CreateNonogramProvider } from 'components/providers/createNonogramProvider';
 // Functions
-import { getPuzzleByColumn } from 'functions/getPuzzleInfo';
 import { importPuzzle } from 'functions/importPuzzle';
 import { exportPuzzle } from 'functions/exportPuzzle';
+import { getPuzzleByColumn } from 'functions/getPuzzleInfo';
 import logo from './logo.svg';
 import './App.css';
 /* End ---- */
@@ -16,23 +20,23 @@ const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, false, true, false],
 [false, true, true, false, false],
 [false, true, true, false, false]];
-let colPuzzle = getPuzzleByColumn(puzzleSolution5x5);
+const colPuzzle = getPuzzleByColumn(puzzleSolution5x5);
 console.log('colPuzzle');
 console.log(colPuzzle);
 
-let gameSolution1 = [[true, true, true, true, true],
+const gameSolution1 = [[true, true, true, true, true],
 [false, true, true, false, false],
 [false, true, false, true, false],
 [false, true, true, false, false],
 [false, true, false, false, false]];
 
-let gameSolution2 = [[true, false, false, false, false],
+const gameSolution2 = [[true, false, false, false, false],
 [false, false, false, false, false],
 [false, false, false, false, false],
 [false, false, false, false, false],
 [false, false, false, false, false]];
 
-let gameSolution3 = [[false, true, true, false, true],
+const gameSolution3 = [[false, true, true, false, true],
 [false, true, true, false, false],
 [false, true, false, true, false],
 [false, true, true, false, false],
@@ -69,10 +73,14 @@ export const App = () => {
         </>
       )}
       {playPuzzle && (
-        <PlayGame />
+        <GameModeContext.Provider value={GAME_MODE_STATE.PLAY}>
+          <PlayGame />
+        </GameModeContext.Provider>
       )}
       {createPuzzle && boardHeight.current !== null && boardWidth.current !== null && (
-        <CreateNonogramProvider boardHeight={parseInt(boardHeight.current.value)} boardWidth={parseInt(boardWidth.current.value)} />
+        <GameModeContext.Provider value={GAME_MODE_STATE.CREATE}>
+          <CreateNonogramProvider boardHeight={parseInt(boardHeight.current.value)} boardWidth={parseInt(boardWidth.current.value)} />
+        </GameModeContext.Provider>
       )}
     </div>
   );

@@ -1,5 +1,7 @@
 /* ---- Imports Section */
 import React, { useState, useRef } from 'react';
+// Interfaces
+import { Puzzle } from 'constants/puzzleInterface';
 // Components
 import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
 // Functions
@@ -7,8 +9,12 @@ import { importPuzzle } from 'functions/importPuzzle';
 import { checkSolutionNotBlank, checkPuzzleRectangular } from 'functions/puzzleValidation';
 /* End ---- */
 
-/* ---- Import Game via code entered into textbox on form */
-// Call NonogramProvider onSubmit
+/**
+ * Import Game via code entered into textbox on form
+ *
+ * @returns !onSubmit - Form to input puzzle code
+ * @returns onSubmit - NonogramProvider
+ */
 export const PlayGame = () => {
   const [submit, setSubmit] = useState<boolean>(false);
   const gameCode = useRef<HTMLInputElement>(null);
@@ -19,8 +25,8 @@ export const PlayGame = () => {
     let errorMsg = '';
     if (gameCode.current === null || gameCode.current === undefined || gameCode.current.value === '') {
       await fetch(`http://localhost:3001/puzzles/1`)
-        .then(res => res.json())
-        .then(puzzle => gameSolution.current = importPuzzle(puzzle.puzzleCode));
+        .then((res) => res.json())
+        .then((puzzle: Puzzle) => gameSolution.current = importPuzzle(puzzle.puzzleCode));
     } else {
       gameSolution.current = importPuzzle(gameCode.current.value);
     }
@@ -45,7 +51,11 @@ export const PlayGame = () => {
         <form action='' id='enterGameCode'>
           <label htmlFor='gameCode'>Enter Code: </label>
           <input type='text' id='gameCode' data-testid={'gameCode'} name='gameCode' ref={gameCode} />
-          <button type='button' id='submit' name='submit' onClick={(e) => handleSubmit(e)}>Play Puzzle</button>
+          <button type='button' id='submit' name='submit'
+            onClick={(e) => {
+              e.preventDefault();
+              void handleSubmit(e);
+            }}>Play Puzzle</button>
         </form>
       ) : (
         <PlayNonogramProvider puzzleSolution={gameSolution.current} />

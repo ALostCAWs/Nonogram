@@ -1,7 +1,7 @@
 /* ---- Imports Section */
-import React, { useState, useEffect, createContext } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 // Constants
-import { fillState } from 'constants/fillState';
+import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
 // Contexts
 import { FillModeContext } from 'contexts/fillModeContext';
 // Components > UI
@@ -10,8 +10,9 @@ import { Board } from 'components/ui/board';
 import { GameComplete } from 'pages/gameComplete';
 import { GameOver } from 'pages/gameOver';
 // Functions
-import { createLives, createCurrentPuzzle, copyCurrentPuzzle, checkZeroLines } from 'functions/puzzleSetup';
-import { checkLineComplete, checkPuzzleComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn } from 'functions/getPuzzleInfo';
+import { fillTile, markTile, hoverTile, resetInfoTiles } from 'functions/tileFunctions';
+import { createLives, createCurrentPuzzle, checkAndSetZeroLines } from 'functions/puzzleSetup';
+import { checkPuzzleComplete, checkGameOver } from 'functions/getPuzzleInfo';
 /* End ---- */
 
 // TODO:
@@ -22,197 +23,155 @@ import { checkLineComplete, checkPuzzleComplete, checkGameOver, checkTileFillabl
 // play game & create game mode
 // browse puzzles, store if user completed them
 
-// Knows the puzzleSolution ( can be passed to board, maybe not needed though )
-// Secondary currentPuzzle, same size as puzzleSolution, manages the users' progress
-// Sets the FillModeContext, which is used to dictate which function the Tile components use as their onClick callback functions
-// Tiles use callbacks to functions within when onClick
-// When tile filled, NonogramProvider checks for column / row completion
-// currentPuzzle passed to Board, making Board purely for displaying
-
-
-
 interface PlayNonogramProviderProps {
   puzzleSolution: boolean[][]
 }
 
+/**
+ * Allows the user to play an imported nonogram puzzle
+ *
+ * Knows the puzzleSolution
+ * Secondary currentPuzzle, same size as puzzleSolution, manages the users' progress
+ *
+ * Sets the FillModeContext, which is used to dictate which function the Tile components use as their onClick callback functions
+ *
+ * Tiles use callbacks to functions within when onClick
+ * When Tile filled, PlayNonogramProvider checks for column / row completion
+ *
+ * @returns GameOver
+ * @returns GameComplete
+ * @returns The Board containing the InfoTiles ( hints ), Tiles for user interaction, & Lives
+ * @returns Loads the Board with empty functions passed to the Tiles when the game has ended to prevent further user interaction
+ */
 export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderProps) => {
+  // useState
   const [fillMode, setFillMode] = useState<boolean>(true);
-  const [currentPuzzle, setCurrentPuzzle] = useState<string[][]>(createCurrentPuzzle(puzzleSolution));
   const [lives, setLives] = useState<number>(createLives(puzzleSolution));
-  const [gameComplete, setGameComplete] = useState<boolean>(checkPuzzleComplete(puzzleSolution, currentPuzzle));
+  const [gameOver, setGameOver] = useState<boolean>(checkGameOver(lives));
+  const [gameComplete, setGameComplete] = useState<boolean>(false);
+
+  /* ---- useReducer */
+  const [currentPuzzle, currentPuzzleDispatch] = useReducer(currentPuzzleReducer, createCurrentPuzzle(puzzleSolution));
+
+  interface PuzzleAction {
+    type: string,
+    rowIndex: number,
+    colIndex: number
+  }
+
+  function currentPuzzleReducer(puzzleState: string[][], action: PuzzleAction): string[][] {
+    switch (action.type) {
+      case PUZZLE_ACTIONS.RESET: {
+        // Pre-resetPuzzle puzzleState / currentPuzzle was being used still after creating a fresh currentPuzzle, preventing gameComplete value from updating on retry puzzle start
+        const resetPuzzle = checkAndSetZeroLines(createCurrentPuzzle(puzzleSolution), puzzleSolution);
+        setLives(createLives(puzzleSolution));
+        setGameComplete(checkPuzzleComplete(puzzleSolution, resetPuzzle));
+        resetInfoTiles(puzzleSolution);
+        return resetPuzzle
+      }
+
+      case PUZZLE_ACTIONS.SET_ZERO_LINES:
+        return puzzleState = checkAndSetZeroLines(puzzleState, puzzleSolution);
+
+      case PUZZLE_ACTIONS.FILL: {
+        const updatedPuzzleData = fillTile(puzzleSolution, puzzleState, action.rowIndex, action.colIndex);
+
+        // Tile unfillable
+        if (updatedPuzzleData.tileFilled === null) {
+          return updatedPuzzleData.puzzle;
+        }
+        // Error, reduce lives
+        if (!updatedPuzzleData.tileFilled) {
+          setLives(currentLives => currentLives - 1);
+        }
+
+        setGameComplete(updatedPuzzleData.gameComplete);
+
+        return updatedPuzzleData.puzzle;
+      }
+
+      case PUZZLE_ACTIONS.MARK:
+        return puzzleState = markTile(puzzleState, action.rowIndex, action.colIndex);
+
+      default:
+        return puzzleState;
+    }
+  }
+  /* useReducer End ---- */
 
   /* useEffect ---- Game Setup / Change / Complete */
   useEffect(() => {
+    // Triggers on component mount to ensure the fillMode is true on game start
     setFillMode(true);
   }, []);
 
-  // useEffect triggers on gameComplete change to call set any zero lines to fillState.error
-  // Ensures zero lines are filled correctly when puzzle reset
   useEffect(() => {
-    setCurrentPuzzle(puzzle => checkZeroLines(puzzle, puzzleSolution));
+    // Triggers on the change of the lives state to ensure the game ends when the user runs out of lives
+    setGameOver(checkGameOver(lives));
+  }, [lives]);
+
+  useEffect(() => {
+    // useEffect triggers on gameComplete change to call set any zero lines to FILL_STATE.ERROR
+    // Ensures zero lines are filled correctly when puzzle reset
+    currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_ZERO_LINES, rowIndex: 0, colIndex: 0 });
   }, [gameComplete]);
 
-  // useEffect triggers on puzzleSolution change to call resetPuzzle
   useEffect(() => {
-    resetPuzzle();
+    // useEffect triggers on puzzleSolution change to call resetPuzzle
+    currentPuzzleDispatch({ type: PUZZLE_ACTIONS.RESET, rowIndex: 0, colIndex: 0 });
   }, [puzzleSolution]);
+  /* useEffect END ---- */
 
-  /* Functions ---- */
-  /* ---- Puzzle Setup / Change / Complete */
-  const resetPuzzle = (): void => {
-    // Using resetPuzzle in place of currentPuzzle to avoid initialization issues
-    // Pre-resetPuzzle currentPuzzle was being used still after creating a fresh currentPuzzle, preventing gameComplete value from updating on retry puzzle start
-    let resetPuzzle = checkZeroLines(createCurrentPuzzle(puzzleSolution), puzzleSolution);
-    setCurrentPuzzle(resetPuzzle);
-    setLives(createLives(puzzleSolution));
-    setGameComplete(checkPuzzleComplete(puzzleSolution, resetPuzzle));
-  }
-
-  /* ---- Toggle Fill Mode */
+  /**
+   * Disallow toggle when the game is finished
+   * @returns {void} void
+   */
   const toggleFillMode = (): void => {
-    if (gameComplete || checkGameOver(lives)) {
+    if (gameComplete || gameOver) {
       return;
     }
     setFillMode(currentMode => !currentMode);
   }
 
-  /* ---- Tile Interaction */
-  // R-click to attempt fill, fillState.filled & fillState.error are not removable
-  const fillTile = (e: React.MouseEvent, rowIndex: number, colIndex: number): void => {
-    if (gameComplete || checkGameOver(lives)) {
-      return;
-    }
-    if (!checkTileFillable(currentPuzzle[rowIndex][colIndex])) {
-      return;
-    }
-
-    if (puzzleSolution[rowIndex][colIndex]) {
-      const clickedRow = document.querySelector(`.rowHint${rowIndex}`);
-      const clickedCol = document.querySelector(`.colHint${colIndex}`);
-      let updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
-      updatedPuzzle[rowIndex][colIndex] = fillState.filled;
-
-      // Check if filling the tile completed the column and / or row it's in
-      const colLineComplete = checkLineComplete(getColumn(puzzleSolution, colIndex), getColumn(updatedPuzzle, colIndex));
-      const rowLineComplete = checkLineComplete(puzzleSolution[rowIndex], updatedPuzzle[rowIndex]);
-
-      // If line is complete, set all empty or marked tiles to complete
-      if (clickedCol !== null && colLineComplete) {
-        console.log('col complete');
-        clickedCol.classList.add('completeLineHint');
-        updatedPuzzle = setColComplete(updatedPuzzle, colIndex);
-      }
-      if (clickedRow !== null && rowLineComplete) {
-        console.log('row complete');
-        clickedRow.classList.add('completeLineHint');
-        updatedPuzzle = setRowComplete(updatedPuzzle, rowIndex);
-      }
-      // Only need to check for game completion if both a column & row were completed by this tile being filled
-      if (colLineComplete && rowLineComplete) {
-        setGameComplete(checkPuzzleComplete(puzzleSolution, updatedPuzzle));
-      }
-      setCurrentPuzzle(updatedPuzzle);
-    } else {
-      // Upon error, reduce lives
-      setCurrentPuzzle(puzzle => {
-        return puzzle.map((row, i) => {
-          return row.map((fill, j) => {
-            if (rowIndex === i && colIndex === j) {
-              return fillState.error;
-            } else {
-              return fill;
-            }
-          });
-        });
-      });
-      setLives(currentLives => currentLives - 1);
-    }
-  }
-
-  // L-click to mark ( used as a removable penalty-free reference )
-  const markTile = (e: React.MouseEvent, rowIndex: number, colIndex: number): void => {
-    if (gameComplete || checkGameOver(lives)) {
-      return;
-    }
-    if (!checkTileMarkable(currentPuzzle[rowIndex][colIndex])) {
-      return;
-    }
-
-    e.preventDefault();
-    setCurrentPuzzle(puzzle => {
-      return puzzle.map((row, i) => {
-        return row.map((fill, j) => {
-          if (rowIndex === i && colIndex === j) {
-            return fill === fillState.empty ? fillState.marked : fillState.empty;
-          } else {
-            return fill;
-          }
-        });
-      });
-    });
-  }
-
-  // Hovering over a tile highlights it & its' corresponding column / row hints
-  const hoverTile = (e: React.MouseEvent, rowIndex: number, colIndex: number): void => {
-    if (gameComplete || checkGameOver(lives)) {
-      return;
-    }
-    const hoverRow = document.querySelector(`.rowHint${rowIndex}`);
-    const hoverCol = document.querySelector(`.colHint${colIndex}`);
-
-    if (hoverRow === null || hoverCol === null) {
-      return;
-    }
-    if (e.type === 'mouseenter') {
-      hoverRow.classList.add('hoverHint');
-      hoverCol.classList.add('hoverHint');
-    }
-    if (e.type === 'mouseleave') {
-      hoverRow.classList.remove('hoverHint');
-      hoverCol.classList.remove('hoverHint');
-    }
-  }
-
-  /* ---- Tile Interaction Trigger Hint Change Functions */
-  // If line complete, set remaining tiles in column / row to complete
-  // This is only set for lines in which every fillable tile has been filled, specifically NOT for lines with 0 fillable tiles or incomplete lines
-  // Lines with 0 fillable tiles are all marked error on puzzle initialization
-  // Lines with some completed hints do not trigger this, even in obvious cases such as first / last hint completion
-  // This keeps in line with existing nonogram puzzles; avoids holding users' hand too much
-  // In this puzzle, fillState.complete is set up to specifically disallow removal unlike many other nonogram puzzles as that feels unfair for a user to be able to accidentally undo their own progress ( in a sense ) & trigger errors on lines they have already solved
-  const setColComplete = (updatedPuzzle: string[][], colIndex: number): string[][] => {
-    for (let i = 0; i < currentPuzzle.length; i++) {
-      if (updatedPuzzle[i][colIndex] === fillState.empty || updatedPuzzle[i][colIndex] === fillState.marked) {
-        // fillState.complete matches fillState.marked visually, but cannot be removed
-        updatedPuzzle[i][colIndex] = fillState.complete;
-      }
-    }
-    return updatedPuzzle;
-  }
-
-  const setRowComplete = (updatedPuzzle: string[][], rowIndex: number): string[][] => {
-    for (let i = 0; i < updatedPuzzle[0].length; i++) {
-      if (updatedPuzzle[rowIndex][i] === fillState.empty || updatedPuzzle[rowIndex][i] === fillState.marked) {
-        // fillState.complete matches fillState.marked visually, but cannot be removed
-        updatedPuzzle[rowIndex][i] = fillState.complete;
-      }
-    }
-    return updatedPuzzle;
-  }
-
   return (
     <>
-      {checkGameOver(lives) && (
-        <GameOver resetPuzzle={resetPuzzle} />
+      {gameOver && (
+        <GameOver resetPuzzle={
+          () => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.RESET, rowIndex: 0, colIndex: 0 }) }
+        } />
       )}
 
       {gameComplete && (
-        <GameComplete lives={lives} resetPuzzle={resetPuzzle} />
+        <GameComplete lives={lives} resetPuzzle={
+          () => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.RESET, rowIndex: 0, colIndex: 0 }); }
+        } />
       )}
 
-      <FillModeContext.Provider value={fillMode}>
-        <Board currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} livesCount={lives} fillTile={fillTile} markTile={markTile} hoverTile={hoverTile} />
-      </FillModeContext.Provider>
+      {!gameComplete && !gameOver ? (
+        <FillModeContext.Provider value={fillMode}>
+          <Board currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} livesCount={lives}
+            fillTile={
+              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL, rowIndex: rowIndex, colIndex: colIndex }) }
+            }
+            markTile={
+              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.MARK, rowIndex: rowIndex, colIndex: colIndex }) }
+            }
+            hoverTile={hoverTile}
+            setRowFill={(e, rowIndex, colIndex) => { }}
+            setColFill={(e, rowIndex, colIndex) => { }}
+          />
+        </FillModeContext.Provider>
+      ) : (
+        <FillModeContext.Provider value={fillMode}>
+            <Board currentPuzzle={currentPuzzle} puzzleSolution={puzzleSolution} livesCount={lives}
+              fillTile={(e, rowIndex, colIndex) => { }}
+              markTile={(e, rowIndex, colIndex) => { }}
+              hoverTile={(e, rowIndex, colIndex) => { }}
+              setRowFill={(e, rowIndex, colIndex) => { }}
+              setColFill={(e, rowIndex, colIndex) => { }}
+            />
+        </FillModeContext.Provider>
+      )}
 
       <button type='button' className='fillModeButton toggleFillMode button' onClick={() => toggleFillMode()} disabled={fillMode}>Fill</button>
       <button type='button' className='markModeButton toggleFillMode button' onClick={() => toggleFillMode()} disabled={!fillMode}>Mark</button>

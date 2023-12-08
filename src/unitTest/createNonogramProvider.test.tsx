@@ -2,17 +2,17 @@
 import React from 'react';
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { fillState } from "constants/fillState";
+import { FILL_STATE } from "constants/fillState";
 // Components
 import { CreateNonogramProvider } from 'components/providers/createNonogramProvider';
 /* End ---- */
 
-const filled = fillState.filled;
-const marked = fillState.marked;
-const error = fillState.error;
+const filled = FILL_STATE.FILLED;
+const marked = FILL_STATE.MARKED;
+const error = FILL_STATE.ERROR;
 const complete = 'complete';
 
-it('initializes the tiles with fillState.empty', () => {
+it('initializes the tiles with FILL_STATE.EMPTY', () => {
   render(<CreateNonogramProvider boardHeight={5} boardWidth={5} />);
 
   const tile0_0 = screen.getByTestId(`tile0-0`);
@@ -31,29 +31,29 @@ it('initializes the board with the inputted dimensions', () => {
   expect(tile5_0).toBeNull();
 });
 
-it('disables the Export button when the board is blank', () => {
+it('disables the Export button when the board is blank', async () => {
   render(<CreateNonogramProvider boardHeight={5} boardWidth={5} />);
   const exportBtn = screen.getByRole('button', { name: 'Export' });
   const tile0_0 = screen.getByTestId(`tile0-0`);
 
   expect(exportBtn).toBeDisabled();
 
-  userEvent.click(tile0_0);
+  await userEvent.click(tile0_0);
   expect(exportBtn).not.toBeDisabled();
 
-  userEvent.click(tile0_0);
+  await userEvent.click(tile0_0);
   expect(exportBtn).toBeDisabled();
 });
 
-it('toggles the tile fillState between empty and filled', () => {
+it('toggles the tile FILL_STATE between empty and filled', async () => {
   render(<CreateNonogramProvider boardHeight={5} boardWidth={5} />);
   const tile0_0 = screen.getByTestId(`tile0-0`);
 
-  userEvent.click(tile0_0);
+  await userEvent.click(tile0_0);
   expect(tile0_0).toHaveClass(filled);
   expect(tile0_0).not.toHaveClass(marked, error, complete);
 
-  userEvent.click(tile0_0);
+  await userEvent.click(tile0_0);
   expect(tile0_0).not.toHaveClass(filled, marked, error, complete);
 });
 
