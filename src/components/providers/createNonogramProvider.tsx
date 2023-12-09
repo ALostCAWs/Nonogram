@@ -8,6 +8,7 @@ import { checkBoardNotBlank } from 'functions/puzzleValidation';
 import { createBlankPuzzle, createBoolPuzzle, copyCurrentPuzzle } from 'functions/puzzleSetup';
 import { checkLineFilled, getColumn } from 'functions/getPuzzleInfo';
 import { setTileColFillState, setTileRowFillState } from 'functions/updatePuzzleLines';
+import { CurrentPuzzle } from 'interfaces/currentPuzzle';
 
 interface CreateNonogramProviderProps {
   boardHeight: number,
@@ -34,18 +35,20 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
   }
 
   function currentPuzzleReducer(puzzleState: string[][], action: PuzzleAction): string[][] {
+    const rowIndex = action.rowIndex;
+    const colIndex = action.colIndex;
     switch (action.type) {
-
       case PUZZLE_ACTIONS.FILL: {
         const updatedPuzzle = copyCurrentPuzzle(puzzleState);
-        updatedPuzzle[action.rowIndex][action.colIndex] = updatedPuzzle[action.rowIndex][action.colIndex] === FILL_STATE.EMPTY ? FILL_STATE.FILLED : FILL_STATE.EMPTY;
+        //const tile = updatedPuzzle[rowIndex][colIndex];
+        //tile.fill = tile.fill === FILL_STATE.EMPTY ? FILL_STATE.FILLED : FILL_STATE.EMPTY;
         return updatedPuzzle;
       }
 
       case PUZZLE_ACTIONS.SET_ROW_FILL: {
         let updatedPuzzle = copyCurrentPuzzle(puzzleState);
-        const fillToSet = checkLineFilled(updatedPuzzle[action.rowIndex]) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
-        updatedPuzzle = setTileRowFillState(updatedPuzzle, action.rowIndex, fillToSet);
+        const fillToSet = checkLineFilled(updatedPuzzle[rowIndex]) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
+        updatedPuzzle = setTileRowFillState(updatedPuzzle, rowIndex, fillToSet);
         console.log('row');
         console.log(fillToSet);
         console.log(puzzleState);
@@ -55,8 +58,8 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
 
       case PUZZLE_ACTIONS.SET_COL_FILL: {
         let updatedPuzzle = copyCurrentPuzzle(puzzleState);
-        const fillToSet = checkLineFilled(getColumn(updatedPuzzle, action.colIndex)) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
-        updatedPuzzle = setTileColFillState(updatedPuzzle, action.colIndex, fillToSet);
+        const fillToSet = checkLineFilled(getColumn(updatedPuzzle, colIndex)) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
+        updatedPuzzle = setTileColFillState(updatedPuzzle, colIndex, fillToSet);
         console.log('col');
         console.log(fillToSet);
         console.log(puzzleState);
