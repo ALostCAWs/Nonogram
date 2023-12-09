@@ -1,4 +1,21 @@
 import { FILL_STATE } from "constants/fillState";
+import { CurrentPuzzle } from "interfaces/currentPuzzle";
+
+export const getFillPuzzle = (currentPuzzle: CurrentPuzzle[][]): string[][] => {
+  const fillPuzzle: string[][] = [];
+  for (let i = 0; i < currentPuzzle.length; i++) {
+    fillPuzzle.push(getFillLine(currentPuzzle[i]));
+  }
+  return fillPuzzle;
+}
+
+export const getFillLine = (line: CurrentPuzzle[]): string[] => {
+  const fillLine: string[] = [];
+  for (let i = 0; i < line.length; i++) {
+    fillLine.push(line[i].fill);
+  }
+  return fillLine;
+}
 
 /**
  * Column Quality of Life
@@ -33,9 +50,9 @@ export const getPuzzleByColumn = <T>(inputPuzzle: T[][]): T[][] => {
 /**
  * Check if a given column / row is complete
  */
-export const checkLineComplete = (puzzleSolutionLine: boolean[], updatedPuzzleLine: string[]): boolean => {
+export const checkLineComplete = (puzzleSolutionLine: boolean[], updatedPuzzleLine: CurrentPuzzle[]): boolean => {
   for (let i = 0; i < puzzleSolutionLine.length; i++) {
-    if (puzzleSolutionLine[i] && updatedPuzzleLine[i] !== FILL_STATE.FILLED) {
+    if (puzzleSolutionLine[i] && updatedPuzzleLine[i].fill !== FILL_STATE.FILLED) {
       return false;
     }
   }
@@ -46,7 +63,7 @@ export const checkLineComplete = (puzzleSolutionLine: boolean[], updatedPuzzleLi
  * Check each column & row for completion, calls checkLineComplete to accomplish this
  * Returns false as soon as an incomplete line is found to prevent unnecessary looping
  */
-export const checkPuzzleComplete = (puzzleSolution: boolean[][], updatedPuzzle: string[][]): boolean => {
+export const checkPuzzleComplete = (puzzleSolution: boolean[][], updatedPuzzle: CurrentPuzzle[][]): boolean => {
   for (let i = 0; i < puzzleSolution.length; i++) {
     let gameComplete = checkLineComplete(getColumn(puzzleSolution, i), getColumn(updatedPuzzle, i));
     if (!gameComplete) {
@@ -63,8 +80,8 @@ export const checkPuzzleComplete = (puzzleSolution: boolean[][], updatedPuzzle: 
 /**
  * @returns Whether or not a line contains only FILL_STATE.FILLED
  */
-export const checkLineFilled = (line: string[]): boolean => {
-  const lineItems = new Set(line);
+export const checkLineFilled = (line: CurrentPuzzle[]): boolean => {
+  const lineItems = new Set(getFillLine(line));
   if (lineItems.size === 1 && lineItems.has(FILL_STATE.FILLED)) {
     return true;
   }
@@ -83,8 +100,8 @@ export const checkGameOver = (lives: number): boolean => {
  *
  * @returns Whether or not a tile can be filled
  */
-export const checkTileFillable = (fill: string): boolean => {
-  return fill === FILL_STATE.EMPTY ? true : false;
+export const checkTileFillable = (tile: CurrentPuzzle): boolean => {
+  return tile.fill === FILL_STATE.EMPTY ? true : false;
 }
 
 /**
@@ -92,10 +109,10 @@ export const checkTileFillable = (fill: string): boolean => {
  *
  * @returns Whether or not a tile can be marked
  */
-export const checkTileMarkable = (fill: string): boolean => {
+export const checkTileMarkable = (tile: CurrentPuzzle): boolean => {
   switch (true) {
-    case fill === FILL_STATE.EMPTY:
-    case fill === FILL_STATE.MARKED:
+    case tile.fill === FILL_STATE.EMPTY:
+    case tile.fill === FILL_STATE.MARKED:
       return true;
 
     default:

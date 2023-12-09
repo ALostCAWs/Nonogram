@@ -3,6 +3,7 @@ import { FillModeContext } from 'contexts/fillModeContext'
 
 interface TileProps {
   fill: string,
+  selected: boolean,
   rowIndex: number,
   colIndex: number,
   tileSize: number,
@@ -26,7 +27,7 @@ interface TileProps {
  *
  * @returns Div with a class based on that Tiles' fill stored in the currentPuzzle array
  */
-export const Tile = ({ fill, rowIndex, colIndex, tileSize, fillTile, markTile, hoverTile }: TileProps) => {
+export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, fillTile, markTile, hoverTile }: TileProps) => {
   const fillMode = useContext(FillModeContext) ?? true;
 
   return (

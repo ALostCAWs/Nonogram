@@ -1,10 +1,11 @@
 import React from 'react';
 import { FILL_STATE } from 'constants/fillState';
+import { CurrentPuzzle } from 'interfaces/currentPuzzle';
 import { copyCurrentPuzzle } from 'functions/puzzleSetup';
-import { checkLineComplete, checkPuzzleComplete, checkTileFillable, checkTileMarkable, getColumn } from 'functions/getPuzzleInfo';
+import { checkLineComplete, checkPuzzleComplete, checkTileFillable, checkTileMarkable, getColumn, getFillPuzzle } from 'functions/getPuzzleInfo';
 
 interface FillTileResult {
-  puzzle: string[][],
+  puzzle: CurrentPuzzle[][],
   tileFilled: boolean | null,
   gameComplete: boolean
 }
@@ -22,7 +23,8 @@ interface FillTileResult {
  * @returns tileFilled
  * @returns gameComplete
  */
-export const fillTile = (puzzleSolution: boolean[][], currentPuzzle: string[][], rowIndex: number, colIndex: number): FillTileResult => {
+export const fillTile = (puzzleSolution: boolean[][], currentPuzzle: CurrentPuzzle[][], rowIndex: number, colIndex: number): FillTileResult => {
+  const fillPuzzle = getFillPuzzle(currentPuzzle);
   if (!checkTileFillable(currentPuzzle[rowIndex][colIndex])) {
     return {
       puzzle: currentPuzzle,
@@ -36,14 +38,14 @@ export const fillTile = (puzzleSolution: boolean[][], currentPuzzle: string[][],
   let gameComplete = false;
 
   if (puzzleSolution[rowIndex][colIndex]) {
-    updatedPuzzle[rowIndex][colIndex] = FILL_STATE.FILLED;
+    updatedPuzzle[rowIndex][colIndex].fill = FILL_STATE.FILLED;
     const updatedPuzzleLineOrGameCompleteData = checkFillCompletesLineOrGame(puzzleSolution, updatedPuzzle, rowIndex, colIndex);
 
     updatedPuzzle = updatedPuzzleLineOrGameCompleteData.puzzle;
     tileFilled = true;
     gameComplete = updatedPuzzleLineOrGameCompleteData.gameComplete;
   } else {
-    updatedPuzzle[rowIndex][colIndex] = FILL_STATE.ERROR;
+    updatedPuzzle[rowIndex][colIndex].fill = FILL_STATE.ERROR;
   }
 
   return {
@@ -54,7 +56,7 @@ export const fillTile = (puzzleSolution: boolean[][], currentPuzzle: string[][],
 }
 
 interface CheckFillCompletesLineOrGameResult {
-  puzzle: string[][],
+  puzzle: CurrentPuzzle[][],
   gameComplete: boolean
 }
 
@@ -67,7 +69,7 @@ interface CheckFillCompletesLineOrGameResult {
  * @returns updatedPuzzle
  * @returns gameComplete
  */
-const checkFillCompletesLineOrGame = (puzzleSolution: boolean[][], updatedPuzzle: string[][], rowIndex: number, colIndex: number): CheckFillCompletesLineOrGameResult => {
+const checkFillCompletesLineOrGame = (puzzleSolution: boolean[][], updatedPuzzle: CurrentPuzzle[][], rowIndex: number, colIndex: number): CheckFillCompletesLineOrGameResult => {
   // Check if filling the tile completed the column and / or row it's in
   const colLineComplete = checkLineComplete(getColumn(puzzleSolution, colIndex), getColumn(updatedPuzzle, colIndex));
   const rowLineComplete = checkLineComplete(puzzleSolution[rowIndex], updatedPuzzle[rowIndex]);
@@ -99,11 +101,11 @@ const checkFillCompletesLineOrGame = (puzzleSolution: boolean[][], updatedPuzzle
  *
  * @returns updatedPuzzle with any completed rows having their FILL_STATE EMPTY / MARKED set to FILL_STATE.COMPLETE
  */
-const setRowComplete = (updatedPuzzle: string[][], rowIndex: number): string[][] => {
+const setRowComplete = (updatedPuzzle: CurrentPuzzle[][], rowIndex: number): CurrentPuzzle[][] => {
   for (let i = 0; i < updatedPuzzle[0].length; i++) {
-    if (updatedPuzzle[rowIndex][i] === FILL_STATE.EMPTY || updatedPuzzle[rowIndex][i] === FILL_STATE.MARKED) {
+    if (updatedPuzzle[rowIndex][i].fill === FILL_STATE.EMPTY || updatedPuzzle[rowIndex][i].fill === FILL_STATE.MARKED) {
       // FILL_STATE.COMPLETE matches FILL_STATE.MARKED visually, but cannot be removed
-      updatedPuzzle[rowIndex][i] = FILL_STATE.COMPLETE;
+      updatedPuzzle[rowIndex][i].fill = FILL_STATE.COMPLETE;
     }
   }
   return updatedPuzzle;
@@ -119,11 +121,11 @@ const setRowComplete = (updatedPuzzle: string[][], rowIndex: number): string[][]
  *
  * @returns updatedPuzzle with any completed columns having their FILL_STATE EMPTY / MARKED set to FILL_STATE.COMPLETE
  */
-const setColComplete = (updatedPuzzle: string[][], colIndex: number): string[][] => {
+const setColComplete = (updatedPuzzle: CurrentPuzzle[][], colIndex: number): CurrentPuzzle[][] => {
   for (let i = 0; i < updatedPuzzle.length; i++) {
-    if (updatedPuzzle[i][colIndex] === FILL_STATE.EMPTY || updatedPuzzle[i][colIndex] === FILL_STATE.MARKED) {
+    if (updatedPuzzle[i][colIndex].fill === FILL_STATE.EMPTY || updatedPuzzle[i][colIndex].fill === FILL_STATE.MARKED) {
       // FILL_STATE.COMPLETE matches FILL_STATE.MARKED visually, but cannot be removed
-      updatedPuzzle[i][colIndex] = FILL_STATE.COMPLETE;
+      updatedPuzzle[i][colIndex].fill = FILL_STATE.COMPLETE;
     }
   }
   return updatedPuzzle;
@@ -134,13 +136,15 @@ const setColComplete = (updatedPuzzle: string[][], colIndex: number): string[][]
  * @returns Tile markable & tiles' original not FILL_STATE MARKED / EMPTY - puzzle with no changes
  * @returns Tile unmarkable - puzzle with no changes
  */
-export const markTile = (currentPuzzle: string[][], rowIndex: number, colIndex: number) => {
-  if (!checkTileMarkable(currentPuzzle[rowIndex][colIndex])) {
+export const markTile = (currentPuzzle: CurrentPuzzle[][], rowIndex: number, colIndex: number) => {
+  let tile = currentPuzzle[rowIndex][colIndex];
+  if (!checkTileMarkable(tile)) {
     return currentPuzzle;
   }
 
   const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
-  updatedPuzzle[rowIndex][colIndex] = updatedPuzzle[rowIndex][colIndex] === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
+  tile = updatedPuzzle[rowIndex][colIndex];
+  updatedPuzzle[rowIndex][colIndex].fill = tile.fill === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
   return updatedPuzzle;
 }
 

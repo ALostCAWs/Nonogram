@@ -1,4 +1,5 @@
 import { FILL_STATE } from "constants/fillState";
+import { convertLineToCurrentPuzzleType, convertPuzzleToCurrentPuzzleType } from "functions/convertToCurrentPuzzleType";
 import { checkLineComplete, checkPuzzleComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn, getPuzzleByColumn, getLongestDimension, getMaxHintCountByLineLength } from "functions/getPuzzleInfo";
 
 const FILLED = FILL_STATE.FILLED;
@@ -33,75 +34,86 @@ it('returns a given puzzle flipped, allowing puzzle[n] to be used in order to ob
 
 // Completion check
 it('checks if a given column / row is complete by comparing currentPuzzle to puzzleSolution', () => {
-  const mixedLine = [FILLED, EMPTY, EMPTY, EMPTY, EMPTY];
+  const mixedLine_String = [FILLED, EMPTY, EMPTY, EMPTY, EMPTY];
+  const mixedLine = convertLineToCurrentPuzzleType(mixedLine_String);
   const mixedLineSolution = [true, false, false, false, false];
   const mixedLineComplete = checkLineComplete(mixedLineSolution, mixedLine);
   expect(mixedLineComplete).toEqual(true);
 
-  const fullLine = [FILLED, FILLED, FILLED, FILLED, FILLED];
+  const fullLine_String = [FILLED, FILLED, FILLED, FILLED, FILLED];
+  const fullLine = convertLineToCurrentPuzzleType(fullLine_String);
   const fullLineSolution = [true, true, true, true, true];
   const fullLineComplete = checkLineComplete(fullLineSolution, fullLine);
   expect(fullLineComplete).toEqual(true);
 
-  const emptyLine = [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY];
+  const emptyLine_String = [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY];
+  const emptyLine = convertLineToCurrentPuzzleType(emptyLine_String);
   const emptyLineSolution = [false, false, false, false, false];
   const emptyLineComplete = checkLineComplete(emptyLineSolution, emptyLine);
   expect(emptyLineComplete).toEqual(true);
 
-  const errorLine = [ERROR, ERROR, ERROR, ERROR, ERROR];
+  const errorLine_String = [ERROR, ERROR, ERROR, ERROR, ERROR];
+  const errorLine = convertLineToCurrentPuzzleType(errorLine_String);
   const errorLineSolution = [false, false, false, false, false];
   const errorLineComplete = checkLineComplete(errorLineSolution, errorLine);
   expect(errorLineComplete).toEqual(true);
 
-  const incompleteLine = [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY];
+  const incompleteLine_String = [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY];
+  const incompleteLine = convertLineToCurrentPuzzleType(incompleteLine_String);
   const incompleteLineSolution = [true, false, false, false, false];
   const incompleteLineComplete = checkLineComplete(incompleteLineSolution, incompleteLine);
   expect(incompleteLineComplete).toEqual(false);
 
-  const markedLine = [MARKED, EMPTY, EMPTY, EMPTY, EMPTY];
+  const markedLine_String = [MARKED, EMPTY, EMPTY, EMPTY, EMPTY];
+  const markedLine = convertLineToCurrentPuzzleType(markedLine_String);
   const markedLineSolution = [true, false, false, false, false];
   const markedLineComplete = checkLineComplete(markedLineSolution, markedLine);
   expect(markedLineComplete).toEqual(false);
 });
 
 it('checks if a given currentPuzzle is complete by comparing it to the puzzleSolution', () => {
-  const puzzle5x5Complete = [[FILLED, FILLED, FILLED, FILLED, FILLED],
+  const puzzle5x5Complete_String = [[FILLED, FILLED, FILLED, FILLED, FILLED],
   [EMPTY, FILLED, FILLED, EMPTY, EMPTY],
   [EMPTY, FILLED, EMPTY, FILLED, EMPTY],
   [EMPTY, FILLED, FILLED, EMPTY, EMPTY],
-  [EMPTY, FILLED, FILLED, EMPTY, EMPTY]];
+    [EMPTY, FILLED, FILLED, EMPTY, EMPTY]];
+  const puzzle5x5Complete = convertPuzzleToCurrentPuzzleType(puzzle5x5Complete_String);
   const puzzle5x5CompleteResult = checkPuzzleComplete(puzzleSolution5x5, puzzle5x5Complete);
   expect(puzzle5x5CompleteResult).toEqual(true);
 
-  const puzzle5x5CompleteWithError = [[FILLED, FILLED, FILLED, FILLED, FILLED],
+  const puzzle5x5CompleteWithError_String = [[FILLED, FILLED, FILLED, FILLED, FILLED],
   [ERROR, FILLED, FILLED, EMPTY, EMPTY],
   [EMPTY, FILLED, EMPTY, FILLED, EMPTY],
   [EMPTY, FILLED, FILLED, EMPTY, EMPTY],
   [EMPTY, FILLED, FILLED, EMPTY, EMPTY]];
+  const puzzle5x5CompleteWithError = convertPuzzleToCurrentPuzzleType(puzzle5x5CompleteWithError_String);
   const puzzle5x5CompleteWithErrorResult = checkPuzzleComplete(puzzleSolution5x5, puzzle5x5CompleteWithError);
   expect(puzzle5x5CompleteWithErrorResult).toEqual(true);
 
-  const incompletePuzzle5x5Row0Complete = [[FILLED, FILLED, FILLED, FILLED, FILLED],
+  const incompletePuzzle5x5Row0Complete_String = [[FILLED, FILLED, FILLED, FILLED, FILLED],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY]];
+  const incompletePuzzle5x5Row0Complete = convertPuzzleToCurrentPuzzleType(incompletePuzzle5x5Row0Complete_String);
   const incompletePuzzle5x5Row0CompleteResult = checkPuzzleComplete(puzzleSolution5x5, incompletePuzzle5x5Row0Complete);
   expect(incompletePuzzle5x5Row0CompleteResult).toEqual(false);
 
-  const incompletePuzzle5x5Column0Complete = [[FILLED, EMPTY, EMPTY, EMPTY, EMPTY],
+  const incompletePuzzle5x5Column0Complete_String = [[FILLED, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY]];
+  const incompletePuzzle5x5Column0Complete = convertPuzzleToCurrentPuzzleType(incompletePuzzle5x5Column0Complete_String);
   const incompletePuzzle5x5Column0CompleteResult = checkPuzzleComplete(puzzleSolution5x5, incompletePuzzle5x5Column0Complete);
   expect(incompletePuzzle5x5Column0CompleteResult).toEqual(false);
 
-  const incompletePuzzle5x5Marked = [[MARKED, MARKED, MARKED, MARKED, MARKED],
+  const incompletePuzzle5x5Marked_String = [[MARKED, MARKED, MARKED, MARKED, MARKED],
   [EMPTY, MARKED, MARKED, EMPTY, EMPTY],
   [EMPTY, MARKED, EMPTY, MARKED, EMPTY],
   [EMPTY, MARKED, MARKED, EMPTY, EMPTY],
   [EMPTY, MARKED, MARKED, EMPTY, EMPTY]];
+  const incompletePuzzle5x5Marked = convertPuzzleToCurrentPuzzleType(incompletePuzzle5x5Marked_String);
   const incompletePuzzle5x5MarkedResult = checkPuzzleComplete(puzzleSolution5x5, incompletePuzzle5x5Marked);
   expect(incompletePuzzle5x5MarkedResult).toEqual(false);
 });
@@ -113,21 +125,31 @@ it('checks if the game is lost', () => {
 
 // Tile checks
 it('checks if a given tile is fillable', () => {
-  expect(checkTileFillable(EMPTY)).toEqual(true);
+  const emptyTile = { fill: EMPTY, selected: false };
+  const filledTile = { fill: FILLED, selected: false };
+  const errorTile = { fill: ERROR, selected: false };
+  const markedTile = { fill: MARKED, selected: false };
+  const completeTile = { fill: COMPLETE, selected: false };
+  expect(checkTileFillable(emptyTile)).toEqual(true);
 
-  expect(checkTileFillable(FILLED)).toEqual(false);
-  expect(checkTileFillable(ERROR)).toEqual(false);
-  expect(checkTileFillable(MARKED)).toEqual(false);
-  expect(checkTileFillable(COMPLETE)).toEqual(false);
+  expect(checkTileFillable(filledTile)).toEqual(false);
+  expect(checkTileFillable(errorTile)).toEqual(false);
+  expect(checkTileFillable(markedTile)).toEqual(false);
+  expect(checkTileFillable(completeTile)).toEqual(false);
 });
 
 it('checks if a given tile is markable', () => {
-  expect(checkTileMarkable(EMPTY)).toEqual(true);
-  expect(checkTileMarkable(MARKED)).toEqual(true);
+  const emptyTile = { fill: EMPTY, selected: false };
+  const filledTile = { fill: FILLED, selected: false };
+  const errorTile = { fill: ERROR, selected: false };
+  const markedTile = { fill: MARKED, selected: false };
+  const completeTile = { fill: COMPLETE, selected: false };
+  expect(checkTileMarkable(emptyTile)).toEqual(true);
+  expect(checkTileMarkable(markedTile)).toEqual(true);
 
-  expect(checkTileMarkable(FILLED)).toEqual(false);
-  expect(checkTileMarkable(ERROR)).toEqual(false);
-  expect(checkTileMarkable(COMPLETE)).toEqual(false);
+  expect(checkTileMarkable(filledTile)).toEqual(false);
+  expect(checkTileMarkable(errorTile)).toEqual(false);
+  expect(checkTileMarkable(completeTile)).toEqual(false);
 });
 
 it(`returns the length of the boards' longest dimension`, () => {

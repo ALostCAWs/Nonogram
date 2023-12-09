@@ -1,12 +1,13 @@
 import { useContext } from 'react';
 import { GAME_MODE_STATE } from 'constants/gameModeState';
 import { GameModeContext } from 'contexts/gameModeContext';
+import { CurrentPuzzle } from 'interfaces/currentPuzzle';
 import { Hints } from 'components/ui/hints';
 import { FillLineToggleButton } from 'components/ui/fillLineToggleButton';
 import { checkLineComplete, getMaxHintCountByLineLength } from 'functions/getPuzzleInfo';
 
 interface InfoTileProps {
-  currentPuzzle: string[][],
+  currentPuzzle: CurrentPuzzle[][],
   puzzleSolution: boolean[][],
   setRowFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   setColFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,

@@ -1,12 +1,13 @@
 import { useState, useEffect, useReducer } from 'react';
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
 import { FillModeContext } from 'contexts/fillModeContext';
+import { CurrentPuzzle } from 'interfaces/currentPuzzle';
 import { Board } from 'components/ui/board';
 import { GameComplete } from 'pages/gameComplete';
 import { GameOver } from 'pages/gameOver';
 import { fillTile, markTile, hoverTile, resetInfoTiles } from 'functions/tileFunctions';
 import { createLives, createCurrentPuzzle, checkAndSetZeroLines } from 'functions/puzzleSetup';
-import { checkPuzzleComplete, checkGameOver } from 'functions/getPuzzleInfo';
+import { checkPuzzleComplete, checkGameOver, getFillPuzzle } from 'functions/getPuzzleInfo';
 
 interface PlayNonogramProviderProps {
   puzzleSolution: boolean[][]
@@ -42,14 +43,14 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
     colIndex: number
   }
 
-  function currentPuzzleReducer(puzzleState: string[][], action: PuzzleAction): string[][] {
+  function currentPuzzleReducer(puzzleState: CurrentPuzzle[][], action: PuzzleAction): CurrentPuzzle[][] {
     switch (action.type) {
       case PUZZLE_ACTIONS.RESET: {
         const resetPuzzle = checkAndSetZeroLines(createCurrentPuzzle(puzzleSolution), puzzleSolution);
         setLives(createLives(puzzleSolution));
         setGameComplete(checkPuzzleComplete(puzzleSolution, resetPuzzle));
         resetInfoTiles(puzzleSolution);
-        return resetPuzzle
+        return resetPuzzle;
       }
 
       case PUZZLE_ACTIONS.SET_ZERO_LINES:

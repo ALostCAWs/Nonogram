@@ -1,7 +1,8 @@
+import { CurrentPuzzle } from 'interfaces/currentPuzzle';
 import { checkLineFilled } from 'functions/getPuzzleInfo';
 
 interface FillLineToggleButtonProps {
-  line: string[],
+  line: CurrentPuzzle[],
   setRowFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   setColFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   lineIndex: number,

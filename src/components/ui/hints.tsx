@@ -1,9 +1,11 @@
 import { FILL_STATE } from 'constants/fillState';
 import { HINT_STATE } from 'constants/hintState';
+import { getFillLine } from 'functions/getPuzzleInfo';
+import { CurrentPuzzle } from 'interfaces/currentPuzzle';
 
 interface HintsProps {
   puzzleSolutionLine: boolean[],
-  currentPuzzleLine: string[],
+  currentPuzzleLine: CurrentPuzzle[],
   lineIndex: number,
   maxHintCount: number,
   lineType: string
@@ -30,24 +32,24 @@ interface Hint {
 export const Hints = ({ puzzleSolutionLine, currentPuzzleLine, lineIndex, maxHintCount, lineType }: HintsProps) => {
   const hints: Hint[] = [];
   let hintCount = 0;
-  let currentTilesInHintFillState: string[] = [];
+  let currentTilesInHintFillState: CurrentPuzzle[] = [];
 
-  for (let j = 0; j < puzzleSolutionLine.length; j++) {
-    const solution = puzzleSolutionLine[j];
+  for (let i = 0; i < puzzleSolutionLine.length; i++) {
+    const solution = puzzleSolutionLine[i];
 
     // Count col-adjacent trues, add current amount when false or when row end
     if (solution) {
       hintCount++;
-      currentTilesInHintFillState.push(currentPuzzleLine[j]);
+      currentTilesInHintFillState.push(currentPuzzleLine[i]);
     }
 
     // If at end of column/row or an unfillable tile is found & there is a hint counted, populate hint object
-    if ((j === puzzleSolutionLine.length - 1 || !solution) && hintCount !== 0) {
+    if ((i === puzzleSolutionLine.length - 1 || !solution) && hintCount !== 0) {
       // Default hintState setup for fullLineIncomplete & incomplete
       let state = hintCount === puzzleSolutionLine.length ? HINT_STATE.FULL_LINE_INCOMPLETE : HINT_STATE.INCOMPLETE;
 
       // Check if currentTilesInHintFillState ( now a Set => currentTilesInHintFillStateReduced ) contains one FILL_STATE.FILLED item
-      const currentTilesInHintFillStateReduced = new Set(currentTilesInHintFillState);
+      const currentTilesInHintFillStateReduced = new Set(getFillLine(currentTilesInHintFillState));
       if (currentTilesInHintFillStateReduced.size === 1 && currentTilesInHintFillStateReduced.has(FILL_STATE.FILLED)) {
         state = HINT_STATE.COMPLETE;
       }

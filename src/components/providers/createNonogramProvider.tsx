@@ -1,14 +1,14 @@
 import { useState, useEffect, useReducer } from 'react';
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
 import { FILL_STATE } from "constants/fillState";
+import { CurrentPuzzle } from 'interfaces/currentPuzzle';
 import { App } from 'App';
 import { Board } from 'components/ui/board';
 import { hoverTile } from 'functions/tileFunctions';
 import { checkBoardNotBlank } from 'functions/puzzleValidation';
 import { createBlankPuzzle, createBoolPuzzle, copyCurrentPuzzle } from 'functions/puzzleSetup';
-import { checkLineFilled, getColumn } from 'functions/getPuzzleInfo';
+import { checkLineFilled, getColumn, getFillPuzzle } from 'functions/getPuzzleInfo';
 import { setTileColFillState, setTileRowFillState } from 'functions/updatePuzzleLines';
-import { CurrentPuzzle } from 'interfaces/currentPuzzle';
 
 interface CreateNonogramProviderProps {
   boardHeight: number,
@@ -34,14 +34,13 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
     colIndex: number
   }
 
-  function currentPuzzleReducer(puzzleState: string[][], action: PuzzleAction): string[][] {
+  function currentPuzzleReducer(puzzleState: CurrentPuzzle[][], action: PuzzleAction): CurrentPuzzle[][] {
     const rowIndex = action.rowIndex;
     const colIndex = action.colIndex;
     switch (action.type) {
       case PUZZLE_ACTIONS.FILL: {
         const updatedPuzzle = copyCurrentPuzzle(puzzleState);
-        //const tile = updatedPuzzle[rowIndex][colIndex];
-        //tile.fill = tile.fill === FILL_STATE.EMPTY ? FILL_STATE.FILLED : FILL_STATE.EMPTY;
+        updatedPuzzle[rowIndex][colIndex].fill = updatedPuzzle[rowIndex][colIndex].fill === FILL_STATE.EMPTY ? FILL_STATE.FILLED : FILL_STATE.EMPTY;
         return updatedPuzzle;
       }
 
@@ -49,10 +48,10 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
         let updatedPuzzle = copyCurrentPuzzle(puzzleState);
         const fillToSet = checkLineFilled(updatedPuzzle[rowIndex]) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
         updatedPuzzle = setTileRowFillState(updatedPuzzle, rowIndex, fillToSet);
-        console.log('row');
+        /*console.log('row');
         console.log(fillToSet);
         console.log(puzzleState);
-        console.log(updatedPuzzle);
+        console.log(updatedPuzzle);*/
         return updatedPuzzle;
       }
 
@@ -60,10 +59,10 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
         let updatedPuzzle = copyCurrentPuzzle(puzzleState);
         const fillToSet = checkLineFilled(getColumn(updatedPuzzle, colIndex)) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
         updatedPuzzle = setTileColFillState(updatedPuzzle, colIndex, fillToSet);
-        console.log('col');
+        /*console.log('col');
         console.log(fillToSet);
         console.log(puzzleState);
-        console.log(updatedPuzzle);
+        console.log(updatedPuzzle);*/
         return updatedPuzzle;
       }
 
@@ -73,7 +72,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
   }
 
   useEffect(() => {
-    setBoardBlank(!checkBoardNotBlank(currentPuzzle));
+    setBoardBlank(!checkBoardNotBlank(getFillPuzzle(currentPuzzle)));
   }, [currentPuzzle, boardBlank]);
 
   return (
@@ -98,7 +97,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
           <button type='button'
             className='export button'
             onClick={() => {
-              const puzzleCode = createBoolPuzzle(currentPuzzle);
+              const puzzleCode = createBoolPuzzle(getFillPuzzle(currentPuzzle));
               navigator.clipboard.writeText(puzzleCode).catch((e) => (console.error(e)));
               setSubmit(true);
             }}

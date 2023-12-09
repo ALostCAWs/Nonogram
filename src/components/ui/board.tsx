@@ -1,11 +1,12 @@
 import React from 'react';
+import { CurrentPuzzle } from 'interfaces/currentPuzzle';
 import { Tile } from 'components/ui/tile';
 import { InfoTile } from 'components/ui/infoTile';
 import { Life } from './life';
-import { getPuzzleByColumn, getLongestDimension } from 'functions/getPuzzleInfo';
+import { getPuzzleByColumn, getLongestDimension, getFillPuzzle } from 'functions/getPuzzleInfo';
 
 interface BoardProps {
-  currentPuzzle: string[][],
+  currentPuzzle: CurrentPuzzle[][],
   puzzleSolution: boolean[][],
   livesCount: number | undefined,
   fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
@@ -26,7 +27,7 @@ interface BoardProps {
  * @returns Life components equal to the livesCount prop
  */
 export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, fillTile, markTile, hoverTile, setRowFill, setColFill }: BoardProps) => {
-  const currentPuzzleByColumn: string[][] = getPuzzleByColumn(currentPuzzle);
+  const currentPuzzleByColumn = getPuzzleByColumn(currentPuzzle);
   let puzzleSolutionByColumn: boolean[][] = [];
   const nonogramPaddingRight = currentPuzzle[0].length * 12;
   if (puzzleSolution.length !== 0) {
@@ -80,7 +81,8 @@ export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, fillTile
           {currentPuzzle.map((row, i) =>
             row.map((col, j) =>
               <Tile key={`${i} - ${j}`}
-                fill={currentPuzzle[i][j]}
+                fill={currentPuzzle[i][j].fill}
+                selected={currentPuzzle[i][j].selected}
                 rowIndex={i}
                 colIndex={j}
                 tileSize={tileSize}
