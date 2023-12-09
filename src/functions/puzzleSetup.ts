@@ -83,7 +83,7 @@ export const copyCurrentPuzzle = (currentPuzzle: TileState[][]): TileState[][] =
   for (let i = 0; i < currentPuzzle.length; i++) {
     puzzleCopy[i] = [];
     for (let j = 0; j < currentPuzzle[i].length; j++) {
-      puzzleCopy[i][j] = currentPuzzle[i][j];
+      puzzleCopy[i][j] = { ...currentPuzzle[i][j] };
     }
   }
   return puzzleCopy;

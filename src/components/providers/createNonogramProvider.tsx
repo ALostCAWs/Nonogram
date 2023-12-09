@@ -49,10 +49,6 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
         let updatedPuzzle = copyCurrentPuzzle(puzzleState);
         const fillToSet = checkLineFilled(updatedPuzzle[rowIndex]) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
         updatedPuzzle = setTileRowFillState(updatedPuzzle, rowIndex, fillToSet);
-        /*console.log('row');
-        console.log(fillToSet);
-        console.log(puzzleState);
-        console.log(updatedPuzzle);*/
         return updatedPuzzle;
       }
 
@@ -60,10 +56,6 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
         let updatedPuzzle = copyCurrentPuzzle(puzzleState);
         const fillToSet = checkLineFilled(getColumn(updatedPuzzle, colIndex)) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
         updatedPuzzle = setTileColFillState(updatedPuzzle, colIndex, fillToSet);
-        /*console.log('col');
-        console.log(fillToSet);
-        console.log(puzzleState);
-        console.log(updatedPuzzle);*/
         return updatedPuzzle;
       }
 
