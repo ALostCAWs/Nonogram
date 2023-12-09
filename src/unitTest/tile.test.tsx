@@ -18,7 +18,7 @@ it('executes fillTile on click when fillMode is true', async () => {
 
   render(
     <FillModeContext.Provider value={true}>
-      <Tile fill={EMPTY} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={fillTile} markTile={(e, rowIndex, colIndex) => { }} hoverTile={(e, rowIndex, colIndex) => { }} />
+      <Tile fill={EMPTY} selected={false} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={fillTile} markTile={(e, rowIndex, colIndex) => { }} hoverTile={(e, rowIndex, colIndex) => { }} />
     </FillModeContext.Provider>
   );
 
@@ -39,7 +39,7 @@ it('executes markTile on click when fillMode is false', async () => {
 
   render(
     <FillModeContext.Provider value={false}>
-      <Tile fill={EMPTY} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={(e, rowIndex, colIndex) => { }} markTile={markTile} hoverTile={(e, rowIndex, colIndex) => { }} />
+      <Tile fill={EMPTY} selected={false} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} fillTile={(e, rowIndex, colIndex) => { }} markTile={markTile} hoverTile={(e, rowIndex, colIndex) => { }} />
     </FillModeContext.Provider>
   );
 
@@ -64,7 +64,7 @@ it('executes hoverTile on mouseenter & on mouseleave', async () => {
   }
 
   render(
-    <Tile fill={EMPTY} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} markTile={(e, rowIndex, colIndex) => { }} fillTile={(e, rowIndex, colIndex) => { }} hoverTile={hoverTile} />
+    <Tile fill={EMPTY} selected={false} rowIndex={rowIndex} colIndex={colIndex} tileSize={60} markTile={(e, rowIndex, colIndex) => { }} fillTile={(e, rowIndex, colIndex) => { }} hoverTile={hoverTile} />
   );
 
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);

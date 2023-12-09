@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { FILL_STATE } from "constants/fillState";
 import { FillLineToggleButton } from 'components/ui/fillLineToggleButton';
+import { convertStringLineToTileStateLine } from "functions/convertPuzzle";
 
 const FILLED = FILL_STATE.FILLED;
 const MARKED = FILL_STATE.MARKED;
@@ -9,7 +10,8 @@ const EMPTY = FILL_STATE.EMPTY;
 const ERROR = FILL_STATE.ERROR;
 const COMPLETE = 'complete';
 
-const line = [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY];
+const line_String = [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY];
+const line = convertStringLineToTileStateLine(line_String);
 
 it('runs the setRowFill function passed to it', async () => {
   let rowFilled = false;
