@@ -3,7 +3,7 @@ import { FILL_STATE } from "constants/fillState";
 import { HINT_STATE } from "constants/hintState";
 import { Hints } from 'components/ui/hints';
 import { getPuzzleByColumn } from 'functions/getPuzzleInfo';
-import { convertPuzzleToCurrentPuzzleType } from "functions/convertToCurrentPuzzleType";
+import { convertStringMatrixToTileStateMatrix } from "functions/convertPuzzle";
 
 const FILLED = FILL_STATE.FILLED;
 const ERROR = FILL_STATE.ERROR;
@@ -25,7 +25,7 @@ const currentPuzzle5x5_ColTest_String = [[EMPTY, EMPTY, EMPTY, EMPTY, ERROR],
 [EMPTY, FILLED, EMPTY, FILLED, ERROR],
 [EMPTY, EMPTY, EMPTY, EMPTY, ERROR],
 [EMPTY, EMPTY, EMPTY, EMPTY, ERROR]];
-const currentPuzzle5x5_ColTest = getPuzzleByColumn(convertPuzzleToCurrentPuzzleType(currentPuzzle5x5_ColTest_String));
+const currentPuzzle5x5_ColTest = getPuzzleByColumn(convertStringMatrixToTileStateMatrix(currentPuzzle5x5_ColTest_String));
 
 const puzzleSolution5x5_RowTest = [[true, true, true, true, true],
 [false, true, false, false, false],
@@ -38,7 +38,7 @@ const currentPuzzle5x5_RowTest_String = [[EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
 [EMPTY, FILLED, EMPTY, FILLED, EMPTY],
 [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [ERROR, ERROR, ERROR, ERROR, ERROR]];
-const currentPuzzle5x5_RowTest = convertPuzzleToCurrentPuzzleType(currentPuzzle5x5_RowTest_String);
+const currentPuzzle5x5_RowTest = convertStringMatrixToTileStateMatrix(currentPuzzle5x5_RowTest_String);
 
 // 0 hints are red
 // Full hints are highlighted
@@ -109,7 +109,7 @@ it(`greys out a rows' hint when its' corresponding tiles are filled`, () => {
   [EMPTY, FILLED, EMPTY, FILLED, EMPTY],
   [FILLED, FILLED, FILLED, EMPTY, FILLED],
     [ERROR, ERROR, ERROR, ERROR, ERROR]];
-  const currentPuzzle5x5_GreyHints_RowTest = convertPuzzleToCurrentPuzzleType(currentPuzzle5x5_GreyHints_RowTest_String);
+  const currentPuzzle5x5_GreyHints_RowTest = convertStringMatrixToTileStateMatrix(currentPuzzle5x5_GreyHints_RowTest_String);
 
   // 0 - hint index 0 Complete, full line
   const fullLineIndex = 0;
@@ -139,7 +139,7 @@ it(`greys out a columns' hint when its' corresponding tiles are filled`, () => {
   [FILLED, FILLED, EMPTY, FILLED, ERROR],
   [FILLED, FILLED, FILLED, EMPTY, ERROR],
   [FILLED, EMPTY, EMPTY, EMPTY, ERROR]];
-  const currentPuzzle5x5_GreyHints_ColTest = getPuzzleByColumn(convertPuzzleToCurrentPuzzleType(currentPuzzle5x5_GreyHints_ColTest_String));
+  const currentPuzzle5x5_GreyHints_ColTest = getPuzzleByColumn(convertStringMatrixToTileStateMatrix(currentPuzzle5x5_GreyHints_ColTest_String));
 
   // 0 - hint index 0 Complete, full line
   const fullLineIndex = 0;

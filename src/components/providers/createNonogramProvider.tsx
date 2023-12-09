@@ -1,13 +1,14 @@
 import { useState, useEffect, useReducer } from 'react';
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
 import { FILL_STATE } from "constants/fillState";
-import { CurrentPuzzle } from 'interfaces/currentPuzzle';
+import { TileState } from 'interfaces/tileState';
 import { App } from 'App';
 import { Board } from 'components/ui/board';
 import { hoverTile } from 'functions/tileFunctions';
 import { checkBoardNotBlank } from 'functions/puzzleValidation';
 import { createBlankPuzzle, createBoolPuzzle, copyCurrentPuzzle } from 'functions/puzzleSetup';
-import { checkLineFilled, getColumn, getFillPuzzle } from 'functions/getPuzzleInfo';
+import { checkLineFilled, getColumn } from 'functions/getPuzzleInfo';
+import { convertTileStateMatrixToStringMatrix } from 'functions/convertPuzzle';
 import { setTileColFillState, setTileRowFillState } from 'functions/updatePuzzleLines';
 
 interface CreateNonogramProviderProps {
@@ -34,7 +35,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
     colIndex: number
   }
 
-  function currentPuzzleReducer(puzzleState: CurrentPuzzle[][], action: PuzzleAction): CurrentPuzzle[][] {
+  function currentPuzzleReducer(puzzleState: TileState[][], action: PuzzleAction): TileState[][] {
     const rowIndex = action.rowIndex;
     const colIndex = action.colIndex;
     switch (action.type) {
@@ -72,7 +73,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
   }
 
   useEffect(() => {
-    setBoardBlank(!checkBoardNotBlank(getFillPuzzle(currentPuzzle)));
+    setBoardBlank(!checkBoardNotBlank(convertTileStateMatrixToStringMatrix(currentPuzzle)));
   }, [currentPuzzle, boardBlank]);
 
   return (
@@ -97,7 +98,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
           <button type='button'
             className='export button'
             onClick={() => {
-              const puzzleCode = createBoolPuzzle(getFillPuzzle(currentPuzzle));
+              const puzzleCode = createBoolPuzzle(convertTileStateMatrixToStringMatrix(currentPuzzle));
               navigator.clipboard.writeText(puzzleCode).catch((e) => (console.error(e)));
               setSubmit(true);
             }}

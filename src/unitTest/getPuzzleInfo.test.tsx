@@ -1,5 +1,5 @@
 import { FILL_STATE } from "constants/fillState";
-import { convertLineToCurrentPuzzleType, convertPuzzleToCurrentPuzzleType } from "functions/convertToCurrentPuzzleType";
+import { convertStringLineToTileStateLine, convertStringMatrixToTileStateMatrix } from "functions/convertPuzzle";
 import { checkLineComplete, checkPuzzleComplete, checkGameOver, checkTileFillable, checkTileMarkable, getColumn, getPuzzleByColumn, getLongestDimension, getMaxHintCountByLineLength } from "functions/getPuzzleInfo";
 
 const FILLED = FILL_STATE.FILLED;
@@ -35,37 +35,37 @@ it('returns a given puzzle flipped, allowing puzzle[n] to be used in order to ob
 // Completion check
 it('checks if a given column / row is complete by comparing currentPuzzle to puzzleSolution', () => {
   const mixedLine_String = [FILLED, EMPTY, EMPTY, EMPTY, EMPTY];
-  const mixedLine = convertLineToCurrentPuzzleType(mixedLine_String);
+  const mixedLine = convertStringLineToTileStateLine(mixedLine_String);
   const mixedLineSolution = [true, false, false, false, false];
   const mixedLineComplete = checkLineComplete(mixedLineSolution, mixedLine);
   expect(mixedLineComplete).toEqual(true);
 
   const fullLine_String = [FILLED, FILLED, FILLED, FILLED, FILLED];
-  const fullLine = convertLineToCurrentPuzzleType(fullLine_String);
+  const fullLine = convertStringLineToTileStateLine(fullLine_String);
   const fullLineSolution = [true, true, true, true, true];
   const fullLineComplete = checkLineComplete(fullLineSolution, fullLine);
   expect(fullLineComplete).toEqual(true);
 
   const emptyLine_String = [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY];
-  const emptyLine = convertLineToCurrentPuzzleType(emptyLine_String);
+  const emptyLine = convertStringLineToTileStateLine(emptyLine_String);
   const emptyLineSolution = [false, false, false, false, false];
   const emptyLineComplete = checkLineComplete(emptyLineSolution, emptyLine);
   expect(emptyLineComplete).toEqual(true);
 
   const errorLine_String = [ERROR, ERROR, ERROR, ERROR, ERROR];
-  const errorLine = convertLineToCurrentPuzzleType(errorLine_String);
+  const errorLine = convertStringLineToTileStateLine(errorLine_String);
   const errorLineSolution = [false, false, false, false, false];
   const errorLineComplete = checkLineComplete(errorLineSolution, errorLine);
   expect(errorLineComplete).toEqual(true);
 
   const incompleteLine_String = [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY];
-  const incompleteLine = convertLineToCurrentPuzzleType(incompleteLine_String);
+  const incompleteLine = convertStringLineToTileStateLine(incompleteLine_String);
   const incompleteLineSolution = [true, false, false, false, false];
   const incompleteLineComplete = checkLineComplete(incompleteLineSolution, incompleteLine);
   expect(incompleteLineComplete).toEqual(false);
 
   const markedLine_String = [MARKED, EMPTY, EMPTY, EMPTY, EMPTY];
-  const markedLine = convertLineToCurrentPuzzleType(markedLine_String);
+  const markedLine = convertStringLineToTileStateLine(markedLine_String);
   const markedLineSolution = [true, false, false, false, false];
   const markedLineComplete = checkLineComplete(markedLineSolution, markedLine);
   expect(markedLineComplete).toEqual(false);
@@ -77,7 +77,7 @@ it('checks if a given currentPuzzle is complete by comparing it to the puzzleSol
   [EMPTY, FILLED, EMPTY, FILLED, EMPTY],
   [EMPTY, FILLED, FILLED, EMPTY, EMPTY],
     [EMPTY, FILLED, FILLED, EMPTY, EMPTY]];
-  const puzzle5x5Complete = convertPuzzleToCurrentPuzzleType(puzzle5x5Complete_String);
+  const puzzle5x5Complete = convertStringMatrixToTileStateMatrix(puzzle5x5Complete_String);
   const puzzle5x5CompleteResult = checkPuzzleComplete(puzzleSolution5x5, puzzle5x5Complete);
   expect(puzzle5x5CompleteResult).toEqual(true);
 
@@ -86,7 +86,7 @@ it('checks if a given currentPuzzle is complete by comparing it to the puzzleSol
   [EMPTY, FILLED, EMPTY, FILLED, EMPTY],
   [EMPTY, FILLED, FILLED, EMPTY, EMPTY],
   [EMPTY, FILLED, FILLED, EMPTY, EMPTY]];
-  const puzzle5x5CompleteWithError = convertPuzzleToCurrentPuzzleType(puzzle5x5CompleteWithError_String);
+  const puzzle5x5CompleteWithError = convertStringMatrixToTileStateMatrix(puzzle5x5CompleteWithError_String);
   const puzzle5x5CompleteWithErrorResult = checkPuzzleComplete(puzzleSolution5x5, puzzle5x5CompleteWithError);
   expect(puzzle5x5CompleteWithErrorResult).toEqual(true);
 
@@ -95,7 +95,7 @@ it('checks if a given currentPuzzle is complete by comparing it to the puzzleSol
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY]];
-  const incompletePuzzle5x5Row0Complete = convertPuzzleToCurrentPuzzleType(incompletePuzzle5x5Row0Complete_String);
+  const incompletePuzzle5x5Row0Complete = convertStringMatrixToTileStateMatrix(incompletePuzzle5x5Row0Complete_String);
   const incompletePuzzle5x5Row0CompleteResult = checkPuzzleComplete(puzzleSolution5x5, incompletePuzzle5x5Row0Complete);
   expect(incompletePuzzle5x5Row0CompleteResult).toEqual(false);
 
@@ -104,7 +104,7 @@ it('checks if a given currentPuzzle is complete by comparing it to the puzzleSol
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY]];
-  const incompletePuzzle5x5Column0Complete = convertPuzzleToCurrentPuzzleType(incompletePuzzle5x5Column0Complete_String);
+  const incompletePuzzle5x5Column0Complete = convertStringMatrixToTileStateMatrix(incompletePuzzle5x5Column0Complete_String);
   const incompletePuzzle5x5Column0CompleteResult = checkPuzzleComplete(puzzleSolution5x5, incompletePuzzle5x5Column0Complete);
   expect(incompletePuzzle5x5Column0CompleteResult).toEqual(false);
 
@@ -113,7 +113,7 @@ it('checks if a given currentPuzzle is complete by comparing it to the puzzleSol
   [EMPTY, MARKED, EMPTY, MARKED, EMPTY],
   [EMPTY, MARKED, MARKED, EMPTY, EMPTY],
   [EMPTY, MARKED, MARKED, EMPTY, EMPTY]];
-  const incompletePuzzle5x5Marked = convertPuzzleToCurrentPuzzleType(incompletePuzzle5x5Marked_String);
+  const incompletePuzzle5x5Marked = convertStringMatrixToTileStateMatrix(incompletePuzzle5x5Marked_String);
   const incompletePuzzle5x5MarkedResult = checkPuzzleComplete(puzzleSolution5x5, incompletePuzzle5x5Marked);
   expect(incompletePuzzle5x5MarkedResult).toEqual(false);
 });

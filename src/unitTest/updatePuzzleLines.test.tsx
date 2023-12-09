@@ -1,5 +1,5 @@
 import { FILL_STATE } from "constants/fillState";
-import { convertPuzzleToCurrentPuzzleType } from "functions/convertToCurrentPuzzleType";
+import { convertStringMatrixToTileStateMatrix } from "functions/convertPuzzle";
 import { setTileRowFillState } from 'functions/updatePuzzleLines';
 import { setTileColFillState } from 'functions/updatePuzzleLines';
 
@@ -15,7 +15,7 @@ const puzzle5x5_String = [[EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
 [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
 [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY]];
 
-let puzzle5x5 = convertPuzzleToCurrentPuzzleType(puzzle5x5_String);
+let puzzle5x5 = convertStringMatrixToTileStateMatrix(puzzle5x5_String);
 
 it(`sets a given lines' FILL_STATE to the specified state`, () => {
   // FILLED

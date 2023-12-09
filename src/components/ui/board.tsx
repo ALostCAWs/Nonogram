@@ -1,12 +1,12 @@
 import React from 'react';
-import { CurrentPuzzle } from 'interfaces/currentPuzzle';
+import { TileState } from 'interfaces/tileState';
 import { Tile } from 'components/ui/tile';
 import { InfoTile } from 'components/ui/infoTile';
 import { Life } from './life';
-import { getPuzzleByColumn, getLongestDimension, getFillPuzzle } from 'functions/getPuzzleInfo';
+import { getPuzzleByColumn, getLongestDimension } from 'functions/getPuzzleInfo';
 
 interface BoardProps {
-  currentPuzzle: CurrentPuzzle[][],
+  currentPuzzle: TileState[][],
   puzzleSolution: boolean[][],
   livesCount: number | undefined,
   fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,

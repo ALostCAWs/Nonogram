@@ -1,6 +1,4 @@
 import { FILL_STATE } from "constants/fillState";
-import { CurrentPuzzle } from "interfaces/currentPuzzle";
-import { getFillPuzzle } from "./getPuzzleInfo";
 
 /**
  * Very basic check, only ensures at least one tile is to be filled in

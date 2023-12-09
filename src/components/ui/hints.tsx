@@ -1,11 +1,11 @@
 import { FILL_STATE } from 'constants/fillState';
 import { HINT_STATE } from 'constants/hintState';
-import { getFillLine } from 'functions/getPuzzleInfo';
-import { CurrentPuzzle } from 'interfaces/currentPuzzle';
+import { TileState } from 'interfaces/tileState';
+import { convertTileStateLineToStringLine } from 'functions/convertPuzzle';
 
 interface HintsProps {
   puzzleSolutionLine: boolean[],
-  currentPuzzleLine: CurrentPuzzle[],
+  currentPuzzleLine: TileState[],
   lineIndex: number,
   maxHintCount: number,
   lineType: string
@@ -32,7 +32,7 @@ interface Hint {
 export const Hints = ({ puzzleSolutionLine, currentPuzzleLine, lineIndex, maxHintCount, lineType }: HintsProps) => {
   const hints: Hint[] = [];
   let hintCount = 0;
-  let currentTilesInHintFillState: CurrentPuzzle[] = [];
+  let currentTilesInHintFillState: TileState[] = [];
 
   for (let i = 0; i < puzzleSolutionLine.length; i++) {
     const solution = puzzleSolutionLine[i];
@@ -49,7 +49,7 @@ export const Hints = ({ puzzleSolutionLine, currentPuzzleLine, lineIndex, maxHin
       let state = hintCount === puzzleSolutionLine.length ? HINT_STATE.FULL_LINE_INCOMPLETE : HINT_STATE.INCOMPLETE;
 
       // Check if currentTilesInHintFillState ( now a Set => currentTilesInHintFillStateReduced ) contains one FILL_STATE.FILLED item
-      const currentTilesInHintFillStateReduced = new Set(getFillLine(currentTilesInHintFillState));
+      const currentTilesInHintFillStateReduced = new Set(convertTileStateLineToStringLine(currentTilesInHintFillState));
       if (currentTilesInHintFillStateReduced.size === 1 && currentTilesInHintFillStateReduced.has(FILL_STATE.FILLED)) {
         state = HINT_STATE.COMPLETE;
       }

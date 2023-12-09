@@ -1,5 +1,5 @@
 import { FILL_STATE } from 'constants/fillState';
-import { CurrentPuzzle } from 'interfaces/currentPuzzle';
+import { TileState } from 'interfaces/tileState';
 import { exportPuzzle } from 'functions/exportPuzzle';
 import { getColumn, getLongestDimension } from 'functions/getPuzzleInfo';
 import { setTileRowFillState, setTileColFillState } from './updatePuzzleLines';
@@ -22,10 +22,10 @@ export const createLives = (puzzleSolution: boolean[][]): number => {
  * @param boardWidth
  * @returns blankPuzzle
  */
-export const createBlankPuzzle = (boardHeight: number, boardWidth: number): CurrentPuzzle[][] => {
-  const blankPuzzle: CurrentPuzzle[][] = [];
+export const createBlankPuzzle = (boardHeight: number, boardWidth: number): TileState[][] => {
+  const blankPuzzle: TileState[][] = [];
   for (let i = 0; i < boardHeight; i++) {
-    const blankRow: CurrentPuzzle[] = [];
+    const blankRow: TileState[] = [];
     for (let j = 0; j < boardWidth; j++) {
       const tile = {
         fill: FILL_STATE.EMPTY,
@@ -60,8 +60,8 @@ export const createBoolPuzzle = (currentPuzzle: string[][]): string => {
 /**
  * @returns A deep copy of a given puzzleSolution, populated with FILL_STATE.EMPTY
  */
-export const createCurrentPuzzle = (puzzleSolution: boolean[][]): CurrentPuzzle[][] => {
-  const currentPuzzle: CurrentPuzzle[][] = [];
+export const createCurrentPuzzle = (puzzleSolution: boolean[][]): TileState[][] => {
+  const currentPuzzle: TileState[][] = [];
   for (let i = 0; i < puzzleSolution.length; i++) {
     currentPuzzle[i] = [];
     for (let j = 0; j < puzzleSolution[i].length; j++) {
@@ -78,8 +78,8 @@ export const createCurrentPuzzle = (puzzleSolution: boolean[][]): CurrentPuzzle[
 /**
  * @returns A deep copy of a given currentPuzzle
  */
-export const copyCurrentPuzzle = (currentPuzzle: CurrentPuzzle[][]): CurrentPuzzle[][] => {
-  const puzzleCopy: CurrentPuzzle[][] = [];
+export const copyCurrentPuzzle = (currentPuzzle: TileState[][]): TileState[][] => {
+  const puzzleCopy: TileState[][] = [];
   for (let i = 0; i < currentPuzzle.length; i++) {
     puzzleCopy[i] = [];
     for (let j = 0; j < currentPuzzle[i].length; j++) {
@@ -96,7 +96,7 @@ export const copyCurrentPuzzle = (currentPuzzle: CurrentPuzzle[][]): CurrentPuzz
  *
  * @returns updatedPuzzle with any zero lines set to FILL_STATE.ERROR
  */
-export const checkAndSetZeroLines = (updatedPuzzle: CurrentPuzzle[][], puzzleSolution: boolean[][]): CurrentPuzzle[][] => {
+export const checkAndSetZeroLines = (updatedPuzzle: TileState[][], puzzleSolution: boolean[][]): TileState[][] => {
   for (let i = 0; i < puzzleSolution[0].length; i++) {
     const col = new Set(getColumn(puzzleSolution, i));
     if (col.size === 1 && col.has(false)) {

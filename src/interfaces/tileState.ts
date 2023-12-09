@@ -1,4 +1,4 @@
-export interface CurrentPuzzle {
+export interface TileState {
   fill: string,
   selected: boolean
 }
