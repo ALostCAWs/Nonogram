@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { FillModeContext } from 'contexts/fillModeContext'
+import { FillModeContext } from 'contexts/fillModeContext';
+import { SelectModeContext } from 'contexts/selectModeContext';
 
 interface TileProps {
   fill: string,
@@ -7,6 +8,9 @@ interface TileProps {
   rowIndex: number,
   colIndex: number,
   tileSize: number,
+  setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
+  setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
+  deselectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
@@ -27,32 +31,47 @@ interface TileProps {
  *
  * @returns Div with a class based on that Tiles' fill stored in the currentPuzzle array
  */
-export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, fillTile, markTile, hoverTile }: TileProps) => {
+export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSelectTile, setLastSelectTile, deselectTile, fillTile, markTile, hoverTile }: TileProps) => {
   const fillMode = useContext(FillModeContext) ?? true;
+  const { selectMode, setSelectMode } = useContext(SelectModeContext);
 
   return (
     <>
       {fillMode ? (
         <div data-testid={`tile${rowIndex}-${colIndex}`}
-          className={`tile ${fill}`}
+          className={selected ? (`tile ${fill} selected`) : (`tile ${fill}`)}
           style={{
             height: `${tileSize}px`,
             width: `${tileSize}px`
           }}
-          onClick={e => fillTile(e, rowIndex, colIndex)}
-          onMouseEnter={e => hoverTile(e, rowIndex, colIndex)}
-          onMouseLeave={e => hoverTile(e, rowIndex, colIndex)}
+          onMouseDown={e => {
+            setSelectMode(true)
+            setFirstSelectTile(e, rowIndex, colIndex)
+          }}
+          onMouseUp={e => {
+            fillTile(e, rowIndex, colIndex)
+            deselectTile(e, rowIndex, colIndex)
+          }}
+          onMouseEnter={selectMode ? (
+            e => {
+              hoverTile(e, rowIndex, colIndex)
+              setLastSelectTile(e, rowIndex, colIndex)
+            }
+          ) : (
+            e => { hoverTile(e, rowIndex, colIndex) }
+          )}
+          onMouseLeave={e => { hoverTile(e, rowIndex, colIndex) }}
         ></div>
       ) : (
           <div data-testid={`tile${rowIndex}-${colIndex}`}
-            className={`tile ${fill}`}
+            className={selected ? (`tile ${fill} selected`) : (`tile ${fill}`)}
             style={{
               height: `${tileSize}px`,
               width: `${tileSize}px`
             }}
-            onClick={e => markTile(e, rowIndex, colIndex)}
-            onMouseEnter={e => hoverTile(e, rowIndex, colIndex)}
-            onMouseLeave={e => hoverTile(e, rowIndex, colIndex)}
+            onClick={e => { markTile(e, rowIndex, colIndex) }}
+            onMouseEnter={e => { hoverTile(e, rowIndex, colIndex) }}
+            onMouseLeave={e => { hoverTile(e, rowIndex, colIndex) }}
           ></div>
       )}
     </>

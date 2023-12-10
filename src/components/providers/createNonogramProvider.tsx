@@ -1,10 +1,12 @@
 import { useState, useEffect, useReducer } from 'react';
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
 import { FILL_STATE } from "constants/fillState";
+import { PuzzleAction } from 'interfaces/puzzleAction';
 import { TileState } from 'interfaces/tileState';
+import { FirstLastSelectedState } from 'interfaces/firstLastSelectedState';
 import { App } from 'App';
 import { Board } from 'components/ui/board';
-import { hoverTile } from 'functions/tileFunctions';
+import { deselectTile, drawSelectedTileLine, hoverTile, setFirstSelectedTile, setLastSelectedTile, setSelectedTileLineFillState } from 'functions/tileFunctions';
 import { checkBoardNotBlank } from 'functions/puzzleValidation';
 import { createBlankPuzzle, createBoolPuzzle, copyCurrentPuzzle } from 'functions/puzzleSetup';
 import { checkLineFilled, getColumn } from 'functions/getPuzzleInfo';
@@ -27,22 +29,33 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
   const [submit, setSubmit] = useState<boolean>(false);
   const [boardBlank, setBoardBlank] = useState<boolean>(true);
 
-  const [currentPuzzle, currentPuzzleDispatch] = useReducer(currentPuzzleReducer, createBlankPuzzle(boardHeight, boardWidth));
+  const [firstSelected, setFirstSelected] = useState<FirstLastSelectedState>({ rowIndex: null, colIndex: null });
+  const [lastSelected, setLastSelected] = useState<FirstLastSelectedState>({ rowIndex: null, colIndex: null });
 
-  interface PuzzleAction {
-    type: string,
-    rowIndex: number,
-    colIndex: number
-  }
+  const [currentPuzzle, currentPuzzleDispatch] = useReducer(currentPuzzleReducer, createBlankPuzzle(boardHeight, boardWidth));
 
   function currentPuzzleReducer(puzzleState: TileState[][], action: PuzzleAction): TileState[][] {
     const rowIndex = action.rowIndex;
     const colIndex = action.colIndex;
     switch (action.type) {
-      case PUZZLE_ACTIONS.FILL: {
-        const updatedPuzzle = copyCurrentPuzzle(puzzleState);
-        updatedPuzzle[rowIndex][colIndex].fill = updatedPuzzle[rowIndex][colIndex].fill === FILL_STATE.EMPTY ? FILL_STATE.FILLED : FILL_STATE.EMPTY;
-        return updatedPuzzle;
+      case PUZZLE_ACTIONS.SET_FIRST_SELECT: {
+        return setFirstSelectedTile(setFirstSelected, puzzleState, rowIndex, colIndex);
+      }
+
+      case PUZZLE_ACTIONS.SET_LAST_SELECT: {
+        return setLastSelectedTile(setLastSelected, puzzleState, firstSelected, rowIndex, colIndex);
+      }
+
+      case PUZZLE_ACTIONS.DRAW_SELECT_LINE: {
+        return drawSelectedTileLine(puzzleState, firstSelected, lastSelected);
+      }
+
+      case PUZZLE_ACTIONS.FILL_SELECT_LINE: {
+        return setSelectedTileLineFillState(puzzleState, firstSelected, lastSelected, FILL_STATE.FILLED);
+      }
+
+      case PUZZLE_ACTIONS.DESELECT: {
+        return deselectTile(puzzleState, setFirstSelected, setLastSelected);
       }
 
       case PUZZLE_ACTIONS.SET_ROW_FILL: {
@@ -68,6 +81,17 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
     setBoardBlank(!checkBoardNotBlank(convertTileStateMatrixToStringMatrix(currentPuzzle)));
   }, [currentPuzzle, boardBlank]);
 
+  useEffect(() => {
+    console.log(firstSelected);
+  }, [firstSelected]);
+
+  useEffect(() => {
+    console.log(lastSelected);
+    if (lastSelected.rowIndex !== null && lastSelected.colIndex !== null) {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DRAW_SELECT_LINE, rowIndex: lastSelected.rowIndex, colIndex: lastSelected.colIndex });
+    }
+  }, [lastSelected]);
+
   return (
     <>
       {!submit && (
@@ -75,8 +99,17 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
           <Board currentPuzzle={currentPuzzle}
             puzzleSolution={[]}
             livesCount={undefined}
+            setFirstSelectTile={
+              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_FIRST_SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
+            }
+            setLastSelectTile={
+              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_LAST_SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
+            }
+            deselectTile={
+              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DESELECT, rowIndex: rowIndex, colIndex: colIndex }) }
+            }
             fillTile={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL, rowIndex: rowIndex, colIndex: colIndex }) }
+              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex }) }
             }
             markTile={(e, rowIndex, colIndex) => { }}
             hoverTile={hoverTile}

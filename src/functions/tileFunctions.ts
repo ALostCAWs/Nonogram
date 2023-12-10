@@ -1,8 +1,197 @@
 import React from 'react';
 import { FILL_STATE } from 'constants/fillState';
 import { TileState } from 'interfaces/tileState';
+import { FirstLastSelectedState } from 'interfaces/firstLastSelectedState';
 import { copyCurrentPuzzle } from 'functions/puzzleSetup';
 import { checkLineComplete, checkPuzzleComplete, checkTileFillable, checkTileMarkable, getColumn } from 'functions/getPuzzleInfo';
+
+/**
+ * Sets the firstSelected state from the Provider component
+ *
+ * @returns A new matrix of the puzzle, with the onMouseDown tile.selected = true
+ */
+export const setFirstSelectedTile = (setFirstSelected: React.Dispatch<React.SetStateAction<FirstLastSelectedState>>, currentPuzzle: TileState[][], rowIndex: number, colIndex: number): TileState[][] => {
+  setFirstSelected({ rowIndex: rowIndex, colIndex: colIndex });
+  return currentPuzzle.map((row, i) => {
+    return row.map((tile, j) => {
+      let selected = false;
+      if (i === rowIndex && j == colIndex) {
+        selected = true;
+      }
+      const currentTile = {
+        fill: tile.fill,
+        selected: selected
+      }
+      return currentTile;
+    });
+  });
+}
+
+/**
+ * Checks if the tile is in the same row / column as the tile dimensions stores in the firstSelected state from the Provider component
+ * If so, sets the lastSelected state from the Provider component
+ *
+ * If not, deselects all tiles aside from the firstSelected tile
+ *
+ * @returns A new matrix of the puzzle, with the onMouseDown tile.selected = true
+ */
+export const setLastSelectedTile = (setLastSelected: React.Dispatch<React.SetStateAction<FirstLastSelectedState>>, currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, rowIndex: number, colIndex: number): TileState[][] => {
+  if (rowIndex === firstSelected.rowIndex || colIndex === firstSelected.colIndex) {
+    setLastSelected({ rowIndex: rowIndex, colIndex: colIndex });
+    return currentPuzzle.map((row, i) => {
+      return row.map((tile, j) => {
+        let selected = false;
+        if (i === firstSelected.rowIndex && j === firstSelected.colIndex) {
+          selected = true;
+        }
+        if (i === rowIndex && j === colIndex) {
+          selected = true;
+        }
+        const deselectedTile: TileState = {
+          fill: tile.fill,
+          selected: selected
+        };
+        return deselectedTile;
+      });
+    });
+  }
+
+  return currentPuzzle.map((row, i) => {
+    return row.map((tile, j) => {
+      let selected = false;
+      if (i === firstSelected.rowIndex && j === firstSelected.colIndex) {
+        selected = true;
+      }
+      const deselectedTile: TileState = {
+        fill: tile.fill,
+        selected: selected
+      };
+      return deselectedTile;
+    });
+  });
+}
+
+/**
+ * Ensures that there are values in each of the row/column indexes of the first & last selected tiles
+ * If not, returns an unchanged puzzle
+ *
+ * Checks if the line is being drawn row-wise ( x axis ) or column-wise ( y axis )
+ * If both, then the only selected tile is the one stored in firstSelected ( lastSelected contains the same coordinates )
+ * If only one of the two are true, a line is drawn
+ *
+ * To draw a line, the boundaries of the line are calculated ( between the firstSelected & lastSelected coordinates, inclusive )
+ * currentPuzzle.map is then used to return a matrix with the firstSelected, lastSelected, & any tiles between them having selected = true
+ *
+ * If neither are true, an unchanged currentPuzzle is returned
+ *
+ * Draw direction is not taken into account for applying the selected value
+ */
+export const drawSelectedTileLine = (currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, lastSelected: FirstLastSelectedState): TileState[][] => {
+  if (firstSelected.rowIndex === null || firstSelected.colIndex === null || lastSelected.rowIndex === null || lastSelected.colIndex === null) {
+    return currentPuzzle;
+  }
+
+  const drawRow = firstSelected.rowIndex === lastSelected.rowIndex ? true : false;
+  const drawCol = firstSelected.colIndex === lastSelected.colIndex ? true : false;
+
+  if (drawRow && drawCol) {
+    const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
+    updatedPuzzle[firstSelected.rowIndex][firstSelected.colIndex].selected = true;
+    return updatedPuzzle;
+  }
+
+  if (drawRow) {
+    const startIndex = firstSelected.colIndex < lastSelected.colIndex ? firstSelected.colIndex : lastSelected.colIndex;
+    const endIndex = firstSelected.colIndex > lastSelected.colIndex ? firstSelected.colIndex : lastSelected.colIndex;
+
+    return currentPuzzle.map((row, i) => {
+      return row.map((tile, j) => {
+        let selected = false;
+        if (i === firstSelected.rowIndex) {
+          if (j >= startIndex && j <= endIndex) {
+            selected = true;
+          }
+        }
+        const selectedTile = {
+          fill: tile.fill,
+          selected: selected
+        }
+        return selectedTile;
+      });
+    });
+  }
+
+  if (drawCol) {
+    const startIndex = firstSelected.rowIndex < lastSelected.rowIndex ? firstSelected.rowIndex : lastSelected.rowIndex;
+    const endIndex = firstSelected.rowIndex > lastSelected.rowIndex ? firstSelected.rowIndex : lastSelected.rowIndex;
+
+    return currentPuzzle.map((row, i) => {
+      return row.map((tile, j) => {
+        let selected = false;
+        if (j === firstSelected.colIndex) {
+          if (i >= startIndex && i <= endIndex) {
+            selected = true;
+          }
+        }
+        const selectedTile = {
+          fill: tile.fill,
+          selected: selected
+        }
+        return selectedTile;
+      });
+    });
+  }
+  return currentPuzzle;
+}
+
+export const setSelectedTileLineFillState = (currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, lastSelected: FirstLastSelectedState, fill: string): TileState[][] => {
+  if (firstSelected.rowIndex === null || firstSelected.colIndex === null) {
+    return currentPuzzle;
+  }
+
+  if (lastSelected.rowIndex === null || lastSelected.colIndex === null) {
+    const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
+    const tileFill = updatedPuzzle[firstSelected.rowIndex][firstSelected.colIndex].fill;
+    updatedPuzzle[firstSelected.rowIndex][firstSelected.colIndex].fill = tileFill === FILL_STATE.EMPTY ? fill : FILL_STATE.EMPTY;
+    return updatedPuzzle;
+  }
+
+  const drawRow = firstSelected.rowIndex === lastSelected.rowIndex ? true : false;
+  const drawCol = firstSelected.colIndex === lastSelected.colIndex ? true : false;
+
+  if (drawRow) {
+    //const drawForwards = firstSelected.colIndex < lastSelected.colIndex ? true : false;
+  }
+
+  return currentPuzzle.map((row, i) => {
+    return row.map((tile, j) => {
+      let fill = tile.fill;
+      if (tile.selected) {
+        fill = fill === FILL_STATE.EMPTY ? FILL_STATE.FILLED : FILL_STATE.EMPTY;
+      }
+      const selectedTile = {
+        fill: fill,
+        selected: tile.selected
+      }
+      return selectedTile;
+    });
+  });
+}
+
+export const deselectTile = (currentPuzzle: TileState[][], setFirstSelected: React.Dispatch<React.SetStateAction<FirstLastSelectedState>>, setLastSelected: React.Dispatch<React.SetStateAction<FirstLastSelectedState>>): TileState[][] => {
+  setFirstSelected({ rowIndex: null, colIndex: null });
+  setLastSelected({ rowIndex: null, colIndex: null });
+
+  return currentPuzzle.map((row, i) => {
+    return row.map((tile, j) => {
+      const deselectedTile: TileState = {
+        fill: tile.fill,
+        selected: false
+      };
+      return deselectedTile;
+    });
+  });
+}
 
 interface FillTileResult {
   puzzle: TileState[][],

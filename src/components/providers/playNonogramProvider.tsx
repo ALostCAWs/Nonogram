@@ -6,7 +6,7 @@ import { Board } from 'components/ui/board';
 import { GameComplete } from 'pages/gameComplete';
 import { GameOver } from 'pages/gameOver';
 import { fillTile, markTile, hoverTile, resetInfoTiles } from 'functions/tileFunctions';
-import { createLives, createCurrentPuzzle, checkAndSetZeroLines } from 'functions/puzzleSetup';
+import { createLives, createCurrentPuzzle, checkAndSetZeroLines, copyCurrentPuzzle } from 'functions/puzzleSetup';
 import { checkPuzzleComplete, checkGameOver } from 'functions/getPuzzleInfo';
 
 interface PlayNonogramProviderProps {
@@ -55,6 +55,16 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
 
       case PUZZLE_ACTIONS.SET_ZERO_LINES:
         return puzzleState = checkAndSetZeroLines(puzzleState, puzzleSolution);
+
+      case PUZZLE_ACTIONS.SELECT: {
+        const updatedPuzzle = copyCurrentPuzzle(puzzleState);
+        updatedPuzzle[action.rowIndex][action.colIndex].selected = true;
+        return puzzleState;
+      }
+
+      case PUZZLE_ACTIONS.DESELECT: {
+        return puzzleState;
+      }
 
       case PUZZLE_ACTIONS.FILL: {
         const updatedPuzzleData = fillTile(puzzleSolution, puzzleState, action.rowIndex, action.colIndex);
@@ -132,6 +142,9 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
           <Board currentPuzzle={currentPuzzle}
             puzzleSolution={puzzleSolution}
             livesCount={lives}
+            selectTile={
+              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
+            }
             fillTile={
               (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL, rowIndex: rowIndex, colIndex: colIndex }) }
             }
@@ -148,6 +161,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
             <Board currentPuzzle={currentPuzzle}
               puzzleSolution={puzzleSolution}
               livesCount={lives}
+              selectTile={(e, rowIndex, colIndex) => { }}
               fillTile={(e, rowIndex, colIndex) => { }}
               markTile={(e, rowIndex, colIndex) => { }}
               hoverTile={(e, rowIndex, colIndex) => { }}
