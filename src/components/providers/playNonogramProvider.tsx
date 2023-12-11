@@ -75,12 +75,20 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
         return drawSelectedTileLine(puzzleState, firstSelected, lastSelected);
 
       case PUZZLE_ACTIONS.MARK_SELECT_LINE: {
+        if (!puzzleState[rowIndex][colIndex].selected) {
+          return puzzleState;
+        }
+
         let updatedPuzzle = markSelectedTile(puzzleState, firstSelected, lastSelected);
         updatedPuzzle = deselectTile(updatedPuzzle, setFirstSelected, setLastSelected);
         return updatedPuzzle;
       }
 
       case PUZZLE_ACTIONS.FILL_SELECT_LINE: {
+        if (!puzzleState[rowIndex][colIndex].selected) {
+          return puzzleState;
+        }
+
         const updatedPuzzleData = fillSelectedTile_PlayMode(puzzleSolution, puzzleState, firstSelected, lastSelected);
         let updatedPuzzle = updatedPuzzleData.puzzle;
 
