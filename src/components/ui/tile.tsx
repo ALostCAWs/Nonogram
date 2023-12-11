@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { FillModeContext } from 'contexts/fillModeContext';
 import { SelectModeContext } from 'contexts/selectModeContext';
+import { FillModeContext } from 'contexts/fillModeContext';
 
 interface TileProps {
   fill: string,
@@ -32,7 +32,7 @@ interface TileProps {
  * @returns Div with a class based on that Tiles' fill stored in the currentPuzzle array
  */
 export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSelectTile, setLastSelectTile, deselectTile, fillTile, markTile, hoverTile }: TileProps) => {
-  const fillMode = useContext(FillModeContext) ?? true;
+  const { fillMode, setFillMode } = useContext(FillModeContext) ?? true;
   const { selectMode, setSelectMode } = useContext(SelectModeContext);
 
   return (
@@ -50,7 +50,6 @@ export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSel
           }}
           onMouseUp={e => {
             fillTile(e, rowIndex, colIndex)
-            deselectTile(e, rowIndex, colIndex)
           }}
           onMouseEnter={selectMode ? (
             e => {
@@ -69,8 +68,21 @@ export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSel
               height: `${tileSize}px`,
               width: `${tileSize}px`
             }}
-            onClick={e => { markTile(e, rowIndex, colIndex) }}
-            onMouseEnter={e => { hoverTile(e, rowIndex, colIndex) }}
+            onMouseDown={e => {
+              setSelectMode(true)
+              setFirstSelectTile(e, rowIndex, colIndex)
+            }}
+            onMouseUp={e => {
+              markTile(e, rowIndex, colIndex)
+            }}
+            onMouseEnter={selectMode ? (
+              e => {
+                hoverTile(e, rowIndex, colIndex)
+                setLastSelectTile(e, rowIndex, colIndex)
+              }
+            ) : (
+              e => { hoverTile(e, rowIndex, colIndex) }
+            )}
             onMouseLeave={e => { hoverTile(e, rowIndex, colIndex) }}
           ></div>
       )}

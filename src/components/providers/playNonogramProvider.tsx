@@ -1,13 +1,15 @@
-import { useState, useEffect, useReducer } from 'react';
+import { useState, useEffect, useReducer, useContext } from 'react';
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
 import { FillModeContext } from 'contexts/fillModeContext';
 import { TileState } from 'interfaces/tileState';
+import { FirstLastSelectedState } from 'interfaces/firstLastSelectedState';
 import { Board } from 'components/ui/board';
 import { GameComplete } from 'pages/gameComplete';
 import { GameOver } from 'pages/gameOver';
-import { fillTile, markTile, hoverTile, resetInfoTiles } from 'functions/tileFunctions';
+import { setFirstSelectedTile, setLastSelectedTile, drawSelectedTileLine, fillSelectedTile_CreateMode, deselectTile, markTile, hoverTile, resetInfoTiles, markSelectedTile, fillSelectedTile_PlayMode } from 'functions/tileFunctions';
 import { createLives, createCurrentPuzzle, checkAndSetZeroLines, copyCurrentPuzzle } from 'functions/puzzleSetup';
 import { checkPuzzleComplete, checkGameOver } from 'functions/getPuzzleInfo';
+import { FILL_STATE } from 'constants/fillState';
 
 interface PlayNonogramProviderProps {
   puzzleSolution: boolean[][]
@@ -30,10 +32,12 @@ interface PlayNonogramProviderProps {
  * @returns Loads the Board with empty functions passed to the Tiles when the game has ended to prevent further user interaction
  */
 export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderProps) => {
-  const [fillMode, setFillMode] = useState<boolean>(true);
+  const { fillMode, setFillMode } = useContext(FillModeContext);
   const [lives, setLives] = useState<number>(createLives(puzzleSolution));
   const [gameOver, setGameOver] = useState<boolean>(checkGameOver(lives));
   const [gameComplete, setGameComplete] = useState<boolean>(false);
+  const [firstSelected, setFirstSelected] = useState<FirstLastSelectedState>({ rowIndex: null, colIndex: null });
+  const [lastSelected, setLastSelected] = useState<FirstLastSelectedState>({ rowIndex: null, colIndex: null });
 
   const [currentPuzzle, currentPuzzleDispatch] = useReducer(currentPuzzleReducer, createCurrentPuzzle(puzzleSolution));
 
@@ -44,6 +48,9 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
   }
 
   function currentPuzzleReducer(puzzleState: TileState[][], action: PuzzleAction): TileState[][] {
+    const rowIndex = action.rowIndex;
+    const colIndex = action.colIndex;
+
     switch (action.type) {
       case PUZZLE_ACTIONS.RESET: {
         const resetPuzzle = checkAndSetZeroLines(createCurrentPuzzle(puzzleSolution), puzzleSolution);
@@ -56,35 +63,42 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
       case PUZZLE_ACTIONS.SET_ZERO_LINES:
         return puzzleState = checkAndSetZeroLines(puzzleState, puzzleSolution);
 
-      case PUZZLE_ACTIONS.SELECT: {
-        const updatedPuzzle = copyCurrentPuzzle(puzzleState);
-        updatedPuzzle[action.rowIndex][action.colIndex].selected = true;
-        return puzzleState;
+      case PUZZLE_ACTIONS.SET_FIRST_SELECT: {
+        console.log('select start');
+        return setFirstSelectedTile(setFirstSelected, puzzleState, rowIndex, colIndex);
       }
 
-      case PUZZLE_ACTIONS.DESELECT: {
-        return puzzleState;
+      case PUZZLE_ACTIONS.SET_LAST_SELECT:
+        return setLastSelectedTile(setLastSelected, puzzleState, firstSelected, rowIndex, colIndex);
+
+      case PUZZLE_ACTIONS.DRAW_SELECT_LINE:
+        return drawSelectedTileLine(puzzleState, firstSelected, lastSelected);
+
+      case PUZZLE_ACTIONS.MARK_SELECT_LINE: {
+        let updatedPuzzle = markSelectedTile(puzzleState, firstSelected, lastSelected);
+        updatedPuzzle = deselectTile(updatedPuzzle, setFirstSelected, setLastSelected);
+        return updatedPuzzle;
       }
 
-      case PUZZLE_ACTIONS.FILL: {
-        const updatedPuzzleData = fillTile(puzzleSolution, puzzleState, action.rowIndex, action.colIndex);
+      case PUZZLE_ACTIONS.FILL_SELECT_LINE: {
+        console.log('fill select line');
+        const updatedPuzzleData = fillSelectedTile_PlayMode(puzzleSolution, puzzleState, firstSelected, lastSelected);
+        let updatedPuzzle = updatedPuzzleData.puzzle;
 
-        // Tile unfillable
-        if (updatedPuzzleData.tileFilled === null) {
-          return updatedPuzzleData.puzzle;
-        }
-        // Error, reduce lives
-        if (!updatedPuzzleData.tileFilled) {
+        if (updatedPuzzleData.tileErrored) {
           setLives(currentLives => currentLives - 1);
         }
 
-        setGameComplete(updatedPuzzleData.gameComplete);
+        if (updatedPuzzleData.tileFilled) {
+          setGameComplete(checkPuzzleComplete(puzzleSolution, updatedPuzzle));
+        }
 
-        return updatedPuzzleData.puzzle;
+        updatedPuzzle = deselectTile(updatedPuzzle, setFirstSelected, setLastSelected);
+        return updatedPuzzle;
       }
 
-      case PUZZLE_ACTIONS.MARK:
-        return puzzleState = markTile(puzzleState, action.rowIndex, action.colIndex);
+      case PUZZLE_ACTIONS.DESELECT:
+        return deselectTile(puzzleState, setFirstSelected, setLastSelected);
 
       default:
         return puzzleState;
@@ -92,23 +106,24 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
   }
 
   useEffect(() => {
-    // Triggers on component mount to ensure the fillMode is true on game start
     setFillMode(true);
   }, []);
 
   useEffect(() => {
-    // Triggers on the change of the lives state to ensure the game ends when the user runs out of lives
+    if (lastSelected.rowIndex !== null && lastSelected.colIndex !== null) {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DRAW_SELECT_LINE, rowIndex: lastSelected.rowIndex, colIndex: lastSelected.colIndex });
+    }
+  }, [lastSelected]);
+
+  useEffect(() => {
     setGameOver(checkGameOver(lives));
   }, [lives]);
 
   useEffect(() => {
-    // useEffect triggers on gameComplete change to call set any zero lines to FILL_STATE.ERROR
-    // Ensures zero lines are filled correctly when puzzle reset
     currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_ZERO_LINES, rowIndex: 0, colIndex: 0 });
   }, [gameComplete]);
 
   useEffect(() => {
-    // useEffect triggers on puzzleSolution change to call resetPuzzle
     currentPuzzleDispatch({ type: PUZZLE_ACTIONS.RESET, rowIndex: 0, colIndex: 0 });
   }, [puzzleSolution]);
 
@@ -120,7 +135,8 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
     if (gameComplete || gameOver) {
       return;
     }
-    setFillMode(currentMode => !currentMode);
+    const currentMode = fillMode;
+    setFillMode(!currentMode);
   }
 
   return (
@@ -138,37 +154,41 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
       )}
 
       {!gameComplete && !gameOver ? (
-        <FillModeContext.Provider value={fillMode}>
+        <Board currentPuzzle={currentPuzzle}
+          puzzleSolution={puzzleSolution}
+          livesCount={lives}
+          setFirstSelectTile={
+            (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_FIRST_SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
+          }
+          setLastSelectTile={
+            (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_LAST_SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
+          }
+          deselectTile={
+            (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DESELECT, rowIndex: rowIndex, colIndex: colIndex }) }
+          }
+          fillTile={
+            (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex }) }
+          }
+          markTile={
+            (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.MARK_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex }) }
+          }
+          hoverTile={hoverTile}
+          setRowFill={(e, rowIndex, colIndex) => { }}
+          setColFill={(e, rowIndex, colIndex) => { }}
+        />
+      ) : (
           <Board currentPuzzle={currentPuzzle}
             puzzleSolution={puzzleSolution}
             livesCount={lives}
-            selectTile={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
-            }
-            fillTile={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL, rowIndex: rowIndex, colIndex: colIndex }) }
-            }
-            markTile={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.MARK, rowIndex: rowIndex, colIndex: colIndex }) }
-            }
-            hoverTile={hoverTile}
+            setFirstSelectTile={(e, rowIndex, colIndex) => { }}
+            setLastSelectTile={(e, rowIndex, colIndex) => { }}
+            deselectTile={(e, rowIndex, colIndex) => { }}
+            fillTile={(e, rowIndex, colIndex) => { }}
+            markTile={(e, rowIndex, colIndex) => { }}
+            hoverTile={(e, rowIndex, colIndex) => { }}
             setRowFill={(e, rowIndex, colIndex) => { }}
             setColFill={(e, rowIndex, colIndex) => { }}
           />
-        </FillModeContext.Provider>
-      ) : (
-        <FillModeContext.Provider value={fillMode}>
-            <Board currentPuzzle={currentPuzzle}
-              puzzleSolution={puzzleSolution}
-              livesCount={lives}
-              selectTile={(e, rowIndex, colIndex) => { }}
-              fillTile={(e, rowIndex, colIndex) => { }}
-              markTile={(e, rowIndex, colIndex) => { }}
-              hoverTile={(e, rowIndex, colIndex) => { }}
-              setRowFill={(e, rowIndex, colIndex) => { }}
-              setColFill={(e, rowIndex, colIndex) => { }}
-            />
-        </FillModeContext.Provider>
       )}
 
       <button type='button' className='fillModeButton toggleFillMode button' onClick={() => toggleFillMode()} disabled={fillMode}>Fill</button>

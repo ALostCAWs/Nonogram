@@ -6,7 +6,7 @@ import { TileState } from 'interfaces/tileState';
 import { FirstLastSelectedState } from 'interfaces/firstLastSelectedState';
 import { App } from 'App';
 import { Board } from 'components/ui/board';
-import { deselectTile, drawSelectedTileLine, hoverTile, setFirstSelectedTile, setLastSelectedTile, setSelectedTileLineFillState } from 'functions/tileFunctions';
+import { deselectTile, drawSelectedTileLine, hoverTile, setFirstSelectedTile, setLastSelectedTile, fillSelectedTile_CreateMode } from 'functions/tileFunctions';
 import { checkBoardNotBlank } from 'functions/puzzleValidation';
 import { createBlankPuzzle, createBoolPuzzle, copyCurrentPuzzle } from 'functions/puzzleSetup';
 import { checkLineFilled, getColumn } from 'functions/getPuzzleInfo';
@@ -37,26 +37,25 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
   function currentPuzzleReducer(puzzleState: TileState[][], action: PuzzleAction): TileState[][] {
     const rowIndex = action.rowIndex;
     const colIndex = action.colIndex;
+
     switch (action.type) {
-      case PUZZLE_ACTIONS.SET_FIRST_SELECT: {
+      case PUZZLE_ACTIONS.SET_FIRST_SELECT:
         return setFirstSelectedTile(setFirstSelected, puzzleState, rowIndex, colIndex);
-      }
 
-      case PUZZLE_ACTIONS.SET_LAST_SELECT: {
+      case PUZZLE_ACTIONS.SET_LAST_SELECT:
         return setLastSelectedTile(setLastSelected, puzzleState, firstSelected, rowIndex, colIndex);
-      }
 
-      case PUZZLE_ACTIONS.DRAW_SELECT_LINE: {
+      case PUZZLE_ACTIONS.DRAW_SELECT_LINE:
         return drawSelectedTileLine(puzzleState, firstSelected, lastSelected);
-      }
 
       case PUZZLE_ACTIONS.FILL_SELECT_LINE: {
-        return setSelectedTileLineFillState(puzzleState, firstSelected, lastSelected, FILL_STATE.FILLED);
+        let updatedPuzzle = fillSelectedTile_CreateMode(puzzleState, firstSelected, lastSelected);
+        updatedPuzzle = deselectTile(updatedPuzzle, setFirstSelected, setLastSelected)
+        return updatedPuzzle;
       }
 
-      case PUZZLE_ACTIONS.DESELECT: {
+      case PUZZLE_ACTIONS.DESELECT:
         return deselectTile(puzzleState, setFirstSelected, setLastSelected);
-      }
 
       case PUZZLE_ACTIONS.SET_ROW_FILL: {
         let updatedPuzzle = copyCurrentPuzzle(puzzleState);
@@ -86,7 +85,6 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
   }, [firstSelected]);
 
   useEffect(() => {
-    console.log(lastSelected);
     if (lastSelected.rowIndex !== null && lastSelected.colIndex !== null) {
       currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DRAW_SELECT_LINE, rowIndex: lastSelected.rowIndex, colIndex: lastSelected.colIndex });
     }
