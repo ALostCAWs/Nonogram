@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { GameModeContext } from 'contexts/gameModeContext';
 import { SelectModeContext } from 'contexts/selectModeContext';
-import { FillModeContext } from 'contexts/fillModeContext';
 import { GAME_MODE_STATE } from 'constants/gameModeState';
 import { PlayGame } from 'pages/playGame';
 import { CreateNonogramProvider } from 'components/providers/createNonogramProvider';
@@ -47,9 +46,7 @@ export const App = () => {
   const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
 
   const abortSelect = () => {
-    // TODO: Remove selected styling
     setSelectMode(false);
-    console.log('SelectMode Aborted.');
   }
 
   exportPuzzle(gameSolution1);

@@ -6,10 +6,9 @@ import { FirstLastSelectedState } from 'interfaces/firstLastSelectedState';
 import { Board } from 'components/ui/board';
 import { GameComplete } from 'pages/gameComplete';
 import { GameOver } from 'pages/gameOver';
-import { setFirstSelectedTile, setLastSelectedTile, drawSelectedTileLine, fillSelectedTile_CreateMode, deselectTile, markTile, hoverTile, resetInfoTiles, markSelectedTile, fillSelectedTile_PlayMode } from 'functions/tileFunctions';
-import { createLives, createCurrentPuzzle, checkAndSetZeroLines, copyCurrentPuzzle } from 'functions/puzzleSetup';
+import { setFirstSelectedTile, setLastSelectedTile, drawSelectedTileLine, deselectTile, hoverTile, resetInfoTiles, markSelectedTile, fillSelectedTile_PlayMode } from 'functions/tileFunctions';
+import { createLives, createCurrentPuzzle, checkAndSetZeroLines } from 'functions/puzzleSetup';
 import { checkPuzzleComplete, checkGameOver } from 'functions/getPuzzleInfo';
-import { FILL_STATE } from 'constants/fillState';
 
 interface PlayNonogramProviderProps {
   puzzleSolution: boolean[][]
@@ -125,10 +124,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
     currentPuzzleDispatch({ type: PUZZLE_ACTIONS.RESET, rowIndex: 0, colIndex: 0 });
   }, [puzzleSolution]);
 
-  /**
-   * Disallow toggle when the game is finished
-   * @returns {void} void
-   */
   const toggleFillMode = (): void => {
     if (gameComplete || gameOver) {
       return;
