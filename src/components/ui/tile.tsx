@@ -45,6 +45,7 @@ export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSel
             width: `${tileSize}px`
           }}
           onMouseDown={e => {
+            e.preventDefault()
             setSelectMode(true)
             setFirstSelectTile(e, rowIndex, colIndex)
           }}
@@ -69,6 +70,7 @@ export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSel
               width: `${tileSize}px`
             }}
             onMouseDown={e => {
+              e.preventDefault()
               setSelectMode(true)
               setFirstSelectTile(e, rowIndex, colIndex)
             }}
