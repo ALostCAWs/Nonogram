@@ -1,6 +1,3 @@
 import { createContext } from 'react';
 
-export const FillModeContext = createContext({
-  fillMode: true,
-  setFillMode: (v: boolean) => { }
-});
+export const FillModeContext = createContext<boolean>(true);

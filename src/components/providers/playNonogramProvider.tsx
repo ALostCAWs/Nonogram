@@ -32,7 +32,7 @@ interface PlayNonogramProviderProps {
  * @returns Loads the Board with empty functions passed to the Tiles when the game has ended to prevent further user interaction
  */
 export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderProps) => {
-  const { fillMode, setFillMode } = useContext(FillModeContext);
+  const [fillMode, setFillMode] = useState<boolean>(true);
   const [lives, setLives] = useState<number>(createLives(puzzleSolution));
   const [gameOver, setGameOver] = useState<boolean>(checkGameOver(lives));
   const [gameComplete, setGameComplete] = useState<boolean>(false);
@@ -64,7 +64,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
         return puzzleState = checkAndSetZeroLines(puzzleState, puzzleSolution);
 
       case PUZZLE_ACTIONS.SET_FIRST_SELECT: {
-        console.log('select start');
         return setFirstSelectedTile(setFirstSelected, puzzleState, rowIndex, colIndex);
       }
 
@@ -81,7 +80,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
       }
 
       case PUZZLE_ACTIONS.FILL_SELECT_LINE: {
-        console.log('fill select line');
         const updatedPuzzleData = fillSelectedTile_PlayMode(puzzleSolution, puzzleState, firstSelected, lastSelected);
         let updatedPuzzle = updatedPuzzleData.puzzle;
 
@@ -135,8 +133,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
     if (gameComplete || gameOver) {
       return;
     }
-    const currentMode = fillMode;
-    setFillMode(!currentMode);
+    setFillMode(currentMode => !currentMode);
   }
 
   return (
@@ -154,6 +151,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
       )}
 
       {!gameComplete && !gameOver ? (
+        <FillModeContext.Provider value={fillMode}>
         <Board currentPuzzle={currentPuzzle}
           puzzleSolution={puzzleSolution}
           livesCount={lives}
@@ -175,8 +173,10 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
           hoverTile={hoverTile}
           setRowFill={(e, rowIndex, colIndex) => { }}
           setColFill={(e, rowIndex, colIndex) => { }}
-        />
+          />
+        </FillModeContext.Provider>
       ) : (
+          <FillModeContext.Provider value={fillMode}>
           <Board currentPuzzle={currentPuzzle}
             puzzleSolution={puzzleSolution}
             livesCount={lives}
@@ -189,6 +189,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
             setRowFill={(e, rowIndex, colIndex) => { }}
             setColFill={(e, rowIndex, colIndex) => { }}
           />
+          </FillModeContext.Provider>
       )}
 
       <button type='button' className='fillModeButton toggleFillMode button' onClick={() => toggleFillMode()} disabled={fillMode}>Fill</button>

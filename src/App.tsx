@@ -39,7 +39,7 @@ export const App = () => {
   const [playPuzzle, setPlayPuzzle] = useState(false);
   const [createPuzzle, setCreatePuzzle] = useState(false);
   const [selectMode, setSelectMode] = useState(false);
-  const [fillMode, setFillMode] = useState(true);
+  //const [fillMode, setFillMode] = useState(true);
 
   const boardHeight = useRef<HTMLSelectElement>(null);
   const boardWidth = useRef<HTMLSelectElement>(null);
@@ -83,11 +83,9 @@ export const App = () => {
       )}
       {playPuzzle && (
         <SelectModeContext.Provider value={{ selectMode, setSelectMode }}>
-          <FillModeContext.Provider value={{ fillMode, setFillMode }}>
-            <GameModeContext.Provider value={GAME_MODE_STATE.PLAY}>
-              <PlayGame />
-            </GameModeContext.Provider>
-          </FillModeContext.Provider>
+          <GameModeContext.Provider value={GAME_MODE_STATE.PLAY}>
+            <PlayGame />
+          </GameModeContext.Provider>
         </SelectModeContext.Provider>
       )}
       {createPuzzle && (

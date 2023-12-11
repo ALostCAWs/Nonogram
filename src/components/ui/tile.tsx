@@ -32,7 +32,7 @@ interface TileProps {
  * @returns Div with a class based on that Tiles' fill stored in the currentPuzzle array
  */
 export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSelectTile, setLastSelectTile, deselectTile, fillTile, markTile, hoverTile }: TileProps) => {
-  const { fillMode, setFillMode } = useContext(FillModeContext) ?? true;
+  const fillMode = useContext(FillModeContext);
   const { selectMode, setSelectMode } = useContext(SelectModeContext);
 
   return (
