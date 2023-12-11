@@ -1,14 +1,15 @@
 import { useState, useEffect, useReducer, useContext } from 'react';
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
+import { SelectModeContext } from 'contexts/selectModeContext';
 import { FillModeContext } from 'contexts/fillModeContext';
 import { TileState } from 'interfaces/tileState';
 import { FirstLastSelectedState } from 'interfaces/firstLastSelectedState';
 import { Board } from 'components/ui/board';
 import { GameComplete } from 'pages/gameComplete';
 import { GameOver } from 'pages/gameOver';
-import { setFirstSelectedTile, setLastSelectedTile, drawSelectedTileLine, deselectTile, hoverTile, resetInfoTiles, markSelectedTile, fillSelectedTile_PlayMode } from 'functions/tileFunctions';
 import { createLives, createCurrentPuzzle, checkAndSetZeroLines } from 'functions/puzzleSetup';
 import { checkPuzzleComplete, checkGameOver } from 'functions/getPuzzleInfo';
+import { setFirstSelectedTile, setLastSelectedTile, drawSelectedTileLine, deselectTile, hoverTile, resetInfoTiles, markSelectedTile, fillSelectedTile_PlayMode } from 'functions/tileFunctions';
 
 interface PlayNonogramProviderProps {
   puzzleSolution: boolean[][]
@@ -31,6 +32,7 @@ interface PlayNonogramProviderProps {
  * @returns Loads the Board with empty functions passed to the Tiles when the game has ended to prevent further user interaction
  */
 export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderProps) => {
+  const { selectMode, setSelectMode } = useContext(SelectModeContext);
   const [fillMode, setFillMode] = useState<boolean>(true);
   const [lives, setLives] = useState<number>(createLives(puzzleSolution));
   const [gameOver, setGameOver] = useState<boolean>(checkGameOver(lives));
@@ -105,6 +107,12 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
   useEffect(() => {
     setFillMode(true);
   }, []);
+
+  useEffect(() => {
+    if (!selectMode) {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DESELECT, rowIndex: 0, colIndex: 0 });
+    }
+  }, [selectMode]);
 
   useEffect(() => {
     if (lastSelected.rowIndex !== null && lastSelected.colIndex !== null) {

@@ -1,6 +1,7 @@
-import { useState, useEffect, useReducer } from 'react';
+import { useState, useEffect, useReducer, useContext } from 'react';
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
 import { FILL_STATE } from "constants/fillState";
+import { SelectModeContext } from 'contexts/selectModeContext';
 import { PuzzleAction } from 'interfaces/puzzleAction';
 import { TileState } from 'interfaces/tileState';
 import { FirstLastSelectedState } from 'interfaces/firstLastSelectedState';
@@ -26,6 +27,7 @@ interface CreateNonogramProviderProps {
  * @returns Loads the home screen when the puzzle is exported
  */
 export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogramProviderProps) => {
+  const { selectMode, setSelectMode } = useContext(SelectModeContext);
   const [submit, setSubmit] = useState<boolean>(false);
   const [boardBlank, setBoardBlank] = useState<boolean>(true);
 
@@ -89,6 +91,12 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
       currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DRAW_SELECT_LINE, rowIndex: lastSelected.rowIndex, colIndex: lastSelected.colIndex });
     }
   }, [lastSelected]);
+
+  useEffect(() => {
+    if (!selectMode) {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DESELECT, rowIndex: 0, colIndex: 0 });
+    }
+  }, [selectMode]);
 
   return (
     <>
