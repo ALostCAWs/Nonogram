@@ -51,6 +51,10 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
         return drawSelectedTileLine(puzzleState, firstSelected, lastSelected);
 
       case PUZZLE_ACTIONS.FILL_SELECT_LINE: {
+        if (!puzzleState[rowIndex][colIndex].selected) {
+          return puzzleState;
+        }
+
         let updatedPuzzle = fillSelectedTile_CreateMode(puzzleState, firstSelected, lastSelected);
         updatedPuzzle = deselectTile(updatedPuzzle, setFirstSelected, setLastSelected)
         return updatedPuzzle;
