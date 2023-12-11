@@ -3,12 +3,12 @@ import { FILL_STATE } from 'constants/fillState';
 import { TileState } from 'interfaces/tileState';
 import { FirstLastSelectedState } from 'interfaces/firstLastSelectedState';
 import { copyCurrentPuzzle } from 'functions/puzzleSetup';
-import { checkLineComplete, checkPuzzleComplete, checkTileFillable, checkTileMarkable, getColumn, getPuzzleByColumn } from 'functions/getPuzzleInfo';
+import { checkLineComplete, checkTileFillable, checkTileMarkable, getColumn, getPuzzleByColumn } from 'functions/getPuzzleInfo';
 
 /**
  * Sets the firstSelected state from the Provider component
  *
- * @returns A new matrix of the puzzle, with the onMouseDown tile.selected = true
+ * @returns Matrix of the puzzle, with the onMouseDown tile.selected = true
  */
 export const setFirstSelectedTile = (setFirstSelected: React.Dispatch<React.SetStateAction<FirstLastSelectedState>>, currentPuzzle: TileState[][], rowIndex: number, colIndex: number): TileState[][] => {
   setFirstSelected({ rowIndex: rowIndex, colIndex: colIndex });
@@ -33,7 +33,7 @@ export const setFirstSelectedTile = (setFirstSelected: React.Dispatch<React.SetS
  *
  * If not, deselects all tiles aside from the firstSelected tile
  *
- * @returns A new matrix of the puzzle, with the onMouseDown tile.selected = true
+ * @returns Matrix of the puzzle, with the onMouseDown tile.selected = true
  */
 export const setLastSelectedTile = (setLastSelected: React.Dispatch<React.SetStateAction<FirstLastSelectedState>>, currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, rowIndex: number, colIndex: number): TileState[][] => {
   if (rowIndex === firstSelected.rowIndex || colIndex === firstSelected.colIndex) {
@@ -85,6 +85,8 @@ export const setLastSelectedTile = (setLastSelected: React.Dispatch<React.SetSta
  * If neither are true, an unchanged currentPuzzle is returned
  *
  * Draw direction is not taken into account for applying the selected value
+ *
+ * @returns Matrix of the puzzle, with the firstSelected, lastSelected, & any tiles between the row set to selected = true
  */
 export const drawSelectedTileLine = (currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, lastSelected: FirstLastSelectedState): TileState[][] => {
   if (firstSelected.rowIndex === null || firstSelected.colIndex === null || lastSelected.rowIndex === null || lastSelected.colIndex === null) {
@@ -201,56 +203,6 @@ export const fillSelectedTile_CreateMode = (currentPuzzle: TileState[][], firstS
   });
 }
 
-/**
- * Used to handle the markTile of PlayNonogramProvider
- *
- * @returns Matrix where the selected FILL_STATE EMPTY tiles have been set to MARKED & the MARKED tiles have been set to EMPTY
- */
-export const markSelectedTile = (currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, lastSelected: FirstLastSelectedState): TileState[][] => {
-  if (firstSelected.rowIndex === null || firstSelected.colIndex === null) {
-    return currentPuzzle;
-  }
-
-  if (lastSelected.rowIndex === null || lastSelected.colIndex === null) {
-    const rowIndex = firstSelected.rowIndex;
-    const colIndex = firstSelected.colIndex;
-
-    if (!checkTileMarkable(currentPuzzle[rowIndex][colIndex])) {
-      return currentPuzzle;
-    }
-
-    const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
-    const tileFill = updatedPuzzle[rowIndex][colIndex].fill;
-    updatedPuzzle[rowIndex][colIndex].fill = tileFill === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
-    return updatedPuzzle;
-  }
-
-  const drawRow = firstSelected.rowIndex === lastSelected.rowIndex ? true : false;
-  const drawCol = firstSelected.colIndex === lastSelected.colIndex ? true : false;
-
-  if (drawRow) {
-    //const drawForwards = firstSelected.colIndex < lastSelected.colIndex ? true : false;
-  }
-
-  return currentPuzzle.map((row, i) => {
-    return row.map((tile, j) => {
-      if (!checkTileMarkable(tile)) {
-        return tile;
-      }
-
-      let fill = tile.fill;
-      if (tile.selected) {
-        fill = fill === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
-      }
-      const selectedTile = {
-        fill: fill,
-        selected: tile.selected
-      }
-      return selectedTile;
-    });
-  });
-}
-
 interface FillTileResult_PlayMode {
   puzzle: TileState[][],
   tileFilled: boolean,
@@ -258,8 +210,14 @@ interface FillTileResult_PlayMode {
 }
 
 /**
+ * Used to handle the fillTile of PlayNonogramProvider
+ *
  * Determines the direction in which the player drew the select line
  * Runs corresponding fillTile_DrawForwards/Backwards depending on the direction the line was drawn
+ *
+ * @returns Matrix with any fillable tiles set to either FILL_STATE FILLED or ERROR, depending on the puzzleSolution
+ * @returns Whether or not a tile was filled
+ * @returns Whether or not a tile was errored
  */
 export const fillSelectedTile_PlayMode = (puzzleSolution: boolean[][], currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, lastSelected: FirstLastSelectedState): FillTileResult_PlayMode => {
   const unchangedPuzzleData = {
@@ -308,6 +266,19 @@ export const fillSelectedTile_PlayMode = (puzzleSolution: boolean[][], currentPu
   return updatedPuzzleData;
 }
 
+/**
+ * Used to handle the fillTile of PlayNonogramProvider
+ *
+ * Loops through the puzzle matrix forwards, to set the FILL_STATE of the tiles in the same order that they were selected by the user
+ *
+ * Stops looping at the first error encountered
+ * Prevent multiple lives lost from a single action
+ * Discourages the user from frantic selections in order to solve a puzzle
+ *
+ * @returns Matrix with any fillable tiles set to either FILL_STATE FILLED or ERROR, depending on the puzzleSolution
+ * @returns Whether or not a tile was filled
+ * @returns Whether or not a tile was errored
+ */
 const fillTile_DrawForwards = (puzzleSolution: boolean[][], currentPuzzle: TileState[][]): FillTileResult_PlayMode => {
   let tileFilled = false;
   let tileErrored = false;
@@ -345,6 +316,19 @@ const fillTile_DrawForwards = (puzzleSolution: boolean[][], currentPuzzle: TileS
   };
 }
 
+/**
+ * Used to handle the fillTile of PlayNonogramProvider
+ *
+ * Loops through the puzzle matrix backwards, to set the FILL_STATE of the tiles in the same order that they were selected by the user
+ *
+ * Stops looping at the first error encountered
+ * Prevent multiple lives lost from a single action
+ * Discourages the user from frantic selections in order to solve a puzzle
+ *
+ * @returns Matrix with any fillable tiles set to either FILL_STATE FILLED or ERROR, depending on the puzzleSolution
+ * @returns Whether or not a tile was filled
+ * @returns Whether or not a tile was errored
+ */
 const fillTile_DrawBackwards = (puzzleSolution: boolean[][], currentPuzzle: TileState[][]): FillTileResult_PlayMode => {
   let tileFilled = false;
   let tileErrored = false;
@@ -382,23 +366,22 @@ const fillTile_DrawBackwards = (puzzleSolution: boolean[][], currentPuzzle: Tile
   };
 }
 
-// 5|1111100000100001100011011
-
+/**
+ * If a row or column within the currentPuzzle is found to be complete, the corresponding markRow/ColComplete function is called
+ *
+ * @returns Matrix with any completed rows or columns with FILL_STATE EMPTY or MARKED tiles set to COMPLETE
+ */
 const markCompleteLines = (puzzleSolution: boolean[][], currentPuzzle: TileState[][]): TileState[][] => {
-  let rowLineComplete = false;
-  let colLineComplete = false;
   let updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
 
   for (let i = 0; i < currentPuzzle.length; i++) {
     if (checkLineComplete(puzzleSolution[i], currentPuzzle[i])) {
-      rowLineComplete = true;
       updatedPuzzle = markRowComplete(updatedPuzzle, i);
     }
   }
 
   for (let i = 0; i < getPuzzleByColumn(currentPuzzle).length; i++) {
     if (checkLineComplete(getColumn(puzzleSolution, i), getColumn(currentPuzzle, i))) {
-      colLineComplete = true;
       updatedPuzzle = markColComplete(updatedPuzzle, i);
     }
   }
@@ -406,14 +389,16 @@ const markCompleteLines = (puzzleSolution: boolean[][], currentPuzzle: TileState
 }
 
 /**
- * If line complete, set remaining tiles in row to complete
+ * If line complete, set remaining tiles in row to FILL_STATE.COMPLETE
  * This is only set for lines in which every fillable tile has been filled, specifically NOT for lines with 0 fillable tiles or incomplete lines
+ *
  * Lines with 0 fillable tiles are all marked error on puzzle initialization
  * Lines with some completed hints do not trigger this, even in obvious cases such as first / last hint completion
+ *
  * This keeps in line with existing nonogram puzzles; avoids holding users' hand too much
  * In this puzzle, FILL_STATE.COMPLETE is set up to specifically disallow removal unlike many other nonogram puzzles as that feels unfair for a user to be able to accidentally undo their own progress ( in a sense ) & trigger errors on lines they have already solved
  *
- * @returns updatedPuzzle with any completed rows having their FILL_STATE EMPTY / MARKED set to FILL_STATE.COMPLETE
+ * @returns updatedPuzzle with any completed rows having their FILL_STATE EMPTY OR MARKED set to FILL_STATE.COMPLETE
  */
 const markRowComplete = (updatedPuzzle: TileState[][], rowIndex: number): TileState[][] => {
   for (let i = 0; i < updatedPuzzle[0].length; i++) {
@@ -433,7 +418,7 @@ const markRowComplete = (updatedPuzzle: TileState[][], rowIndex: number): TileSt
  * This keeps in line with existing nonogram puzzles; avoids holding users' hand too much
  * In this puzzle, FILL_STATE.COMPLETE is set up to specifically disallow removal unlike many other nonogram puzzles as that feels unfair for a user to be able to accidentally undo their own progress ( in a sense ) & trigger errors on lines they have already solved
  *
- * @returns updatedPuzzle with any completed columns having their FILL_STATE EMPTY / MARKED set to FILL_STATE.COMPLETE
+ * @returns updatedPuzzle with any completed columns having their FILL_STATE EMPTY OR MARKED set to FILL_STATE.COMPLETE
  */
 const markColComplete = (updatedPuzzle: TileState[][], colIndex: number): TileState[][] => {
   for (let i = 0; i < updatedPuzzle.length; i++) {
@@ -446,20 +431,46 @@ const markColComplete = (updatedPuzzle: TileState[][], colIndex: number): TileSt
 }
 
 /**
- * @returns Tile markable & tiles' original FILL_STATE MARKED / EMPTY - puzzle with a given tile now set to FILL_STATE MARKED / EMPTY
- * @returns Tile markable & tiles' original not FILL_STATE MARKED / EMPTY - puzzle with no changes
- * @returns Tile unmarkable - puzzle with no changes
+ * Used to handle the markTile of PlayNonogramProvider
+ *
+ * @returns Matrix where the markable selected FILL_STATE EMPTY tiles have been set to MARKED & the MARKED tiles have been set to EMPTY
  */
-export const markTile = (currentPuzzle: TileState[][], rowIndex: number, colIndex: number) => {
-  let tile = currentPuzzle[rowIndex][colIndex];
-  if (!checkTileMarkable(tile)) {
+export const markSelectedTile = (currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, lastSelected: FirstLastSelectedState): TileState[][] => {
+  if (firstSelected.rowIndex === null || firstSelected.colIndex === null) {
     return currentPuzzle;
   }
 
-  const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
-  tile = updatedPuzzle[rowIndex][colIndex];
-  updatedPuzzle[rowIndex][colIndex].fill = tile.fill === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
-  return updatedPuzzle;
+  if (lastSelected.rowIndex === null || lastSelected.colIndex === null) {
+    const rowIndex = firstSelected.rowIndex;
+    const colIndex = firstSelected.colIndex;
+
+    if (!checkTileMarkable(currentPuzzle[rowIndex][colIndex])) {
+      return currentPuzzle;
+    }
+
+    const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
+    const tileFill = updatedPuzzle[rowIndex][colIndex].fill;
+    updatedPuzzle[rowIndex][colIndex].fill = tileFill === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
+    return updatedPuzzle;
+  }
+
+  return currentPuzzle.map((row, i) => {
+    return row.map((tile, j) => {
+      if (!checkTileMarkable(tile)) {
+        return tile;
+      }
+
+      let fill = tile.fill;
+      if (tile.selected) {
+        fill = fill === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
+      }
+      const selectedTile = {
+        fill: fill,
+        selected: tile.selected
+      }
+      return selectedTile;
+    });
+  });
 }
 
 /**

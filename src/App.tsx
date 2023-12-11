@@ -10,6 +10,8 @@ import { getPuzzleByColumn } from 'functions/getPuzzleInfo';
 import logo from './logo.svg';
 import './App.css';
 
+// 5|1111100000100001100011011
+
 const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, true, false, false],
 [false, true, false, true, false],
