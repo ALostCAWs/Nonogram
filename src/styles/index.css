@@ -132,6 +132,9 @@ body {
   background-color: var(--mark-color);
 }
 
+.selected {
+  background-color: lightseagreen;
+}
 /* ---- Info Tiles ---- */
 /* .colInfoContainer & rowInfoContainers' grid-row/column rule enforces top-left portion of grid to be blank */
 .colInfoContainer {

@@ -1,92 +1,408 @@
 import React from 'react';
 import { FILL_STATE } from 'constants/fillState';
+import { TileState } from 'interfaces/tileState';
+import { FirstLastSelectedState } from 'interfaces/firstLastSelectedState';
 import { copyCurrentPuzzle } from 'functions/puzzleSetup';
-import { checkLineComplete, checkPuzzleComplete, checkTileFillable, checkTileMarkable, getColumn } from 'functions/getPuzzleInfo';
+import { checkLineComplete, checkPuzzleComplete, checkTileFillable, checkTileMarkable, getColumn, getPuzzleByColumn } from 'functions/getPuzzleInfo';
 
-interface FillTileResult {
-  puzzle: string[][],
-  tileFilled: boolean | null,
-  gameComplete: boolean
+/**
+ * Sets the firstSelected state from the Provider component
+ *
+ * @returns A new matrix of the puzzle, with the onMouseDown tile.selected = true
+ */
+export const setFirstSelectedTile = (setFirstSelected: React.Dispatch<React.SetStateAction<FirstLastSelectedState>>, currentPuzzle: TileState[][], rowIndex: number, colIndex: number): TileState[][] => {
+  setFirstSelected({ rowIndex: rowIndex, colIndex: colIndex });
+  return currentPuzzle.map((row, i) => {
+    return row.map((tile, j) => {
+      let selected = false;
+      if (i === rowIndex && j == colIndex) {
+        selected = true;
+      }
+      const currentTile = {
+        fill: tile.fill,
+        selected: selected
+      }
+      return currentTile;
+    });
+  });
 }
 
 /**
- * fillTile determines whether the clicked tile should receive FILL_STATE.FILLED or FILL_STATE.ERROR
- * It returns an object with information on what changes fillTile made to the puzzle
- * The updatedPuzzle itself, whether a tile was given FILLED or ERROR, & whether or not the game is now complete
+ * Checks if the tile is in the same row / column as the tile dimensions stores in the firstSelected state from the Provider component
+ * If so, sets the lastSelected state from the Provider component
  *
- * tileFilled === null is a catch for attempts to fill an unfillable tile ( checkTileFillable returned false & no updates to the puzzle were made )
- * Don't need to consider changes to gameComplete as the useReducer function will return due to tileFilled === null before it has a chance to update the gameComplete state
+ * If not, deselects all tiles aside from the firstSelected tile
  *
- * @returns updatedPuzzleData - Object containing the updatedPuzzle & info about the updates made
- * @returns updatedPuzzle
- * @returns tileFilled
- * @returns gameComplete
+ * @returns A new matrix of the puzzle, with the onMouseDown tile.selected = true
  */
-export const fillTile = (puzzleSolution: boolean[][], currentPuzzle: string[][], rowIndex: number, colIndex: number): FillTileResult => {
-  if (!checkTileFillable(currentPuzzle[rowIndex][colIndex])) {
-    return {
-      puzzle: currentPuzzle,
-      tileFilled: null,
-      gameComplete: false
-    };
+export const setLastSelectedTile = (setLastSelected: React.Dispatch<React.SetStateAction<FirstLastSelectedState>>, currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, rowIndex: number, colIndex: number): TileState[][] => {
+  if (rowIndex === firstSelected.rowIndex || colIndex === firstSelected.colIndex) {
+    setLastSelected({ rowIndex: rowIndex, colIndex: colIndex });
+    return currentPuzzle.map((row, i) => {
+      return row.map((tile, j) => {
+        let selected = false;
+        if (i === firstSelected.rowIndex && j === firstSelected.colIndex) {
+          selected = true;
+        }
+        if (i === rowIndex && j === colIndex) {
+          selected = true;
+        }
+        const deselectedTile: TileState = {
+          fill: tile.fill,
+          selected: selected
+        };
+        return deselectedTile;
+      });
+    });
   }
 
-  let updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
-  let tileFilled = false;
-  let gameComplete = false;
+  return currentPuzzle.map((row, i) => {
+    return row.map((tile, j) => {
+      let selected = false;
+      if (i === firstSelected.rowIndex && j === firstSelected.colIndex) {
+        selected = true;
+      }
+      const deselectedTile: TileState = {
+        fill: tile.fill,
+        selected: selected
+      };
+      return deselectedTile;
+    });
+  });
+}
 
-  if (puzzleSolution[rowIndex][colIndex]) {
-    updatedPuzzle[rowIndex][colIndex] = FILL_STATE.FILLED;
-    const updatedPuzzleLineOrGameCompleteData = checkFillCompletesLineOrGame(puzzleSolution, updatedPuzzle, rowIndex, colIndex);
+/**
+ * Ensures that there are values in each of the row/column indexes of the first & last selected tiles
+ * If not, returns an unchanged puzzle
+ *
+ * Checks if the line is being drawn row-wise ( x axis ) or column-wise ( y axis )
+ * If both, then the only selected tile is the one stored in firstSelected ( lastSelected contains the same coordinates )
+ * If only one of the two are true, a line is drawn
+ *
+ * To draw a line, the boundaries of the line are calculated ( between the firstSelected & lastSelected coordinates, inclusive )
+ * currentPuzzle.map is then used to return a matrix with the firstSelected, lastSelected, & any tiles between them having selected = true
+ *
+ * If neither are true, an unchanged currentPuzzle is returned
+ *
+ * Draw direction is not taken into account for applying the selected value
+ */
+export const drawSelectedTileLine = (currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, lastSelected: FirstLastSelectedState): TileState[][] => {
+  if (firstSelected.rowIndex === null || firstSelected.colIndex === null || lastSelected.rowIndex === null || lastSelected.colIndex === null) {
+    return currentPuzzle;
+  }
 
-    updatedPuzzle = updatedPuzzleLineOrGameCompleteData.puzzle;
-    tileFilled = true;
-    gameComplete = updatedPuzzleLineOrGameCompleteData.gameComplete;
+  const drawRow = firstSelected.rowIndex === lastSelected.rowIndex ? true : false;
+  const drawCol = firstSelected.colIndex === lastSelected.colIndex ? true : false;
+
+  if (drawRow && drawCol) {
+    const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
+    updatedPuzzle[firstSelected.rowIndex][firstSelected.colIndex].selected = true;
+    return updatedPuzzle;
+  }
+
+  if (drawRow) {
+    const startIndex = firstSelected.colIndex < lastSelected.colIndex ? firstSelected.colIndex : lastSelected.colIndex;
+    const endIndex = firstSelected.colIndex > lastSelected.colIndex ? firstSelected.colIndex : lastSelected.colIndex;
+
+    return currentPuzzle.map((row, i) => {
+      return row.map((tile, j) => {
+        let selected = false;
+        if (i === firstSelected.rowIndex) {
+          if (j >= startIndex && j <= endIndex) {
+            selected = true;
+          }
+        }
+        const selectedTile = {
+          fill: tile.fill,
+          selected: selected
+        }
+        return selectedTile;
+      });
+    });
+  }
+
+  if (drawCol) {
+    const startIndex = firstSelected.rowIndex < lastSelected.rowIndex ? firstSelected.rowIndex : lastSelected.rowIndex;
+    const endIndex = firstSelected.rowIndex > lastSelected.rowIndex ? firstSelected.rowIndex : lastSelected.rowIndex;
+
+    return currentPuzzle.map((row, i) => {
+      return row.map((tile, j) => {
+        let selected = false;
+        if (j === firstSelected.colIndex) {
+          if (i >= startIndex && i <= endIndex) {
+            selected = true;
+          }
+        }
+        const selectedTile = {
+          fill: tile.fill,
+          selected: selected
+        }
+        return selectedTile;
+      });
+    });
+  }
+  return currentPuzzle;
+}
+
+/**
+ * @returns Matrix with all the tiles' selected values set to false
+ */
+export const deselectTile = (currentPuzzle: TileState[][], setFirstSelected: React.Dispatch<React.SetStateAction<FirstLastSelectedState>>, setLastSelected: React.Dispatch<React.SetStateAction<FirstLastSelectedState>>): TileState[][] => {
+  setFirstSelected({ rowIndex: null, colIndex: null });
+  setLastSelected({ rowIndex: null, colIndex: null });
+
+  return currentPuzzle.map((row, i) => {
+    return row.map((tile, j) => {
+      const deselectedTile: TileState = {
+        fill: tile.fill,
+        selected: false
+      };
+      return deselectedTile;
+    });
+  });
+}
+
+/**
+ * Used to handle the fillTile of CreateNonogramProvider
+ *
+ * @returns Matrix where the selected FILL_STATE EMPTY tiles have been set to FILLED & the FILLED tiles have been set to EMPTY
+ */
+export const fillSelectedTile_CreateMode = (currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, lastSelected: FirstLastSelectedState): TileState[][] => {
+  if (firstSelected.rowIndex === null || firstSelected.colIndex === null) {
+    return currentPuzzle;
+  }
+
+  if (lastSelected.rowIndex === null || lastSelected.colIndex === null) {
+    const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
+    const tileFill = updatedPuzzle[firstSelected.rowIndex][firstSelected.colIndex].fill;
+    updatedPuzzle[firstSelected.rowIndex][firstSelected.colIndex].fill = tileFill === FILL_STATE.EMPTY ? FILL_STATE.FILLED : FILL_STATE.EMPTY;
+    return updatedPuzzle;
+  }
+
+  const drawRow = firstSelected.rowIndex === lastSelected.rowIndex ? true : false;
+  const drawCol = firstSelected.colIndex === lastSelected.colIndex ? true : false;
+
+  if (drawRow) {
+    //const drawForwards = firstSelected.colIndex < lastSelected.colIndex ? true : false;
+  }
+
+  return currentPuzzle.map((row, i) => {
+    return row.map((tile, j) => {
+      let fill = tile.fill;
+      if (tile.selected) {
+        fill = fill === FILL_STATE.EMPTY ? FILL_STATE.FILLED : FILL_STATE.EMPTY;
+      }
+      const selectedTile = {
+        fill: fill,
+        selected: tile.selected
+      }
+      return selectedTile;
+    });
+  });
+}
+
+/**
+ * Used to handle the markTile of PlayNonogramProvider
+ *
+ * @returns Matrix where the selected FILL_STATE EMPTY tiles have been set to MARKED & the MARKED tiles have been set to EMPTY
+ */
+export const markSelectedTile = (currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, lastSelected: FirstLastSelectedState): TileState[][] => {
+  if (firstSelected.rowIndex === null || firstSelected.colIndex === null) {
+    return currentPuzzle;
+  }
+
+  if (lastSelected.rowIndex === null || lastSelected.colIndex === null) {
+    const rowIndex = firstSelected.rowIndex;
+    const colIndex = firstSelected.colIndex;
+
+    if (!checkTileMarkable(currentPuzzle[rowIndex][colIndex])) {
+      return currentPuzzle;
+    }
+
+    const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
+    const tileFill = updatedPuzzle[rowIndex][colIndex].fill;
+    updatedPuzzle[rowIndex][colIndex].fill = tileFill === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
+    return updatedPuzzle;
+  }
+
+  const drawRow = firstSelected.rowIndex === lastSelected.rowIndex ? true : false;
+  const drawCol = firstSelected.colIndex === lastSelected.colIndex ? true : false;
+
+  if (drawRow) {
+    //const drawForwards = firstSelected.colIndex < lastSelected.colIndex ? true : false;
+  }
+
+  return currentPuzzle.map((row, i) => {
+    return row.map((tile, j) => {
+      if (!checkTileMarkable(tile)) {
+        return tile;
+      }
+
+      let fill = tile.fill;
+      if (tile.selected) {
+        fill = fill === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
+      }
+      const selectedTile = {
+        fill: fill,
+        selected: tile.selected
+      }
+      return selectedTile;
+    });
+  });
+}
+
+interface FillTileResult_PlayMode {
+  puzzle: TileState[][],
+  tileFilled: boolean,
+  tileErrored: boolean
+}
+
+/**
+ * Determines the direction in which the player drew the select line
+ * Runs corresponding fillTile_DrawForwards/Backwards depending on the direction the line was drawn
+ */
+export const fillSelectedTile_PlayMode = (puzzleSolution: boolean[][], currentPuzzle: TileState[][], firstSelected: FirstLastSelectedState, lastSelected: FirstLastSelectedState): FillTileResult_PlayMode => {
+  const unchangedPuzzleData = {
+    puzzle: currentPuzzle,
+    tileFilled: false,
+    tileErrored: false
+  };
+
+  if (firstSelected.rowIndex === null || firstSelected.colIndex === null) {
+    return unchangedPuzzleData;
+  }
+
+  if ((firstSelected.rowIndex === lastSelected.rowIndex && firstSelected.colIndex === lastSelected.colIndex) || (lastSelected.rowIndex === null || lastSelected.colIndex === null)) {
+    if (!checkTileFillable(currentPuzzle[firstSelected.rowIndex][firstSelected.colIndex])) {
+      return unchangedPuzzleData;
+    }
+    const updatedPuzzleData = fillTile_DrawForwards(puzzleSolution, currentPuzzle);
+    return updatedPuzzleData;
+  }
+
+  const updatedPuzzle: TileState[][] = [];
+  let updatedPuzzleData: FillTileResult_PlayMode = {
+    puzzle: updatedPuzzle,
+    tileFilled: false,
+    tileErrored: false
+  };
+
+  const drawRow = firstSelected.rowIndex === lastSelected.rowIndex ? true : false;
+  const drawCol = firstSelected.colIndex === lastSelected.colIndex ? true : false;
+  let drawForwards = true;
+  if (drawRow) {
+    drawForwards = firstSelected.colIndex < lastSelected.colIndex ? true : false;
+  }
+  if (drawCol) {
+    drawForwards = firstSelected.rowIndex < lastSelected.rowIndex ? true : false;
+  }
+
+
+  if (drawForwards) {
+    updatedPuzzleData = fillTile_DrawForwards(puzzleSolution, currentPuzzle);
   } else {
-    updatedPuzzle[rowIndex][colIndex] = FILL_STATE.ERROR;
+    updatedPuzzleData = fillTile_DrawBackwards(puzzleSolution, currentPuzzle);
+
+  }
+
+  return updatedPuzzleData;
+}
+
+const fillTile_DrawForwards = (puzzleSolution: boolean[][], currentPuzzle: TileState[][]): FillTileResult_PlayMode => {
+  let tileFilled = false;
+  let tileErrored = false;
+
+  let updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
+  for (let i = 0; i < updatedPuzzle.length; i++) {
+    for (let j = 0; j < updatedPuzzle[i].length; j++) {
+      const tile = updatedPuzzle[i][j];
+      if (!tile.selected || !checkTileFillable(tile)) {
+        continue;
+      }
+
+      updatedPuzzle[i][j].fill = puzzleSolution[i][j] ? FILL_STATE.FILLED : FILL_STATE.ERROR;
+
+      if (puzzleSolution[i][j]) {
+        tileFilled = true;
+      } else {
+        tileErrored = true;
+        break;
+      }
+    }
+    if (tileErrored) {
+      break;
+    }
+  }
+
+  if (tileFilled) {
+    updatedPuzzle = markCompleteLines(puzzleSolution, updatedPuzzle);
   }
 
   return {
     puzzle: updatedPuzzle,
     tileFilled: tileFilled,
-    gameComplete: gameComplete
+    tileErrored: tileErrored
   };
 }
 
-interface CheckFillCompletesLineOrGameResult {
-  puzzle: string[][],
-  gameComplete: boolean
-}
+const fillTile_DrawBackwards = (puzzleSolution: boolean[][], currentPuzzle: TileState[][]): FillTileResult_PlayMode => {
+  let tileFilled = false;
+  let tileErrored = false;
 
-/**
- * Checks if the row & column a filled tile is in was completed as a result of the fill
- * If a given line was complete, all non FILL_STATE FILLED / ERROR tiles are set to FILL_STATE.COMPLETE
- * Runs a check for game completion only if both the row & column the tile was in were completed as a result of the fill
- *
- * @returns updatedPuzzleLineOrGameCompleteData - Object containing the updatedPuzzle & info about the updates made
- * @returns updatedPuzzle
- * @returns gameComplete
- */
-const checkFillCompletesLineOrGame = (puzzleSolution: boolean[][], updatedPuzzle: string[][], rowIndex: number, colIndex: number): CheckFillCompletesLineOrGameResult => {
-  // Check if filling the tile completed the column and / or row it's in
-  const colLineComplete = checkLineComplete(getColumn(puzzleSolution, colIndex), getColumn(updatedPuzzle, colIndex));
-  const rowLineComplete = checkLineComplete(puzzleSolution[rowIndex], updatedPuzzle[rowIndex]);
+  let updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
+  for (let i = updatedPuzzle.length - 1; i >= 0; i--) {
+    for (let j = updatedPuzzle[i].length - 1; j >= 0; j--) {
+      const tile = updatedPuzzle[i][j];
+      if (!tile.selected || !checkTileFillable(tile)) {
+        continue;
+      }
 
-  if (colLineComplete) {
-    updatedPuzzle = setColComplete(updatedPuzzle, colIndex);
-  }
-  if (rowLineComplete) {
-    updatedPuzzle = setRowComplete(updatedPuzzle, rowIndex);
+      updatedPuzzle[i][j].fill = puzzleSolution[i][j] ? FILL_STATE.FILLED : FILL_STATE.ERROR;
+
+      if (puzzleSolution[i][j]) {
+        tileFilled = true;
+      } else {
+        tileErrored = true;
+        break;
+      }
+    }
+    if (tileErrored) {
+      break;
+    }
   }
 
-  let gameComplete = false;
-  if (colLineComplete && rowLineComplete) {
-    gameComplete = checkPuzzleComplete(puzzleSolution, updatedPuzzle);
+  if (tileFilled) {
+    updatedPuzzle = markCompleteLines(puzzleSolution, updatedPuzzle);
   }
+
   return {
     puzzle: updatedPuzzle,
-    gameComplete: gameComplete
+    tileFilled: tileFilled,
+    tileErrored: tileErrored
   };
+}
+
+// 5|1111100000100001100011011
+
+const markCompleteLines = (puzzleSolution: boolean[][], currentPuzzle: TileState[][]): TileState[][] => {
+  let rowLineComplete = false;
+  let colLineComplete = false;
+  let updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
+
+  for (let i = 0; i < currentPuzzle.length; i++) {
+    if (checkLineComplete(puzzleSolution[i], currentPuzzle[i])) {
+      rowLineComplete = true;
+      updatedPuzzle = markRowComplete(updatedPuzzle, i);
+    }
+  }
+
+  for (let i = 0; i < getPuzzleByColumn(currentPuzzle).length; i++) {
+    if (checkLineComplete(getColumn(puzzleSolution, i), getColumn(currentPuzzle, i))) {
+      colLineComplete = true;
+      updatedPuzzle = markColComplete(updatedPuzzle, i);
+    }
+  }
+  return updatedPuzzle;
 }
 
 /**
@@ -99,11 +415,11 @@ const checkFillCompletesLineOrGame = (puzzleSolution: boolean[][], updatedPuzzle
  *
  * @returns updatedPuzzle with any completed rows having their FILL_STATE EMPTY / MARKED set to FILL_STATE.COMPLETE
  */
-const setRowComplete = (updatedPuzzle: string[][], rowIndex: number): string[][] => {
+const markRowComplete = (updatedPuzzle: TileState[][], rowIndex: number): TileState[][] => {
   for (let i = 0; i < updatedPuzzle[0].length; i++) {
-    if (updatedPuzzle[rowIndex][i] === FILL_STATE.EMPTY || updatedPuzzle[rowIndex][i] === FILL_STATE.MARKED) {
+    if (updatedPuzzle[rowIndex][i].fill === FILL_STATE.EMPTY || updatedPuzzle[rowIndex][i].fill === FILL_STATE.MARKED) {
       // FILL_STATE.COMPLETE matches FILL_STATE.MARKED visually, but cannot be removed
-      updatedPuzzle[rowIndex][i] = FILL_STATE.COMPLETE;
+      updatedPuzzle[rowIndex][i].fill = FILL_STATE.COMPLETE;
     }
   }
   return updatedPuzzle;
@@ -119,11 +435,11 @@ const setRowComplete = (updatedPuzzle: string[][], rowIndex: number): string[][]
  *
  * @returns updatedPuzzle with any completed columns having their FILL_STATE EMPTY / MARKED set to FILL_STATE.COMPLETE
  */
-const setColComplete = (updatedPuzzle: string[][], colIndex: number): string[][] => {
+const markColComplete = (updatedPuzzle: TileState[][], colIndex: number): TileState[][] => {
   for (let i = 0; i < updatedPuzzle.length; i++) {
-    if (updatedPuzzle[i][colIndex] === FILL_STATE.EMPTY || updatedPuzzle[i][colIndex] === FILL_STATE.MARKED) {
+    if (updatedPuzzle[i][colIndex].fill === FILL_STATE.EMPTY || updatedPuzzle[i][colIndex].fill === FILL_STATE.MARKED) {
       // FILL_STATE.COMPLETE matches FILL_STATE.MARKED visually, but cannot be removed
-      updatedPuzzle[i][colIndex] = FILL_STATE.COMPLETE;
+      updatedPuzzle[i][colIndex].fill = FILL_STATE.COMPLETE;
     }
   }
   return updatedPuzzle;
@@ -134,13 +450,15 @@ const setColComplete = (updatedPuzzle: string[][], colIndex: number): string[][]
  * @returns Tile markable & tiles' original not FILL_STATE MARKED / EMPTY - puzzle with no changes
  * @returns Tile unmarkable - puzzle with no changes
  */
-export const markTile = (currentPuzzle: string[][], rowIndex: number, colIndex: number) => {
-  if (!checkTileMarkable(currentPuzzle[rowIndex][colIndex])) {
+export const markTile = (currentPuzzle: TileState[][], rowIndex: number, colIndex: number) => {
+  let tile = currentPuzzle[rowIndex][colIndex];
+  if (!checkTileMarkable(tile)) {
     return currentPuzzle;
   }
 
   const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
-  updatedPuzzle[rowIndex][colIndex] = updatedPuzzle[rowIndex][colIndex] === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
+  tile = updatedPuzzle[rowIndex][colIndex];
+  updatedPuzzle[rowIndex][colIndex].fill = tile.fill === FILL_STATE.EMPTY ? FILL_STATE.MARKED : FILL_STATE.EMPTY;
   return updatedPuzzle;
 }
 

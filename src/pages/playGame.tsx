@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Puzzle } from 'constants/puzzleInterface';
+import { Puzzle } from 'interfaces/puzzle';
 import { PlayNonogramProvider } from 'components/providers/playNonogramProvider';
 import { importPuzzle } from 'functions/importPuzzle';
 import { checkSolutionNotBlank, checkPuzzleRectangular } from 'functions/puzzleValidation';

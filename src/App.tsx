@@ -1,5 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { GameModeContext } from 'contexts/gameModeContext';
+import { SelectModeContext } from 'contexts/selectModeContext';
+import { FillModeContext } from 'contexts/fillModeContext';
 import { GAME_MODE_STATE } from 'constants/gameModeState';
 import { PlayGame } from 'pages/playGame';
 import { CreateNonogramProvider } from 'components/providers/createNonogramProvider';
@@ -13,10 +15,7 @@ const puzzleSolution5x5 = [[true, true, true, true, true],
 [false, true, true, false, false],
 [false, true, false, true, false],
 [false, true, true, false, false],
-[false, true, true, false, false]];
-const colPuzzle = getPuzzleByColumn(puzzleSolution5x5);
-console.log('colPuzzle');
-console.log(colPuzzle);
+  [false, true, true, false, false]];
 
 const gameSolution1 = [[true, true, true, true, true],
 [false, true, true, false, false],
@@ -39,14 +38,25 @@ const gameSolution3 = [[false, true, true, false, true],
 export const App = () => {
   const [playPuzzle, setPlayPuzzle] = useState(false);
   const [createPuzzle, setCreatePuzzle] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  //const [fillMode, setFillMode] = useState(true);
+
   const boardHeight = useRef<HTMLSelectElement>(null);
   const boardWidth = useRef<HTMLSelectElement>(null);
+
+  const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
+
+  const abortSelect = () => {
+    // TODO: Remove selected styling
+    setSelectMode(false);
+    console.log('SelectMode Aborted.');
+  }
 
   exportPuzzle(gameSolution1);
   exportPuzzle(gameSolution2);
   exportPuzzle(gameSolution3);
   return (
-    <div className="App">
+    <div className="App" onMouseUp={abortSelect}>
       {!playPuzzle && !createPuzzle && (
         <>
           <button type='button' className='playPuzzle button' onClick={() => setPlayPuzzle(true)}>Play</button>
@@ -63,18 +73,27 @@ export const App = () => {
             <option value="15">15</option>
             <option value="20">20</option>
           </select>
-          <button type='button' className='createPuzzle button' onClick={() => setCreatePuzzle(true)}>Create</button>
+          <button type='button' className='createPuzzle button'
+            onClick={() => {
+              setDimensions({ height: parseInt(boardHeight.current?.value ?? '0'), width: parseInt(boardWidth.current?.value ?? '0') })
+              setCreatePuzzle(true)
+            }}
+          >Create</button>
         </>
       )}
       {playPuzzle && (
-        <GameModeContext.Provider value={GAME_MODE_STATE.PLAY}>
-          <PlayGame />
-        </GameModeContext.Provider>
+        <SelectModeContext.Provider value={{ selectMode, setSelectMode }}>
+          <GameModeContext.Provider value={GAME_MODE_STATE.PLAY}>
+            <PlayGame />
+          </GameModeContext.Provider>
+        </SelectModeContext.Provider>
       )}
-      {createPuzzle && boardHeight.current !== null && boardWidth.current !== null && (
+      {createPuzzle && (
+        <SelectModeContext.Provider value={{ selectMode, setSelectMode }}>
         <GameModeContext.Provider value={GAME_MODE_STATE.CREATE}>
-          <CreateNonogramProvider boardHeight={parseInt(boardHeight.current.value)} boardWidth={parseInt(boardWidth.current.value)} />
+            <CreateNonogramProvider boardHeight={dimensions.height} boardWidth={dimensions.width} />
         </GameModeContext.Provider>
+        </SelectModeContext.Provider>
       )}
     </div>
   );
