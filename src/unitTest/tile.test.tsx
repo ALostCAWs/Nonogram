@@ -5,32 +5,36 @@ import { FILL_STATE } from "constants/fillState";
 import { FillModeContext } from 'contexts/fillModeContext';
 import { Tile } from 'components/ui/tile';
 import { SelectModeContext } from "contexts/selectModeContext";
+import { TileFunctionsContext } from "contexts/tileFunctionsContext";
 
 const EMPTY = FILL_STATE.EMPTY;
 
 it('executes setFirstSelectTile on mouse down', () => {
   const rowIndex = 0;
   const colIndex = 0;
-
   let firstSelected = false;
-  const setFirstSelectTile = () => {
-    firstSelected = true;
+
+  const tileFunctions = {
+    setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      firstSelected = true;
+    },
+    setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { }
   }
 
   render(
     <FillModeContext.Provider value={true}>
-      <Tile
-        fill={EMPTY}
-        selected={false}
-        rowIndex={rowIndex}
-        colIndex={colIndex}
-        tileSize={60}
-        setFirstSelectTile={setFirstSelectTile}
-        setLastSelectTile={(e, rowIndex, colIndex) => { }}
-        fillTile={(e, rowIndex, colIndex) => { }}
-        markTile={(e, rowIndex, colIndex) => { }}
-        hoverTile={(e, rowIndex, colIndex) => { }}
-      />
+      <TileFunctionsContext.Provider value={tileFunctions}>
+        <Tile
+          fill={EMPTY}
+          selected={false}
+          rowIndex={rowIndex}
+          colIndex={colIndex}
+          tileSize={60}
+        />
+      </TileFunctionsContext.Provider>
     </FillModeContext.Provider>
   );
 
@@ -49,37 +53,36 @@ it('executes setLastSelectTile on mouse enter when selectMode true', () => {
   }
 
   let lastSelected = false;
-  const setLastSelectTile = () => {
-    lastSelected = true;
+
+  const tileFunctions = {
+    setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      lastSelected = true;
+    },
+    fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { }
   }
 
   render(
     <SelectModeContext.Provider value={{ selectMode, setSelectMode }}>
       <FillModeContext.Provider value={true}>
-        <Tile
-          fill={EMPTY}
-          selected={false}
-          rowIndex={0}
-          colIndex={0}
-          tileSize={60}
-          setFirstSelectTile={(e, rowIndex, colIndex) => { }}
-          setLastSelectTile={setLastSelectTile}
-          fillTile={(e, rowIndex, colIndex) => { }}
-          markTile={(e, rowIndex, colIndex) => { }}
-          hoverTile={(e, rowIndex, colIndex) => { }}
-        />
-        <Tile
-          fill={EMPTY}
-          selected={false}
-          rowIndex={0}
-          colIndex={1}
-          tileSize={60}
-          setFirstSelectTile={(e, rowIndex, colIndex) => { }}
-          setLastSelectTile={setLastSelectTile}
-          fillTile={(e, rowIndex, colIndex) => { }}
-          markTile={(e, rowIndex, colIndex) => { }}
-          hoverTile={(e, rowIndex, colIndex) => { }}
-        />
+        <TileFunctionsContext.Provider value={tileFunctions}>
+          <Tile
+            fill={EMPTY}
+            selected={false}
+            rowIndex={0}
+            colIndex={0}
+            tileSize={60}
+          />
+          <Tile
+            fill={EMPTY}
+            selected={false}
+            rowIndex={0}
+            colIndex={1}
+            tileSize={60}
+          />
+        </TileFunctionsContext.Provider>
       </FillModeContext.Provider>
     </SelectModeContext.Provider>
   );
@@ -95,26 +98,29 @@ it('executes setLastSelectTile on mouse enter when selectMode true', () => {
 it('executes fillTile on mouse up when fillMode is true', async () => {
   const rowIndex = 0;
   const colIndex = 0;
-
   let isFilled = false;
-  const fillTile = () => {
-    isFilled = true;
+
+  const tileFunctions = {
+    setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      isFilled = true;
+    },
+    markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { }
   }
 
   render(
     <FillModeContext.Provider value={true}>
-      <Tile
-        fill={EMPTY}
-        selected={false}
-        rowIndex={rowIndex}
-        colIndex={colIndex}
-        tileSize={60}
-        setFirstSelectTile={(e, rowIndex, colIndex) => { }}
-        setLastSelectTile={(e, rowIndex, colIndex) => { }}
-        fillTile={fillTile}
-        markTile={(e, rowIndex, colIndex) => { }}
-        hoverTile={(e, rowIndex, colIndex) => { }}
-      />
+      <TileFunctionsContext.Provider value={tileFunctions}>
+        <Tile
+          fill={EMPTY}
+          selected={false}
+          rowIndex={rowIndex}
+          colIndex={colIndex}
+          tileSize={60}
+        />
+      </TileFunctionsContext.Provider>
     </FillModeContext.Provider>
   );
 
@@ -127,26 +133,29 @@ it('executes fillTile on mouse up when fillMode is true', async () => {
 it('executes markTile on mouse up when fillMode is false', async () => {
   const rowIndex = 0;
   const colIndex = 0;
-
   let isMarked = false;
-  const markTile = () => {
-    isMarked = true;
+
+  const tileFunctions = {
+    setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      isMarked = true;
+    },
+    hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { }
   }
 
   render(
     <FillModeContext.Provider value={false}>
-      <Tile
-        fill={EMPTY}
-        selected={false}
-        rowIndex={rowIndex}
-        colIndex={colIndex}
-        tileSize={60}
-        setFirstSelectTile={(e, rowIndex, colIndex) => { }}
-        setLastSelectTile={(e, rowIndex, colIndex) => { }}
-        fillTile={(e, rowIndex, colIndex) => { }}
-        markTile={markTile}
-        hoverTile={(e, rowIndex, colIndex) => { }}
-      />
+      <TileFunctionsContext.Provider value={tileFunctions}>
+        <Tile
+          fill={EMPTY}
+          selected={false}
+          rowIndex={rowIndex}
+          colIndex={colIndex}
+          tileSize={60}
+        />
+      </TileFunctionsContext.Provider>
     </FillModeContext.Provider>
   );
 
@@ -159,30 +168,33 @@ it('executes markTile on mouse up when fillMode is false', async () => {
 it('executes hoverTile on mouseenter & on mouseleave', async () => {
   const rowIndex = 0;
   const colIndex = 0;
-
   let isHovered = false;
-  const hoverTile = (e: React.MouseEvent) => {
-    if (e.type === 'mouseenter') {
-      isHovered = true;
-    }
-    if (e.type === 'mouseleave') {
-      isHovered = false;
+
+  const tileFunctions = {
+    setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      if (e.type === 'mouseenter') {
+        isHovered = true;
+      }
+      if (e.type === 'mouseleave') {
+        isHovered = false;
+      }
     }
   }
 
   render(
-    <Tile
-      fill={EMPTY}
-      selected={false}
-      rowIndex={rowIndex}
-      colIndex={colIndex}
-      tileSize={60}
-      setFirstSelectTile={(e, rowIndex, colIndex) => { }}
-      setLastSelectTile={(e, rowIndex, colIndex) => { }}
-      markTile={(e, rowIndex, colIndex) => { }}
-      fillTile={(e, rowIndex, colIndex) => { }}
-      hoverTile={hoverTile}
-    />
+    <TileFunctionsContext.Provider value={tileFunctions}>
+      <Tile
+        fill={EMPTY}
+        selected={false}
+        rowIndex={rowIndex}
+        colIndex={colIndex}
+        tileSize={60}
+      />
+    </TileFunctionsContext.Provider>
   );
 
   const tile = screen.getByTestId(`tile${rowIndex}-${colIndex}`);

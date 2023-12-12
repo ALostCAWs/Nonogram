@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer, useContext } from 'react';
+import React, { useState, useEffect, useReducer, useContext } from 'react';
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
 import { SelectModeContext } from 'contexts/selectModeContext';
 import { FillModeContext } from 'contexts/fillModeContext';
@@ -11,6 +11,8 @@ import { GameOver } from 'pages/gameOver';
 import { createLives, createCurrentPuzzle, checkAndSetZeroLines } from 'functions/puzzleSetup';
 import { checkPuzzleComplete, checkGameOver } from 'functions/getPuzzleInfo';
 import { setFirstSelectedTile, setLastSelectedTile, drawSelectedTileLine, deselectTile, hoverTile, resetInfoTiles, markSelectedTile, fillSelectedTile_PlayMode } from 'functions/tileFunctions';
+import { TileFunctionsContext } from 'contexts/tileFunctionsContext';
+import { InfoTileFunctionsContext } from 'contexts/infoTileFunctionsContext';
 
 interface PlayNonogramProviderProps {
   puzzleSolution: boolean[][]
@@ -140,6 +142,35 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
     setFillMode(currentMode => !currentMode);
   }
 
+  const infoTileFunctions = {
+    setRowFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    setColFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { }
+  }
+
+  const tileFunctions = {
+    setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_FIRST_SELECT, rowIndex: rowIndex, colIndex: colIndex })
+    },
+    setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_LAST_SELECT, rowIndex: rowIndex, colIndex: colIndex })
+    },
+    fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex })
+    },
+    markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.MARK_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex })
+    },
+    hoverTile: hoverTile
+  }
+
+  const tileFunctions_Empty = {
+    setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { }
+  }
+
   return (
     <>
       {gameOver && (
@@ -156,39 +187,25 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
 
       {!gameComplete && !gameOver ? (
         <FillModeContext.Provider value={fillMode}>
-        <Board currentPuzzle={currentPuzzle}
-          puzzleSolution={puzzleSolution}
-          livesCount={lives}
-          setFirstSelectTile={
-            (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_FIRST_SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
-          }
-          setLastSelectTile={
-            (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_LAST_SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
-          }
-          fillTile={
-            (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex }) }
-          }
-          markTile={
-            (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.MARK_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex }) }
-          }
-          hoverTile={hoverTile}
-          setRowFill={(e, rowIndex, colIndex) => { }}
-          setColFill={(e, rowIndex, colIndex) => { }}
-          />
+          <InfoTileFunctionsContext.Provider value={infoTileFunctions}>
+            <TileFunctionsContext.Provider value={tileFunctions}>
+              <Board currentPuzzle={currentPuzzle}
+                puzzleSolution={puzzleSolution}
+                livesCount={lives}
+              />
+            </TileFunctionsContext.Provider>
+          </InfoTileFunctionsContext.Provider>
         </FillModeContext.Provider>
       ) : (
           <FillModeContext.Provider value={fillMode}>
-          <Board currentPuzzle={currentPuzzle}
-            puzzleSolution={puzzleSolution}
-            livesCount={lives}
-            setFirstSelectTile={(e, rowIndex, colIndex) => { }}
-              setLastSelectTile={(e, rowIndex, colIndex) => { }}
-            fillTile={(e, rowIndex, colIndex) => { }}
-            markTile={(e, rowIndex, colIndex) => { }}
-            hoverTile={(e, rowIndex, colIndex) => { }}
-            setRowFill={(e, rowIndex, colIndex) => { }}
-            setColFill={(e, rowIndex, colIndex) => { }}
-          />
+            <InfoTileFunctionsContext.Provider value={infoTileFunctions}>
+              <TileFunctionsContext.Provider value={tileFunctions_Empty}>
+                <Board currentPuzzle={currentPuzzle}
+                  puzzleSolution={puzzleSolution}
+                  livesCount={lives}
+                />
+              </TileFunctionsContext.Provider>
+            </InfoTileFunctionsContext.Provider>
           </FillModeContext.Provider>
       )}
 
