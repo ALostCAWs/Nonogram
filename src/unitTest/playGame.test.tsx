@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import App from 'App';
+import { userEvent } from "@testing-library/user-event";
+import { App } from 'App';
 
 const puzzleCode = '5|1111101100010100110001000';
 

@@ -13,6 +13,8 @@ import { createBlankPuzzle, createBoolPuzzle, copyCurrentPuzzle } from 'function
 import { checkLineFilled, getColumn } from 'functions/getPuzzleInfo';
 import { convertTileStateMatrixToStringMatrix } from 'functions/convertPuzzle';
 import { setTileColFillState, setTileRowFillState } from 'functions/updatePuzzleLines';
+import { InfoTileFunctionsContext } from 'contexts/infoTileFunctionsContext';
+import { TileFunctionsContext } from 'contexts/tileFunctionsContext';
 
 interface CreateNonogramProviderProps {
   boardHeight: number,
@@ -30,10 +32,8 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
   const { selectMode, setSelectMode } = useContext(SelectModeContext);
   const [submit, setSubmit] = useState<boolean>(false);
   const [boardBlank, setBoardBlank] = useState<boolean>(true);
-
   const [firstSelected, setFirstSelected] = useState<FirstLastSelectedState>({ rowIndex: null, colIndex: null });
   const [lastSelected, setLastSelected] = useState<FirstLastSelectedState>({ rowIndex: null, colIndex: null });
-
   const [currentPuzzle, currentPuzzleDispatch] = useReducer(currentPuzzleReducer, createBlankPuzzle(boardHeight, boardWidth));
 
   function currentPuzzleReducer(puzzleState: TileState[][], action: PuzzleAction): TileState[][] {
@@ -102,34 +102,41 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
     }
   }, [selectMode]);
 
+  const infoTileFunctions = {
+    setRowFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_ROW_FILL, rowIndex: rowIndex, colIndex: colIndex })
+    },
+    setColFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_COL_FILL, rowIndex: rowIndex, colIndex: colIndex })
+    }
+  }
+
+  const tileFunctions = {
+    setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_FIRST_SELECT, rowIndex: rowIndex, colIndex: colIndex })
+    },
+    setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_LAST_SELECT, rowIndex: rowIndex, colIndex: colIndex })
+    },
+    fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex })
+    },
+    markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    hoverTile: hoverTile
+  }
+
   return (
     <>
       {!submit && (
         <>
-          <Board currentPuzzle={currentPuzzle}
-            puzzleSolution={[]}
-            livesCount={undefined}
-            setFirstSelectTile={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_FIRST_SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
-            }
-            setLastSelectTile={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_LAST_SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
-            }
-            deselectTile={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DESELECT, rowIndex: rowIndex, colIndex: colIndex }) }
-            }
-            fillTile={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex }) }
-            }
-            markTile={(e, rowIndex, colIndex) => { }}
-            hoverTile={hoverTile}
-            setRowFill={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_ROW_FILL, rowIndex: rowIndex, colIndex: colIndex }) }
-            }
-            setColFill={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_COL_FILL, rowIndex: rowIndex, colIndex: colIndex }) }
-            }
-          />
+          <InfoTileFunctionsContext.Provider value={infoTileFunctions}>
+            <TileFunctionsContext.Provider value={tileFunctions}>
+              <Board currentPuzzle={currentPuzzle}
+                puzzleSolution={[]}
+                livesCount={undefined}
+              />
+            </TileFunctionsContext.Provider>
+          </InfoTileFunctionsContext.Provider>
           <button type='button'
             className='export button'
             onClick={() => {

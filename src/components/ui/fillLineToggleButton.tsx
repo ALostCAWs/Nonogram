@@ -1,21 +1,20 @@
 import { TileState } from 'interfaces/tileState';
 import { checkLineFilled } from 'functions/getPuzzleInfo';
+import { useContext } from 'react';
+import { InfoTileFunctionsContext } from 'contexts/infoTileFunctionsContext';
 
 interface FillLineToggleButtonProps {
   line: TileState[],
-  setRowFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  setColFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   lineIndex: number,
   tileSize: number,
-  lineType: string
+  lineType: string,
 }
 
 /**
  * @returns A button to toggle whether each Tile in a given line is FILL_STATE FILLED or EMPTY
  */
-export const FillLineToggleButton = ({ setRowFill, setColFill, line, lineIndex, tileSize, lineType }: FillLineToggleButtonProps) => {
-  //const fillToSet = checkLineFilled(line) ? FILL_STATE.EMPTY : FILL_STATE.FILLED;
-  //const toggleFill = lineType === 'row' ? setRowFill.bind(e, lineIndex, 0) : setColFill.bind(e, lineIndex, 0);
+export const FillLineToggleButton = ({ line, lineIndex, tileSize, lineType }: FillLineToggleButtonProps) => {
+  const infoTileFunctions = useContext(InfoTileFunctionsContext)
   return (
     <>
       {checkLineFilled(line) ? (
@@ -27,9 +26,9 @@ export const FillLineToggleButton = ({ setRowFill, setColFill, line, lineIndex, 
             width: `${tileSize}px`
           }}
           onClick={lineType === 'row' ? (
-            (e) => setRowFill(e, lineIndex, 0)
+            (e) => infoTileFunctions.setRowFill(e, lineIndex, 0)
           ) : (
-            (e) => setColFill(e, 0, lineIndex)
+              (e) => infoTileFunctions.setColFill(e, 0, lineIndex)
           )}>Clear</button>
       ) : (
           <button type='button'
@@ -40,9 +39,9 @@ export const FillLineToggleButton = ({ setRowFill, setColFill, line, lineIndex, 
               width: `${tileSize}px`
             }}
             onClick={lineType === 'row' ? (
-              (e) => setRowFill(e, lineIndex, 0)
+              (e) => infoTileFunctions.setRowFill(e, lineIndex, 0)
             ) : (
-              (e) => setColFill(e, 0, lineIndex)
+                (e) => infoTileFunctions.setColFill(e, 0, lineIndex)
             )}>Fill</button>
       )}
     </>

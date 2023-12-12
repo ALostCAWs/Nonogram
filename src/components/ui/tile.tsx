@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { SelectModeContext } from 'contexts/selectModeContext';
 import { FillModeContext } from 'contexts/fillModeContext';
+import { TileFunctionsContext } from 'contexts/tileFunctionsContext';
 
 interface TileProps {
   fill: string,
@@ -8,12 +9,6 @@ interface TileProps {
   rowIndex: number,
   colIndex: number,
   tileSize: number,
-  setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  deselectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
 }
 
 /**
@@ -31,9 +26,10 @@ interface TileProps {
  *
  * @returns Div with a class based on that Tiles' fill stored in the currentPuzzle array
  */
-export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSelectTile, setLastSelectTile, deselectTile, fillTile, markTile, hoverTile }: TileProps) => {
+export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize }: TileProps) => {
   const fillMode = useContext(FillModeContext);
   const { selectMode, setSelectMode } = useContext(SelectModeContext);
+  const tileFunctions = useContext(TileFunctionsContext);
 
   return (
     <>
@@ -47,20 +43,20 @@ export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSel
           onMouseDown={e => {
             e.preventDefault()
             setSelectMode(true)
-            setFirstSelectTile(e, rowIndex, colIndex)
+            tileFunctions.setFirstSelectTile(e, rowIndex, colIndex)
           }}
           onMouseUp={e => {
-            fillTile(e, rowIndex, colIndex)
+            tileFunctions.fillTile(e, rowIndex, colIndex)
           }}
           onMouseEnter={selectMode ? (
             e => {
-              hoverTile(e, rowIndex, colIndex)
-              setLastSelectTile(e, rowIndex, colIndex)
+              tileFunctions.hoverTile(e, rowIndex, colIndex)
+              tileFunctions.setLastSelectTile(e, rowIndex, colIndex)
             }
           ) : (
-            e => { hoverTile(e, rowIndex, colIndex) }
+              e => { tileFunctions.hoverTile(e, rowIndex, colIndex) }
           )}
-          onMouseLeave={e => { hoverTile(e, rowIndex, colIndex) }}
+          onMouseLeave={e => { tileFunctions.hoverTile(e, rowIndex, colIndex) }}
         ></div>
       ) : (
           <div data-testid={`tile${rowIndex}-${colIndex}`}
@@ -72,20 +68,20 @@ export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSel
             onMouseDown={e => {
               e.preventDefault()
               setSelectMode(true)
-              setFirstSelectTile(e, rowIndex, colIndex)
+              tileFunctions.setFirstSelectTile(e, rowIndex, colIndex)
             }}
             onMouseUp={e => {
-              markTile(e, rowIndex, colIndex)
+              tileFunctions.markTile(e, rowIndex, colIndex)
             }}
             onMouseEnter={selectMode ? (
               e => {
-                hoverTile(e, rowIndex, colIndex)
-                setLastSelectTile(e, rowIndex, colIndex)
+                tileFunctions.hoverTile(e, rowIndex, colIndex)
+                tileFunctions.setLastSelectTile(e, rowIndex, colIndex)
               }
             ) : (
-              e => { hoverTile(e, rowIndex, colIndex) }
+                e => { tileFunctions.hoverTile(e, rowIndex, colIndex) }
             )}
-            onMouseLeave={e => { hoverTile(e, rowIndex, colIndex) }}
+            onMouseLeave={e => { tileFunctions.hoverTile(e, rowIndex, colIndex) }}
           ></div>
       )}
     </>

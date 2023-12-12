@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { userEvent } from "@testing-library/user-event";
 import { FILL_STATE } from "constants/fillState";
 import { FillLineToggleButton } from 'components/ui/fillLineToggleButton';
 import { convertStringLineToTileStateLine } from "functions/convertPuzzle";
+import { InfoTileFunctionsContext } from "contexts/infoTileFunctionsContext";
 
 const FILLED = FILL_STATE.FILLED;
 const MARKED = FILL_STATE.MARKED;
@@ -15,17 +16,24 @@ const line = convertStringLineToTileStateLine(line_String);
 
 it('runs the setRowFill function passed to it', async () => {
   let rowFilled = false;
-  const setRowFill = () => {
-    rowFilled = true;
+
+  const infoTileFunctions = {
+    setRowFill: () => {
+      rowFilled = true;
+    },
+    setColFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { }
   }
 
-  render(<FillLineToggleButton
-    line={line}
-    setRowFill={setRowFill}
-    setColFill={(e, rowIndex, colIndex) => { }}
-    lineIndex={0}
-    tileSize={60}
-    lineType={'row'} />);
+  render(
+    <InfoTileFunctionsContext.Provider value={infoTileFunctions}>
+      <FillLineToggleButton
+        line={line}
+        lineIndex={0}
+        tileSize={60}
+        lineType={'row'}
+      />
+    </InfoTileFunctionsContext.Provider>
+  );
 
   const rowFillLineToggleButton0 = screen.getByTestId(`rowFillToggleButton0`);
 
@@ -35,17 +43,24 @@ it('runs the setRowFill function passed to it', async () => {
 
 it('runs the setColFill function passed to it', async () => {
   let colFilled = false;
-  const setColFill = () => {
-    colFilled = true;
+
+  const infoTileFunctions = {
+    setRowFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
+    setColFill: () => {
+      colFilled = true;
+    }
   }
 
-  render(<FillLineToggleButton
-    line={line}
-    setRowFill={(e, rowIndex, colIndex) => { }}
-    setColFill={setColFill}
-    lineIndex={0}
-    tileSize={60}
-    lineType={'col'} />);
+  render(
+    <InfoTileFunctionsContext.Provider value={infoTileFunctions}>
+      <FillLineToggleButton
+        line={line}
+        lineIndex={0}
+        tileSize={60}
+        lineType={'col'}
+      />
+    </InfoTileFunctionsContext.Provider>
+  );
 
   const colFillLineToggleButton0 = screen.getByTestId(`colFillToggleButton0`);
 

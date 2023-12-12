@@ -8,15 +8,7 @@ import { getPuzzleByColumn, getLongestDimension } from 'functions/getPuzzleInfo'
 interface BoardProps {
   currentPuzzle: TileState[][],
   puzzleSolution: boolean[][],
-  livesCount: number | undefined,
-  setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  deselectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  setRowFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  setColFill: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void
+  livesCount: number | undefined
 }
 
 /**
@@ -29,7 +21,7 @@ interface BoardProps {
  * @returns Tile for each item in currentPuzzle
  * @returns Life components equal to the livesCount prop
  */
-export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, setFirstSelectTile, setLastSelectTile, deselectTile, fillTile, markTile, hoverTile, setRowFill, setColFill }: BoardProps) => {
+export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount }: BoardProps) => {
   const currentPuzzleByColumn = getPuzzleByColumn(currentPuzzle);
   let puzzleSolutionByColumn: boolean[][] = [];
   const nonogramPaddingRight = currentPuzzle[0].length * 12;
@@ -63,8 +55,6 @@ export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, setFirst
           <InfoTile
             currentPuzzle={currentPuzzleByColumn}
             puzzleSolution={puzzleSolutionByColumn}
-            setRowFill={setRowFill}
-            setColFill={setColFill}
             tileSize={tileSize}
             lineType={'col'}
           />
@@ -73,8 +63,6 @@ export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, setFirst
           <InfoTile
             currentPuzzle={currentPuzzle}
             puzzleSolution={puzzleSolution}
-            setRowFill={setRowFill}
-            setColFill={setColFill}
             tileSize={tileSize}
             lineType={'row'}
           />
@@ -89,12 +77,6 @@ export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount, setFirst
                 rowIndex={i}
                 colIndex={j}
                 tileSize={tileSize}
-                setFirstSelectTile={setFirstSelectTile}
-                setLastSelectTile={setLastSelectTile}
-                deselectTile={deselectTile}
-                fillTile={fillTile}
-                markTile={markTile}
-                hoverTile={hoverTile}
               />
             )
           )}
