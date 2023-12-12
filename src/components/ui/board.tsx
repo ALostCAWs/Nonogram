@@ -1,4 +1,3 @@
-import React from 'react';
 import { TileState } from 'interfaces/tileState';
 import { Tile } from 'components/ui/tile';
 import { InfoTile } from 'components/ui/infoTile';

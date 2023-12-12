@@ -33,11 +33,13 @@ export const getPuzzleByColumn = <T>(inputPuzzle: T[][]): T[][] => {
 }
 
 /**
- * Check if a given column / row is complete
+ * A line is considered complete when all the tiles in currentPuzzleLine that are true in puzzleSolutionLine have been filled
+ *
+ * @returns Whether a given column / row is complete
  */
-export const checkLineComplete = (puzzleSolutionLine: boolean[], updatedPuzzleLine: TileState[]): boolean => {
+export const checkLineComplete = (puzzleSolutionLine: boolean[], currentPuzzleLine: TileState[]): boolean => {
   for (let i = 0; i < puzzleSolutionLine.length; i++) {
-    if (puzzleSolutionLine[i] && updatedPuzzleLine[i].fill !== FILL_STATE.FILLED) {
+    if (puzzleSolutionLine[i] && currentPuzzleLine[i].fill !== FILL_STATE.FILLED) {
       return false;
     }
   }
@@ -45,8 +47,9 @@ export const checkLineComplete = (puzzleSolutionLine: boolean[], updatedPuzzleLi
 }
 
 /**
- * Check each column & row for completion, calls checkLineComplete to accomplish this
- * Returns false as soon as an incomplete line is found to prevent unnecessary looping
+ * A puzzle is considered complete when all the tiles in currentPuzzle that are true in puzzleSolution have been filled
+ *
+ * @returns Whether or not a puzzle has been solved
  */
 export const checkPuzzleComplete = (puzzleSolution: boolean[][], updatedPuzzle: TileState[][]): boolean => {
   for (let i = 0; i < puzzleSolution.length; i++) {

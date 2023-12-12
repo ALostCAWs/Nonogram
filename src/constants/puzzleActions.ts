@@ -6,10 +6,7 @@ export const PUZZLE_ACTIONS = {
   SET_FIRST_SELECT: 'set first select',
   SET_LAST_SELECT: 'set last select',
   DRAW_SELECT_LINE: 'draw select line',
-  FILL_SELECT_LINE: 'fill select line',
-  MARK_SELECT_LINE: 'mark select line',
-  DESELECT: 'deselect',
   FILL: 'fill',
   MARK: 'mark',
-  HOVER: 'hover'
+  DESELECT: 'deselect',
 }

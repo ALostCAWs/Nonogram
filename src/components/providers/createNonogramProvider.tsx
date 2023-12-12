@@ -50,7 +50,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
       case PUZZLE_ACTIONS.DRAW_SELECT_LINE:
         return drawSelectedTileLine(puzzleState, firstSelected, lastSelected);
 
-      case PUZZLE_ACTIONS.FILL_SELECT_LINE: {
+      case PUZZLE_ACTIONS.FILL: {
         if (!puzzleState[rowIndex][colIndex].selected) {
           return puzzleState;
         }
@@ -119,7 +119,7 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
       currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_LAST_SELECT, rowIndex: rowIndex, colIndex: colIndex })
     },
     fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => {
-      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex })
+      currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL, rowIndex: rowIndex, colIndex: colIndex })
     },
     markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => { },
     hoverTile: hoverTile

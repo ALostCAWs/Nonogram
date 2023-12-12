@@ -166,6 +166,7 @@ export const deselectTile = (currentPuzzle: TileState[][], setFirstSelected: Rea
 
 /**
  * Used to handle the fillTile of CreateNonogramProvider
+ * Direction drawn does not matter
  *
  * @returns Matrix where the selected FILL_STATE EMPTY tiles have been set to FILLED & the FILLED tiles have been set to EMPTY
  */
@@ -179,13 +180,6 @@ export const fillSelectedTile_CreateMode = (currentPuzzle: TileState[][], firstS
     const tileFill = updatedPuzzle[firstSelected.rowIndex][firstSelected.colIndex].fill;
     updatedPuzzle[firstSelected.rowIndex][firstSelected.colIndex].fill = tileFill === FILL_STATE.EMPTY ? FILL_STATE.FILLED : FILL_STATE.EMPTY;
     return updatedPuzzle;
-  }
-
-  const drawRow = firstSelected.rowIndex === lastSelected.rowIndex ? true : false;
-  const drawCol = firstSelected.colIndex === lastSelected.colIndex ? true : false;
-
-  if (drawRow) {
-    //const drawForwards = firstSelected.colIndex < lastSelected.colIndex ? true : false;
   }
 
   return currentPuzzle.map((row, i) => {
@@ -432,6 +426,7 @@ const markColComplete = (updatedPuzzle: TileState[][], colIndex: number): TileSt
 
 /**
  * Used to handle the markTile of PlayNonogramProvider
+ * Draw direction does not matter
  *
  * @returns Matrix where the markable selected FILL_STATE EMPTY tiles have been set to MARKED & the MARKED tiles have been set to EMPTY
  */

@@ -29,7 +29,14 @@ interface TileProps {
 export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize }: TileProps) => {
   const fillMode = useContext(FillModeContext);
   const { selectMode, setSelectMode } = useContext(SelectModeContext);
+
   const tileFunctions = useContext(TileFunctionsContext);
+  const setFirstSelectTile = tileFunctions.setFirstSelectTile;
+  const setLastSelectTile = tileFunctions.setLastSelectTile;
+  const fillTile = tileFunctions.fillTile;
+  const markTile = tileFunctions.markTile;
+  const hoverTile = tileFunctions.hoverTile;
+
 
   return (
     <>
@@ -43,20 +50,20 @@ export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize }: TileProps
           onMouseDown={e => {
             e.preventDefault()
             setSelectMode(true)
-            tileFunctions.setFirstSelectTile(e, rowIndex, colIndex)
+            setFirstSelectTile(e, rowIndex, colIndex)
           }}
           onMouseUp={e => {
-            tileFunctions.fillTile(e, rowIndex, colIndex)
+            fillTile(e, rowIndex, colIndex)
           }}
           onMouseEnter={selectMode ? (
             e => {
-              tileFunctions.hoverTile(e, rowIndex, colIndex)
-              tileFunctions.setLastSelectTile(e, rowIndex, colIndex)
+              hoverTile(e, rowIndex, colIndex)
+              setLastSelectTile(e, rowIndex, colIndex)
             }
           ) : (
-              e => { tileFunctions.hoverTile(e, rowIndex, colIndex) }
+              e => { hoverTile(e, rowIndex, colIndex) }
           )}
-          onMouseLeave={e => { tileFunctions.hoverTile(e, rowIndex, colIndex) }}
+          onMouseLeave={e => { hoverTile(e, rowIndex, colIndex) }}
         ></div>
       ) : (
           <div data-testid={`tile${rowIndex}-${colIndex}`}
@@ -68,20 +75,20 @@ export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize }: TileProps
             onMouseDown={e => {
               e.preventDefault()
               setSelectMode(true)
-              tileFunctions.setFirstSelectTile(e, rowIndex, colIndex)
+              setFirstSelectTile(e, rowIndex, colIndex)
             }}
             onMouseUp={e => {
-              tileFunctions.markTile(e, rowIndex, colIndex)
+              markTile(e, rowIndex, colIndex)
             }}
             onMouseEnter={selectMode ? (
               e => {
-                tileFunctions.hoverTile(e, rowIndex, colIndex)
-                tileFunctions.setLastSelectTile(e, rowIndex, colIndex)
+                hoverTile(e, rowIndex, colIndex)
+                setLastSelectTile(e, rowIndex, colIndex)
               }
             ) : (
-                e => { tileFunctions.hoverTile(e, rowIndex, colIndex) }
+                e => { hoverTile(e, rowIndex, colIndex) }
             )}
-            onMouseLeave={e => { tileFunctions.hoverTile(e, rowIndex, colIndex) }}
+            onMouseLeave={e => { hoverTile(e, rowIndex, colIndex) }}
           ></div>
       )}
     </>

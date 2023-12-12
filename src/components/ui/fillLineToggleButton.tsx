@@ -1,7 +1,7 @@
-import { TileState } from 'interfaces/tileState';
-import { checkLineFilled } from 'functions/getPuzzleInfo';
 import { useContext } from 'react';
 import { InfoTileFunctionsContext } from 'contexts/infoTileFunctionsContext';
+import { TileState } from 'interfaces/tileState';
+import { checkLineFilled } from 'functions/getPuzzleInfo';
 
 interface FillLineToggleButtonProps {
   line: TileState[],
@@ -14,7 +14,10 @@ interface FillLineToggleButtonProps {
  * @returns A button to toggle whether each Tile in a given line is FILL_STATE FILLED or EMPTY
  */
 export const FillLineToggleButton = ({ line, lineIndex, tileSize, lineType }: FillLineToggleButtonProps) => {
-  const infoTileFunctions = useContext(InfoTileFunctionsContext)
+  const infoTileFunctions = useContext(InfoTileFunctionsContext);
+  const setRowFill = infoTileFunctions.setRowFill;
+  const setColFill = infoTileFunctions.setColFill;
+
   return (
     <>
       {checkLineFilled(line) ? (
@@ -26,9 +29,9 @@ export const FillLineToggleButton = ({ line, lineIndex, tileSize, lineType }: Fi
             width: `${tileSize}px`
           }}
           onClick={lineType === 'row' ? (
-            (e) => infoTileFunctions.setRowFill(e, lineIndex, 0)
+            (e) => setRowFill(e, lineIndex, 0)
           ) : (
-              (e) => infoTileFunctions.setColFill(e, 0, lineIndex)
+              (e) => setColFill(e, 0, lineIndex)
           )}>Clear</button>
       ) : (
           <button type='button'
@@ -39,9 +42,9 @@ export const FillLineToggleButton = ({ line, lineIndex, tileSize, lineType }: Fi
               width: `${tileSize}px`
             }}
             onClick={lineType === 'row' ? (
-              (e) => infoTileFunctions.setRowFill(e, lineIndex, 0)
+              (e) => setRowFill(e, lineIndex, 0)
             ) : (
-                (e) => infoTileFunctions.setColFill(e, 0, lineIndex)
+                (e) => setColFill(e, 0, lineIndex)
             )}>Fill</button>
       )}
     </>

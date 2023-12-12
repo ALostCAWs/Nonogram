@@ -7,11 +7,9 @@
  * @returns A 2D array of the puzzleSolution derived from the puzzleCode
  */
 export const importPuzzle = (puzzleCode: string): boolean[][] => {
-  //console.log(puzzleCode);
-
   const spaceIndex = puzzleCode.indexOf('|');
   const boardWidth = puzzleCode.slice(0, spaceIndex);
-  //console.log(boardWidth);
+
   puzzleCode = puzzleCode.slice(spaceIndex + 1);
 
   const codeRow = puzzleCode.match(new RegExp(`.{1,${boardWidth}}`, 'g')) || [];

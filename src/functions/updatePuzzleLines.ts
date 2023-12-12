@@ -2,7 +2,7 @@ import { TileState } from "interfaces/tileState";
 import { copyCurrentPuzzle } from "./puzzleSetup";
 
 /**
- * Sets a given rows' tiles in currentPuzzle to the specified FILL_STATE
+ * @returns Matrix with a given rows' tiles in currentPuzzle to the specified FILL_STATE
  */
 export const setTileRowFillState = (currentPuzzle: TileState[][], rowIndex: number, fill: string): TileState[][] => {
   const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
@@ -12,7 +12,7 @@ export const setTileRowFillState = (currentPuzzle: TileState[][], rowIndex: numb
   return updatedPuzzle;
 }
 /**
- * Sets a given columns' tiles in currentPuzzle to the specified FILL_STATE
+ * @returns Matrix with a given columns' tiles in currentPuzzle to the specified FILL_STATE
 */
 export const setTileColFillState = (currentPuzzle: TileState[][], colIndex: number, fill: string): TileState[][] => {
   const updatedPuzzle = copyCurrentPuzzle(currentPuzzle);
