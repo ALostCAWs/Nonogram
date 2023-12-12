@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { userEvent } from "@testing-library/user-event";
 import { FILL_STATE } from "constants/fillState";
 import { FillLineToggleButton } from 'components/ui/fillLineToggleButton';
 import { convertStringLineToTileStateLine } from "functions/convertPuzzle";

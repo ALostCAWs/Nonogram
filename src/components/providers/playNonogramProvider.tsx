@@ -2,6 +2,7 @@ import { useState, useEffect, useReducer, useContext } from 'react';
 import { PUZZLE_ACTIONS } from 'constants/puzzleActions';
 import { SelectModeContext } from 'contexts/selectModeContext';
 import { FillModeContext } from 'contexts/fillModeContext';
+import { PuzzleAction } from 'interfaces/puzzleAction';
 import { TileState } from 'interfaces/tileState';
 import { FirstLastSelectedState } from 'interfaces/firstLastSelectedState';
 import { Board } from 'components/ui/board';
@@ -42,12 +43,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
 
   const [currentPuzzle, currentPuzzleDispatch] = useReducer(currentPuzzleReducer, createCurrentPuzzle(puzzleSolution));
 
-  interface PuzzleAction {
-    type: string,
-    rowIndex: number,
-    colIndex: number
-  }
-
   function currentPuzzleReducer(puzzleState: TileState[][], action: PuzzleAction): TileState[][] {
     const rowIndex = action.rowIndex;
     const colIndex = action.colIndex;
@@ -64,9 +59,8 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
       case PUZZLE_ACTIONS.SET_ZERO_LINES:
         return puzzleState = checkAndSetZeroLines(puzzleState, puzzleSolution);
 
-      case PUZZLE_ACTIONS.SET_FIRST_SELECT: {
+      case PUZZLE_ACTIONS.SET_FIRST_SELECT:
         return setFirstSelectedTile(setFirstSelected, puzzleState, rowIndex, colIndex);
-      }
 
       case PUZZLE_ACTIONS.SET_LAST_SELECT:
         return setLastSelectedTile(setLastSelected, puzzleState, firstSelected, rowIndex, colIndex);
@@ -95,7 +89,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
         if (updatedPuzzleData.tileErrored) {
           setLives(currentLives => currentLives - 1);
         }
-
         if (updatedPuzzleData.tileFilled) {
           setGameComplete(checkPuzzleComplete(puzzleSolution, updatedPuzzle));
         }
@@ -172,9 +165,6 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
           setLastSelectTile={
             (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_LAST_SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
           }
-          deselectTile={
-            (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DESELECT, rowIndex: rowIndex, colIndex: colIndex }) }
-          }
           fillTile={
             (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex }) }
           }
@@ -192,8 +182,7 @@ export const PlayNonogramProvider = ({ puzzleSolution }: PlayNonogramProviderPro
             puzzleSolution={puzzleSolution}
             livesCount={lives}
             setFirstSelectTile={(e, rowIndex, colIndex) => { }}
-            setLastSelectTile={(e, rowIndex, colIndex) => { }}
-            deselectTile={(e, rowIndex, colIndex) => { }}
+              setLastSelectTile={(e, rowIndex, colIndex) => { }}
             fillTile={(e, rowIndex, colIndex) => { }}
             markTile={(e, rowIndex, colIndex) => { }}
             hoverTile={(e, rowIndex, colIndex) => { }}

@@ -30,10 +30,8 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
   const { selectMode, setSelectMode } = useContext(SelectModeContext);
   const [submit, setSubmit] = useState<boolean>(false);
   const [boardBlank, setBoardBlank] = useState<boolean>(true);
-
   const [firstSelected, setFirstSelected] = useState<FirstLastSelectedState>({ rowIndex: null, colIndex: null });
   const [lastSelected, setLastSelected] = useState<FirstLastSelectedState>({ rowIndex: null, colIndex: null });
-
   const [currentPuzzle, currentPuzzleDispatch] = useReducer(currentPuzzleReducer, createBlankPuzzle(boardHeight, boardWidth));
 
   function currentPuzzleReducer(puzzleState: TileState[][], action: PuzzleAction): TileState[][] {
@@ -114,9 +112,6 @@ export const CreateNonogramProvider = ({ boardHeight, boardWidth }: CreateNonogr
             }
             setLastSelectTile={
               (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.SET_LAST_SELECT, rowIndex: rowIndex, colIndex: colIndex }) }
-            }
-            deselectTile={
-              (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.DESELECT, rowIndex: rowIndex, colIndex: colIndex }) }
             }
             fillTile={
               (e, rowIndex, colIndex) => { currentPuzzleDispatch({ type: PUZZLE_ACTIONS.FILL_SELECT_LINE, rowIndex: rowIndex, colIndex: colIndex }) }

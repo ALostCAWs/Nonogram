@@ -10,7 +10,6 @@ interface TileProps {
   tileSize: number,
   setFirstSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   setLastSelectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
-  deselectTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   fillTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   markTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
   hoverTile: (e: React.MouseEvent, rowIndex: number, colIndex: number) => void,
@@ -31,7 +30,7 @@ interface TileProps {
  *
  * @returns Div with a class based on that Tiles' fill stored in the currentPuzzle array
  */
-export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSelectTile, setLastSelectTile, deselectTile, fillTile, markTile, hoverTile }: TileProps) => {
+export const Tile = ({ fill, selected, rowIndex, colIndex, tileSize, setFirstSelectTile, setLastSelectTile, fillTile, markTile, hoverTile }: TileProps) => {
   const fillMode = useContext(FillModeContext);
   const { selectMode, setSelectMode } = useContext(SelectModeContext);
 

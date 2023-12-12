@@ -40,7 +40,6 @@ export const App = () => {
   const [playPuzzle, setPlayPuzzle] = useState(false);
   const [createPuzzle, setCreatePuzzle] = useState(false);
   const [selectMode, setSelectMode] = useState(false);
-  //const [fillMode, setFillMode] = useState(true);
 
   const boardHeight = useRef<HTMLSelectElement>(null);
   const boardWidth = useRef<HTMLSelectElement>(null);
