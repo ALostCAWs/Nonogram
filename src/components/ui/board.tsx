@@ -41,6 +41,7 @@ export const Board = ({ currentPuzzle, puzzleSolution = [], livesCount }: BoardP
       tileSize = 60;
       break;
   }
+  console.log(tileSize);
 
   let lives: number[] = [];
   if (livesCount !== undefined) {

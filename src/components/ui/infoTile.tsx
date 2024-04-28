@@ -33,7 +33,7 @@ export const InfoTile = ({ currentPuzzle, puzzleSolution = [], tileSize, lineTyp
               className={`${lineType}Infos ${lineType}Info${i} ${checkLineComplete(line, currentPuzzle[i]) ? 'completeLineHint' : ''}`}
               style={{
                 height: tileSize,
-                width: line.length * 12,
+                width: tileSize,
                 justifyContent: 'flex-end'
               }}>
               <Hints puzzleSolutionLine={line}
@@ -56,7 +56,7 @@ export const InfoTile = ({ currentPuzzle, puzzleSolution = [], tileSize, lineTyp
               className={`${lineType}Infos ${lineType}Info${i}`}
               style={{
                 height: tileSize,
-                width: line.length * 12,
+                width: tileSize,
                 justifyContent: 'center'
               }}>
               <FillLineToggleButton

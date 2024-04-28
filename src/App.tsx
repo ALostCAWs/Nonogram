@@ -43,6 +43,10 @@ export const App = () => {
 
   const boardHeight = useRef<HTMLSelectElement>(null);
   const boardWidth = useRef<HTMLSelectElement>(null);
+  const options = [];
+  for (let i = 2; i < 21; i++) {
+    options.push(<option value={String(i)}>{i}</option>);
+  }
 
   const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
 
@@ -60,17 +64,12 @@ export const App = () => {
           <button type='button' className='playPuzzle button' onClick={() => setPlayPuzzle(true)}>Play</button>
 
           <select name="height" id="height" ref={boardHeight}>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
+            {options}
           </select>
           <select name="width" id="width" ref={boardWidth}>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
+            {options}
           </select>
+
           <button type='button' className='createPuzzle button'
             onClick={() => {
               setDimensions({ height: parseInt(boardHeight.current?.value ?? '0'), width: parseInt(boardWidth.current?.value ?? '0') })
